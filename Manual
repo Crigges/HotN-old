@@ -1,4 +1,3 @@
-
 1 Background Information
 
   1.1 Introduction
@@ -35,19 +34,38 @@
     2.1.4 User Menu
     You get to the menu by pressen the ESC-key.
 
-- - -Skilln
-- - -Kaufen
-- - -Statistiken
+      2.1.4.1 Skill Tree
+      
+      2.1.4.2 Market
+      
+      2.1.4.3 Statistics
 
-- -Attribute
+    2.2 Attributes
+    In regular Warcraft 3 games, heroes are sorted into the categories strength, agility and intelligence. 
+    The heroes of HotBN are different. This categorisation is removed by making each hero dependend of all attributes.
+      
+      2.2.1 Strength
+        2.2.1.1 Attack Damage
+        2.2.1.2 Mass
+        2.2.1.3 Hit Points
+        
+      2.2.2 Agility
+        2.2.2.1 Dodge
+        2.2.2.2 Block
+        2.2.2.3
+      
+      2.2.3 Intelligence
+        2.2.3.1 Resistance
+        2.2.3.2 Mana
+        2.2.3.3
 
-- - -Stärke
-- - -Geschicklichkeit
-- - -Intelligenz
-- - -Rüstung
-- - -Schaden
+      2.2.4 Amor
+      Amor decreases damage received by the hero. You increase your amor by items.
+    
+      2.2.5 Movementspeed
 
--Kampf und Fertigkeiten
+3 Kampf und Fertigkeiten
+
 - -Ressourcen
 - - -Mana
 - -Werte
@@ -55,7 +73,10 @@
 - - -Blocken
 - - -...
 
--Verwendung der Fertigkeiten
+4 Verwendung der Fertigkeiten
+  4.1 Unit Target
+  4.2 Area Target
+  4.3 Point Target
 
 -Erfahrung und Stufenaufstieg
 
