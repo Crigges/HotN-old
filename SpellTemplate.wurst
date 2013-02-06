@@ -1,8 +1,6 @@
-package SpellTemplate
-	import UnitClass
+package Beispie
 	
-	init
-		
+	init	
 		trigger t = CreateTrigger()
 		t.addCondition(Condition(function spellCondition))
 		t.addAction(function spellStart)
@@ -14,23 +12,22 @@ package SpellTemplate
 			else
 				return false
 	
-	
 	function spellStart()
-		skip //constuctor here 
-		
-	class DeineKlasse
+		RockThrow rt = new RockThrow()
+			
+	class RockThrow
 		
 		timer t
+		unit u
 		
 		construct()
 			t = getTimer()
 			t.setData(this castTo int)
-			t.startPeriodic(0.03, function blackHCall) 
+			t.startPeriodic(0.03, function callCallback) 
 			
-		static function blackHCall()
-			GetExpiredTimer().getData() castTo DeineKlasse.theSpell()
+		private static function callCallback()
+			GetExpiredTimer().getData() castTo thistype.callback()
 		
-		function theSpell()
-			skip
-
+		private function callback()
+			
 endpackage
