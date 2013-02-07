@@ -1,0 +1,95 @@
+Introduction
+  This presentation shows an highly altered and innovative AoS-type Warcraft 3 modification. It is
+based on the "Eye of the Storm" Battleground of Blizzard's World of Warcraft. This battleground
+consists of 4 capture points and a flag in the center. The overall goal is to be the first team to 
+score a specific number of points.
+
+We are aiming for creating a high developped Warcraft 3 multiplayer modification. Therefore this
+team puts emphasis on all aspects equally. That means we have to balance the handling,
+performance and design. Besides the influence of the World of Warcraft Battleground this project
+is also inspired by the gameplay of Cloudwolfs' AoS, the complexity of Zymoran and
+Demestotenes Warlock and the terrain design of booody's Diablo 3 maps.
+
+Background
+  The story is in progress. The basic version of the story is an invasion which is placed on an
+island.
+
+
+
+Gameplay Components
+  Capture Points
+Capture Points are enegergy orbs which have the color of the controlling faction. One gets
+control by simply attacking and destroying them or by standing near to them.
+
+  Arena
+
+
+
+
+Basic Rules
+  
+
+
+Player's Scope
+  As a player, one chooses an original hero at the beginning.
+Every hero has full custom made abilities, 
+which let you experience the gameplay in a different way.
+
+We seek to go beyond that typical three standard abilities 
+and one ultimate ability one knows from certain DotA clones.
+The plannend number of heroes is 21.
+The classic effects of Warcraft 3 attributes were altered to fit the environment of the game.
+Now a hero has no particular attribute anymore which he or she has to stick to.
+
+Strength
+Attack Damage
+Hit Points 
+Mass (Mass influences the way a hero gets knockbacked.
+The higher the value the lesser damage and distance) 
+
+Agility
+Evasion 
+Accuracy 
+Critical Hit 
+Attack Speed 
+
+Intelligence
+Mana 
+Magic Resistance 
+Spell Power 
+
+
+
+Features
+custom original heroes 
+full mui costum spells 
+custom buff system 
+custom dot system 
+custom damage system 
+unique terrain 
+altered attributes 
+a full custom menu interface 
+Dynamic Knockbacks + Bouncing if terrain is not walkable 
+Optional Arena Mode 
+(Maybe Story Event Mode) 
+and many more 
+
+
+Progress
+
+
+
+Team
+bhusta - Project Leader, Terrainer
+Crigges - Programmer
+Naze - Terrainer
+
+
+
+Changelog
+
+
+
+Credits
+
+
