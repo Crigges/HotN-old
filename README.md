@@ -1,6 +1,4 @@
-Hotbn
-=====
+Heart of the Blackest Night
+===========================
 
-Jo man
-
-Evil shit desinged in Wurst
+Public content for general information about the project and workflow optimization.
