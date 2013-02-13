@@ -18,10 +18,12 @@ island.
 
 Gameplay Components
   Capture Points
-Capture Points are enegergy orbs which have the color of the controlling faction. One gets
-control by simply attacking and destroying them or by standing near to them.
+    Capture Points are special areas which are marked with the color of the controlling faction. One gets
+    control by simply attacking the capture point core or by standing in the control point area. 
+    Standing in an enemy control point area causes damage to the occupying units.
 
   Arena
+    The Arena is an periodic event emphasizing the player vs. player experience this project wants to achieve.
 
 
 
