@@ -10,6 +10,12 @@
     The overall goal is to reach a specific level of victory points to win the game.
 
     1.2.1 Capture Points
+      Capture points generate and remove victory points every second.
+      - 1 capture point = 1 victory points
+      - 2 capture point = 2 victory points
+      - 3 capture point = 4 victory points
+      - 4 capture point = 6 victory points
+      Capturing a controll point area .... 
 
     1.2.2 Arena
 
