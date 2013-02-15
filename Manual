@@ -131,6 +131,11 @@
 
 6 Inventory
   6.1 Gold
+    Gold is a resource which is mainly needed to buy items. There are several ways to gain gold.
+    6.1.1 Creep Kill
+    6.1.2 Hero Kill
+    6.1.3 Gold drop
+    6.1.4 Income Rate
   6.2 Market
 
 
