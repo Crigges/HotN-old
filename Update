@@ -1,14 +1,11 @@
 Introduction
-  This presentation shows an highly altered and innovative AoS-type Warcraft 3 modification. It is
-based on the "Eye of the Storm" Battleground of Blizzard's World of Warcraft. This battleground
-consists of 4 capture points and a flag in the center. The overall goal is to be the first team to 
-score a specific number of points.
+    This presentation shows an highly altered and innovative AoS-type Warcraft 3 modification.
+  This battleground consists of 4 capture points and an arena in the center of the map. The overall goal is 
+  to be the first team to score a specific number of points.
 
-We are aiming for creating a high developped Warcraft 3 multiplayer modification. Therefore this
-team puts emphasis on all aspects equally. That means we have to balance the handling,
-performance and design. Besides the influence of the World of Warcraft Battleground this project
-is also inspired by the gameplay of Cloudwolfs' AoS, the complexity of Zymoran and
-Demestotenes Warlock and the terrain design of booody's Diablo 3 maps.
+  Due to the aim of seeking an high developed modification the Heart of the Night team put emphasis on all 
+  modding aspects equally. That means one has to find balance between performance, design and visualisation. 
+  
 
 Background
   The story is in progress. The basic version of the story is an invasion which is placed on an
