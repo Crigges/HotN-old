@@ -1,0 +1,182 @@
+package Chainlightning
+
+
+  /////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////
+
+
+	import UnitClass
+	import AreaMarker
+	import Filter
+	import Buff
+	import Fx
+	import Terrain
+	import Stun
+	
+	
+	constant int spellID = 'xxxx'
+	constant real initialBlitzSpeed = 5
+	constant real secondBlitzSpeed = 10
+	constant real initianlBlitzRange = 400
+	constant real chainGroupRange = 64
+	constant real chainGroupRangeNext = 600
+	constant int chainJumpNumber = 2
+	constant real chainSlowPer = 50
+	constant real chainSlowDur = 5
+	constant real chainStunDur = 3
+	
+	
+	/////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////
+		
+		
+		
+		
+		
+	init	
+		trigger t = CreateTrigger()
+		t.addAction(function spellStart)
+		t.registerAnyUnitEvent(EVENT_PLAYER_UNIT_SPELL_CAST)
+	
+	function spellStart()
+		if GetSpellAbilityId() == spellID
+			new ChainlighningInit(GetTriggerUnit(), vec2(GetSpellTargetX(),GetSpellTargetY()))
+			
+			
+			
+			
+			
+	/////////////////////////////////////////////////////////////
+	///////////////////INITIAL//////////////////////////////////
+	////////////////////////////////////////////////////////////				
+	
+	class ChainlighningInit
+		
+		timer t
+		vec2 pos
+		vec2 posM
+		unit u
+		Fx fx
+		int i
+		lightning l
+		
+		private construct(unit u, vec2 pos)
+			this.u=u
+			this.pos=pos
+			vec2 posU = vec2(u.getX(),u.getY())
+			angle spellAngle = posU.angleTo(pos)
+			posM = posU.polarOffset(spellAngle,initialBlitzSpeed)
+			i = R2I(initianlBlitzRange/initialBlitzSpeed/0.03)
+			fx = new Fx(posU, spellAngle, "Abilities\\Weapons\\VengeanceMissile\\VengeanceMissile.mdl")
+			fx.setOwner(GetOwningPlayer(u), true)
+			fx.setZ(getTerrainZ(posU.x,posU.y))
+			t = getTimer()
+			t.setData(this castTo int)
+			t.startPeriodic(0.03, function blackHCall)
+			
+		private static function blackHCall()
+			GetExpiredTimer().getData() castTo thistype.theSpell()
+		
+		private function theSpell()
+			i--
+			
+			if i>0
+				
+				fx.setPos(fx.getX()+posM.x,fx.getY()+posM.y)
+				fx.setZ(getTerrainZ(fx.getX(),fx.getY())+50)
+								
+				filterCheckUnit=u
+				group g = CreateGroup()
+				GroupEnumUnitsInRange(g, fx.getX(), fx.getY(), chainGroupRange, Condition(function notUnit))				
+				if FirstOfGroup(g) != null
+					
+					group gt = CreateGroup()
+					GroupEnumUnitsInRange(gt, FirstOfGroup(g).getX(), FirstOfGroup(g).getY(), chainGroupRangeNext, Condition(function notUnit))
+					
+					
+					
+					DestroyGroup(gt)
+				
+				//l = AddLightningEx("DRAL",true,x,y,getTerrainZ(x,y)+50,x,y,getTerrainZ(x,y)+50)
+				
+				new ChainlightningAction(u,FirstOfGroup(g),null,chainJumpNumber)
+				
+				DestroyGroup(g)
+				
+			else if i <= 0
+				AddSpecialEffect("Abilities\\Weapons\\AncestralGuardianMissile\\AncestralGuardianMissile.mdl", fx.getX(), fx.getY()).destr()
+				destroy this
+				
+				
+		ondestroy
+			destroy fx
+			t.release()
+			
+			
+			
+			
+			
+			
+	/////////////////////////////////////////////////////////
+	/////////////////Action//////////////////////////////////
+	/////////////////////////////////////////////////////////	
+	
+	
+	
+	
+	
+	
+	class ChainlightningAction
+		unit u
+		unit o
+		unit h
+		lightning l
+		timer t
+		vec2 pos
+		int c
+		int i
+		
+		construct(unit u, unit o, unit h, int c)
+			this.u=u
+			this.o=o
+			this.h=h
+			this.l=l
+			this.c=c-1
+			if c > 0
+				i = R2I(chainGroupRangeNext/secondBlitzSpeed/0.03)
+				real x = u.getX()
+				real y = u.getY()
+				l = AddLightningEx("DRAL",true,x,y,getTerrainZ(x,y)+50,x,y,getTerrainZ(x,y)+50)
+				t = getTimer()
+				t.setData(this castTo int)
+				t.startPeriodic(0.03, function blackHCall) 
+			else
+				destroy this
+			
+			
+			
+			
+		private static function blackHCall()
+			GetExpiredTimer().getData() castTo thistype.theSpell()
+		
+		private function theSpell()
+			i--
+			if i>0
+				filterCheckUnit=u
+				
+				group g = CreateGroup()
+				
+				if FirstOfGroup(g) != null					
+					
+				DestroyGroup(g)
+			
+			
+	
+		ondestroy
+			t.release()
+			DestroyLightning(l)
+
+
+endpackage
