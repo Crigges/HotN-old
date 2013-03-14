@@ -15,6 +15,7 @@ package Chainlightning
 	import Stun
 	import Missle
 	import CustomEvent
+	import Lightning
 	
 	constant int spellID = 'xxxx'
 	constant real initialBlitzSpeed = 5
@@ -27,6 +28,7 @@ package Chainlightning
 	constant real chainSlowDur = 5
 	constant real chainStunDur = 3
 	constant real baseDmg = 123
+	constant string blitzString = FINGER_OF_DEATH
 	
 	
 	/////////////////////////////////////////////////////////////
@@ -79,6 +81,8 @@ package Chainlightning
 				
 				group g = CreateGroup()
 				GroupEnumUnitsInRange(g,posU.x,posU.y,chainGroupRangeNext, Condition(function allEnemys))
+				
+				createAreaMarkerTimed(posU, chainGroupRangeNext, this.u.owner, 2.)
 				
 				Missle missle = new Missle(posU, pos, initialBlitzSpeed, chainGroupRadius, initianlBlitzDist, this.u.owner, function allEnemys)
 				missle.setEffect("Abilities\\Weapons\\VengeanceMissile\\VengeanceMissile.mdl")
