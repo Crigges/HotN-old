@@ -100,68 +100,6 @@ package Chainlightning
 			t.release()
 			
 			
-			
-			
-			
-			
-	/////////////////////////////////////////////////////////
-	/////////////////    BitzAction     /////////////////////
-	/////////////////////////////////////////////////////////	
-	
-	
-	
-	
-	
-	
-	class ChainlightningAction
-		unit u
-		unit o
-		unit h
-		lightning l
-		timer t
-		vec2 pos
-		int c
-		int i
-		
-		construct(unit u, unit o, unit h, int c)
-			this.u=u
-			this.o=o
-			this.h=h
-			this.l=l
-			this.c=c-1
-			if c > 0
-				i = R2I(chainGroupRangeNext/secondBlitzSpeed/0.03)
-				real x = u.getX()
-				real y = u.getY()
-				l = AddLightningEx("DRAL",true,x,y,getTerrainZ(x,y)+50,x,y,getTerrainZ(x,y)+50)
-				t = getTimer()
-				t.setData(this castTo int)
-				t.startPeriodic(0.03, function blackHCall) 
-			else
-				destroy this
-			
-			
-			
-			
-		private static function blackHCall()
-			GetExpiredTimer().getData() castTo thistype.theSpell()
-		
-		private function theSpell()
-			i--
-			if i>0
-				filterCheckUnit=u
-				
-				group g = CreateGroup()
-				
-				if FirstOfGroup(g) != null					
-					
-				DestroyGroup(g)
-			
-			
-	
-		ondestroy
-			t.release()
-			DestroyLightning(l)
 
 
 endpackage
