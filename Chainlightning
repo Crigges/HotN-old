@@ -1,8 +1,8 @@
 package Chainlightning
 
 
-  /////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////
+	//////////////////     Konstanten         ///////////////////
 	////////////////////////////////////////////////////////////
 
 
@@ -13,27 +13,26 @@ package Chainlightning
 	import Fx
 	import Terrain
 	import Stun
-	
+	import Missle
+	import CustomEvent
 	
 	constant int spellID = 'xxxx'
 	constant real initialBlitzSpeed = 5
 	constant real secondBlitzSpeed = 10
-	constant real initianlBlitzRange = 400
-	constant real chainGroupRange = 64
+	constant real initianlBlitzDist = 400
+	constant real chainGroupRadius = 64
 	constant real chainGroupRangeNext = 600
 	constant int chainJumpNumber = 2
 	constant real chainSlowPer = 50
 	constant real chainSlowDur = 5
 	constant real chainStunDur = 3
+	constant real baseDmg = 123
 	
 	
 	/////////////////////////////////////////////////////////////
-	/////////////////////////////////////////////////////////////
+	///////////////////      Init         ///////////////////////
 	////////////////////////////////////////////////////////////
-		
-		
-		
-		
+	
 		
 	init	
 		trigger t = CreateTrigger()
@@ -45,73 +44,55 @@ package Chainlightning
 			new ChainlighningInit(GetTriggerUnit(), vec2(GetSpellTargetX(),GetSpellTargetY()))
 			
 			
-			
-			
-			
 	/////////////////////////////////////////////////////////////
-	///////////////////INITIAL//////////////////////////////////
+	///////////         SkillShot       /////////////////////////
 	////////////////////////////////////////////////////////////				
 	
 	class ChainlighningInit
 		
 		timer t
-		vec2 pos
-		vec2 posM
-		unit u
-		Fx fx
-		int i
+		Unit u
 		lightning l
+		int jumps
 		
 		private construct(unit u, vec2 pos)
-			this.u=u
-			this.pos=pos
+			this.u=u.getUserData() castTo Unit
 			vec2 posU = vec2(u.getX(),u.getY())
 			angle spellAngle = posU.angleTo(pos)
-			posM = posU.polarOffset(spellAngle,initialBlitzSpeed)
-			i = R2I(initianlBlitzRange/initialBlitzSpeed/0.03)
-			fx = new Fx(posU, spellAngle, "Abilities\\Weapons\\VengeanceMissile\\VengeanceMissile.mdl")
-			fx.setOwner(GetOwningPlayer(u), true)
-			fx.setZ(getTerrainZ(posU.x,posU.y))
-			t = getTimer()
-			t.setData(this castTo int)
-			t.startPeriodic(0.03, function blackHCall)
+			jumps = chainJumpNumber
+			Missle missle = new Missle(posU, spellAngle, initialBlitzSpeed, chainGroupRadius, initianlBlitzDist, this.u.owner, function allEnemys)
+			missle.setEffect("Abilities\\Weapons\\VengeanceMissile\\VengeanceMissile.mdl")
+			Action a = missle.registerHitEvent(function onHit)
+			a.setData(this castTo int)
 			
-		private static function blackHCall()
-			GetExpiredTimer().getData() castTo thistype.theSpell()
+			
+		private static function onHit()
+			currentAction.getData() castTo ChainlighningInit.theSpell(function onHit) 
 		
-		private function theSpell()
-			i--
-			
-			if i>0
+		private function theSpell(code onHit)
+			Unit target = triggerUnit
+			target.damageMagic(u, baseDmg)
+			if jumps > 0
+				jumps--
 				
-				fx.setPos(fx.getX()+posM.x,fx.getY()+posM.y)
-				fx.setZ(getTerrainZ(fx.getX(),fx.getY())+50)
-								
-				filterCheckUnit=u
+				vec2 posU = target.u.getPos()
+				
 				group g = CreateGroup()
-				GroupEnumUnitsInRange(g, fx.getX(), fx.getY(), chainGroupRange, Condition(function notUnit))				
-				if FirstOfGroup(g) != null
-					
-					group gt = CreateGroup()
-					GroupEnumUnitsInRange(gt, FirstOfGroup(g).getX(), FirstOfGroup(g).getY(), chainGroupRangeNext, Condition(function notUnit))
-					
-					
-					
-					DestroyGroup(gt)
+				GroupEnumUnitsInRange(g,posU.x,posU.y,chainGroupRangeNext, Condition(function allEnemys))
 				
-				//l = AddLightningEx("DRAL",true,x,y,getTerrainZ(x,y)+50,x,y,getTerrainZ(x,y)+50)
+				Missle missle = new Missle(posU, pos, initialBlitzSpeed, chainGroupRadius, initianlBlitzDist, this.u.owner, function allEnemys)
+				missle.setEffect("Abilities\\Weapons\\VengeanceMissile\\VengeanceMissile.mdl")
+				Action a = missle.registerHitEvent(onHit)
+				a.setData(this castTo int)
 				
-				new ChainlightningAction(u,FirstOfGroup(g),null,chainJumpNumber)
 				
-				DestroyGroup(g)
 				
-			else if i <= 0
-				AddSpecialEffect("Abilities\\Weapons\\AncestralGuardianMissile\\AncestralGuardianMissile.mdl", fx.getX(), fx.getY()).destr()
-				destroy this
+				//AddSpecialEffect("Abilities\\Weapons\\AncestralGuardianMissile\\AncestralGuardianMissile.mdl", fx.getX(), fx.getY()).destr()
+				
 				
 				
 		ondestroy
-			destroy fx
+		
 			t.release()
 			
 			
@@ -120,7 +101,7 @@ package Chainlightning
 			
 			
 	/////////////////////////////////////////////////////////
-	/////////////////Action//////////////////////////////////
+	/////////////////    BitzAction     /////////////////////
 	/////////////////////////////////////////////////////////	
 	
 	
