@@ -1,0 +1,54 @@
+package PlayerClass
+
+	import HeroClass
+	import Setup
+	import HashMap
+	
+	public Player lastp = null
+	constant real camDistance = 3000.
+	constant real camAngle = 90.
+	constant real camWidth = 1000.
+	constant real camHeightLow = 2000
+	constant real camHeightHigh = -200
+	public constant HashMap<player, Player> playerData = new HashMap<player, Player>()
+
+	public class Player
+		player p
+		Hero h = null
+		string team = team1
+		int kills = 0
+		int assists = 0
+		int death = 0
+		boolean selectionOn = false
+		//Cammera Settings
+		timer camSet = getTimer()
+		real sightfield = 60
+		real perspektiv = 295
+		
+		construct(player p)
+			lastp = this
+			this.p = p
+//			if GetLocalPlayer() == p
+//				camSet.startPeriodic(0.03, function setCam)
+//				camSet.setData(this castTo int)
+			playerData.put(p, this)
+				
+		static function setCam()
+			timer t = GetExpiredTimer()
+			var obj = t.getData() castTo thistype
+			SetCameraFieldForPlayer(obj.p, CAMERA_FIELD_TARGET_DISTANCE, camDistance, 0.05)
+			SetCameraFieldForPlayer(obj.p, CAMERA_FIELD_ANGLE_OF_ATTACK, obj.perspektiv ,0.05)
+			SetCameraFieldForPlayer(obj.p, CAMERA_FIELD_FIELD_OF_VIEW, obj.sightfield, 0.05)
+			
+		/**
+		* Does not correctly work atm
+		*/
+		function isCamOnHero() returns boolean
+			if h != null
+				print("rightcall")
+				return not(GetCameraEyePositionX() + camWidth < h.u.getX() or GetCameraEyePositionX() - camWidth > h.u.getX() or GetCameraEyePositionY() + camHeightHigh < h.u.getY() or GetCameraEyePositionY() + camHeightLow > h.u.getY())
+			else
+				return false
+		
+
+endpackage

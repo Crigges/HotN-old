@@ -1,0 +1,68 @@
+package Buff
+	import UnitClass
+
+	public class Buff
+		Action<Units> action
+		Unit u
+		int buffId
+		int abiId
+		effect fx
+		timer fxTimer
+		timer t
+		int fxCounter
+		string fxType
+		string attachment
+		
+		construct(Unit u, int buffId, int abiId, real duration)
+			this.u = u
+			this. buffId = buffId
+			this.abiId = abiId
+			u.allBuffs.add(this)
+			UnitAddAbility(u.u, abiId)
+			fx = null
+			fxTimer = null
+			action = u.registerDeath((Units data) -> begin
+				destroy this
+			end)
+			t = getTimer()
+			t.setData(this castTo int)
+			t.start(duration, function timerDestroyBuff) 
+		
+		static function timerDestroyBuff()
+			destroy GetExpiredTimer().getData() castTo Buff
+			
+		function addEffect(string fx, string attachment)
+			this.fx = u.u.addEffect(fx, attachment)
+			
+		function addEffectTimed(string fx, string attachment, real interval)
+			DestroyEffect(u.u.addEffect(fx, attachment))
+			real time = TimerGetRemaining(t)
+			fxCounter = R2I(time / interval)
+			if fxCounter > 0
+				fxType = fx
+				this.attachment = attachment
+				fxTimer = getTimer()
+				fxTimer.setData(this castTo int)
+				fxTimer.startPeriodic(interval, function createEffect)
+			
+		static function createEffect()
+			timer t = GetExpiredTimer()
+			var b = t.getData() castTo Buff
+			if b.fxCounter > 0
+				DestroyEffect(b.u.u.addEffect(b.fxType, b.attachment))
+				b.fxCounter--
+			else
+				t.release()
+				
+		ondestroy
+			destroy action
+			t.release()
+			u.allBuffs.remove(this)
+			if fxTimer != null
+				fxTimer.release()
+			UnitRemoveAbility(u.u, abiId)
+			UnitRemoveAbility(u.u, buffId)
+			if fx != null
+				DestroyEffect(fx)
+		 
+endpackage

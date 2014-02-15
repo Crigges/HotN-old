@@ -1,0 +1,17 @@
+package Table3D
+
+	public class Table3D
+		hashtable ht = InitHashtable()
+		int key3IndexSize = 0
+		
+		construct(int key3IndexSize)
+			this.key3IndexSize = key3IndexSize
+			
+		function put(int key1, int key2, int key3, trackable t)
+			ht.saveTrackableHandle(key1, (key2 * key3IndexSize) + key3, t)
+			
+		function get(int key1, int key2, int key3) returns trackable
+			return ht.loadTrackableHandle(key1, (key2 * key3IndexSize) + key3)
+			
+
+endpackage

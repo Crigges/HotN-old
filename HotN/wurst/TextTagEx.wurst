@@ -1,0 +1,25 @@
+package TextTagEx
+
+	import Texttag
+	
+
+	public class TextTagEx
+		static constant colorA standardColor = colorA(255, 255, 255, 255)
+		static constant resizeRateConstant = 0.015
+		static constant fadeTicks = 8
+		static constant resizeTicks = 8
+//		static constant	HandleMap<player> timerOwner = new HandleMap<player>()
+//		static constant HandleMap<int> tick = new HandleMap<int>()
+		texttag tt
+		string content
+		vec3 pos
+		
+		construct(string content, vec2 pos, real textSize)
+			this.content = content
+			this.pos = pos.toVec3()
+			tt = createTTEx(this.pos, content, textSize, standardColor)
+			
+		function test()
+			tt.setLifespan(100)
+
+endpackage

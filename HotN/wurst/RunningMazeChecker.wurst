@@ -1,0 +1,54 @@
+package RunningMazeChecker
+/* 
+*	This is a lib, which can checks if there is a Way from a Startpoint to a Endpoint
+*	You can use this for Towerdefenses or AI scripts
+*/
+	public constant real tileWidth = 64
+	
+	tuple tile(real x, real y)
+		
+	function a(int z, int n) returns real
+		return z - n * (z/n) 
+	
+	function tile.nextX() returns tile
+		return tile(this.x + tileWidth, this.y)
+		
+	function tile.nextY() returns tile
+		return tile(this.x, this.y + tileWidth)
+		
+	function tile.prevX() returns tile
+		return tile(this.x - tileWidth, this.y)
+		
+	function tile.prevY() returns tile
+		return tile(this.x, this.y - tileWidth)
+		
+	function vec2.toTile() returns tile
+		return tile(((this.x - (this.x % 64).abs()) + 32), ((this.y - (this.y % 64).abs()) + 32))
+	
+	public class MazeChecker
+		private rect checkArea
+		private tile start
+		private tile goal
+		
+		construct(rect checkArea, vec2 start, vec2 goal)
+			this.checkArea = checkArea
+			this.start = start.toTile()
+			this.goal = goal.toTile()
+			
+		function isPathable() returns boolean
+			return true
+			
+		private function isOldWayPathable()
+			skip
+			
+		function setCheckArea(rect r)
+			this.checkArea = r
+		
+		function setStart(vec2 start)
+			this.start = start.toTile()
+			
+		function setEnd(vec2 goal)
+			this.goal = goal.toTile()
+
+
+endpackage

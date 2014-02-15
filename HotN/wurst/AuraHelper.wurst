@@ -1,0 +1,59 @@
+package AuraHelper
+
+	import Filter
+	import LinkedListModule
+	import UnitClass
+	
+
+	public class Aura
+		private rect r
+		private real radius
+		private int buffId
+		private boolexpr filter = null
+		private Unit u
+		private timer t = getTimer()
+		private group g = CreateGroup()
+		private UnitEvent enter = new UnitEvent()
+		private UnitEvent leave = new UnitEvent()
+		
+		construct(Unit target, real radius, int buffId, code filter, real checkInterval)
+			u = target
+			this.radius = radius
+			this.buffId = buffId
+			if filter != null
+				this.filter = Condition(filter)
+			real x =  target.u.getX()
+			real y = target.u.getY()
+			r = Rect(x - radius, y - radius, x + radius, y + radius)
+			t.setData(this castTo int)
+			t.startPeriodic(checkInterval, function callCheck)
+			
+		private static function callCheck()
+			GetExpiredTimer().getData() castTo thistype.check()
+			
+		function registerLeaveEvent(Action<Unit> action) returns Action<Unit>
+			return leave.addAction(action)
+			
+		function registerEnterEvent(Action<Unit> action) returns Action<Unit>
+			return enter.addAction(action)
+		
+		private function check()
+			filterCheckPlayer = u.owner
+			for unit gu in g
+				Unit obj = gu.getUserData() castTo Unit
+				if obj != null and gu.getPos().distToVec(u.u.getPos()) > radius
+					leave.fire(obj)
+					GroupRemoveUnit(g, gu)
+			group tempGroup = CreateGroup()
+			MoveRectTo(r, u.u.getX(), u.u.getY())
+			GroupEnumUnitsInRect(tempGroup, r, filter)
+			for unit gu from tempGroup
+				Unit obj = gu.getUserData() castTo Unit
+				if obj != null and gu.getPos().distToVec(u.u.getPos()) <= radius and not IsUnitInGroup(gu, g)
+					enter.fire(obj)
+					GroupAddUnit(g, gu)
+			DestroyGroup(tempGroup)
+					
+			
+
+endpackage

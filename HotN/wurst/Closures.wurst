@@ -1,0 +1,80 @@
+package Closures
+
+	import HashMap
+
+	//Timer Stuff	
+	public abstract class CallbackSingle
+		
+		abstract function call()
+		
+		function start(real time)
+			getTimer()
+			..setData(this castTo int)
+			.start(time, function staticCallback)
+				
+		private static function staticCallback()
+			timer t = GetExpiredTimer()
+			thistype cb = t.getData() castTo thistype
+			cb.call()
+			destroy cb
+			t.release()
+			
+		
+	public abstract class CallbackPeriodic
+		private timer t
+    	
+		protected abstract function call(thistype cb)
+    
+		function start(real time)
+			this.t = getTimer()
+			t.start(time, function staticCallback)
+			
+		private static function staticCallback()
+			let cb = (GetExpiredTimer().getData() castTo thistype)
+			cb.call(cb)
+			
+		ondestroy
+			t.release()
+			
+	public abstract class CallbackCounted
+		private timer t
+		private int count = 0
+		private int maxCount
+    	
+		protected abstract function call(thistype cb)
+    
+		function start(real time, int callAmount)
+			this.t = getTimer()
+			maxCount = callAmount
+			t.start(time, function staticCallback)
+			
+		private static function staticCallback()
+			(GetExpiredTimer().getData() castTo thistype).callAndCount()
+			
+		private function callAndCount()
+			call(this)
+			count++
+			if count >= maxCount
+				destroy this
+			
+		ondestroy
+			t.release()
+			
+	public function periodic(real time, CallbackPeriodic cb)
+		cb.start(time)
+			
+	public function periodic(real time, int callAmount, CallbackCounted cb)
+		cb.start(time, callAmount)
+			
+	public function periodic(real interval, real timerDuration, CallbackCounted cb)
+		periodic(interval, (timerDuration / interval + 0.5).toInt(), cb)
+				
+	public function doAfter(real timeToWait, CallbackSingle cb)
+		cb.start(timeToWait)
+		
+	public function nullTimer(CallbackSingle cb)
+		cb.start(0.)
+		
+		
+		
+endpackage

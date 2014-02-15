@@ -1,0 +1,137 @@
+package ItemClass
+
+class Item
+	//Main
+	integer itemID
+	string name
+	string toolTipN
+	string toolTipE
+	int cost
+	int sellcost
+	//stats basic normal
+	real life
+	real mana
+	real armor
+	int attack
+	int movespeed
+	real lifereg
+	real manareg
+	// stats basic percentual
+	real lifeper
+	real manaper
+	real armorper
+	real attackper
+	real movespeedper
+	real attackspeed
+	real liferegper
+	real manaregper
+	// stats attribute
+	int intel
+	int str
+	int agi
+	//stats attribute
+	real intelper
+	real strper
+	real agiper
+	// Effect
+	real crit
+	real evade
+	real hitdmg
+	real critdmg
+	real block
+	real blockdmg
+	// Effectgroups
+	group group1
+	group group2
+	group group3
+	group group4
+	group group5
+	// Additonal itemeffects
+	ability spell1
+	ability spell2
+	ability spell3
+	ability spell4
+	ability spell5
+	// Items you need
+	integer need1
+	integer need2
+	integer need3
+	integer need4
+	integer need5
+	// Upradeable too
+	integer upg1
+	integer upg2
+	integer upg3
+	integer upg4
+	integer upg5
+	integer upg6
+	integer upg7
+	integer upg8
+	integer upg9
+	integer upg10
+	//
+	construct()
+		//seteverything = null
+		itemID = 0
+		name = "New Item"
+		toolTipN = "Tooltip easy missing"
+		toolTipE = "Tooltip extended missing"
+		cost = 0
+		sellcost = 0
+		life = 0
+		mana = 0
+		armor = 0
+		attack = 0
+		movespeed = 0
+		lifereg = 0
+		manareg = 0
+		lifeper = 0
+		manaper = 0
+		armorper = 0
+		attackper = 0
+		movespeedper = 0
+		attackspeed = 0
+		liferegper = 0
+		manaregper = 0
+		intel = 0
+		str = 0
+		agi = 0
+		intelper = 0
+		strper = 0
+		agiper = 0
+		crit = 0
+		evade = 0
+		hitdmg = 0
+		critdmg = 0 
+		block = 0
+		blockdmg = 0
+		group1 = null
+		group2 = null
+		group3 = null
+		group4 = null
+		group5 = null
+		spell1 = null
+		spell2 = null
+		spell3 = null
+		spell4 = null
+		spell5 = null
+		need1 = 0
+		need2 = 0
+		need3 = 0
+		need4 = 0
+		need5 = 0
+		upg1 = 0
+		upg2 = 0
+		upg3 = 0
+		upg4 = 0
+		upg5 = 0
+		upg6 = 0
+		upg7 = 0
+		upg8 = 0
+		upg9 = 0
+		upg10 = 0
+	
+	
+	
+	
+

@@ -1,0 +1,13 @@
+package CharClass
+
+	public class Char
+		string c = ""
+		
+		construct(string char)
+			if StringLength(char) == 1
+				c = char
+			else
+				printError("Strngs need exactly the length 1 to convert them into a char")
+				destroy this
+
+endpackage

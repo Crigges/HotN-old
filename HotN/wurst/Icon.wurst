@@ -1,0 +1,80 @@
+package Icon
+//
+//	import Setup
+//	import Menu
+//	
+//	constant real animationSpeedHover = 3.5
+//	constant int dummyIcon = 'icon'
+//	
+//	public class Icon extends Observable
+//		destructable d = null
+//		int objId
+//		vec2 realPos
+//		vec2 localPos = recycleGraveyard
+//		
+//		construct(int objId, element pos)
+//			this.realPos = vec2(pos.x + menuStart.x, pos.y + menuStart.y)
+//			this.objId = objId
+//				
+//		function setIcontype(int objId, player p)
+//			if GetLocalPlayer() == p
+//				this.objId = objId
+//				d = CreateDestructable(objId, localPos.x, localPos.y, 0, scale, 1)
+//				
+//		override function hideDirect(player p)
+//			if canSee.loadBoolean(GetPlayerId(p))
+//				needToSee--
+//				canSee.saveBoolean(GetPlayerId(p), false)
+//				RemoveDestructable(d)
+//				if GetLocalPlayer() == p
+//					localPos = recycleGraveyard	
+//				if needToSee == 0
+//					d = null
+//				else
+//					d = CreateDestructable(objId, localPos.x, localPos.y, 0, scale, 1)
+//					
+//		override function showDirect(player p)
+//			if not canSee.loadBoolean(GetPlayerId(p))
+//				needToSee++
+//				canSee.saveBoolean(GetPlayerId(p), true)
+//				if GetLocalPlayer() == p
+//					localPos = realPos
+//				if d != null
+//					RemoveDestructable(d)
+//				d = CreateDestructable(objId, localPos.x, localPos.y, 0, scale, 1)
+//				
+//		override function showFaded(player p)
+//			skip
+//			
+//		override function hideFaded(player p)
+//			skip
+//			
+//		override function disable(player p)
+//			canSee.saveDestructable(10000, d)
+//			unit u = canSee.loadUnit(10000)
+//			SetUnitVertexColor(u, 10, 10, 10, 10)
+//			print("disabled")
+//			
+//		override function enable(player p)
+//			skip
+//			
+//		override function onTrack(player p)
+//			if GetLocalPlayer() == p
+//				SetDestructableAnimationSpeed(d, animationSpeedHover)
+//				SetDestructableAnimation(d, "morph")
+//				disable(p)
+//				
+//		override function onUnTrack(player p)
+//			if GetLocalPlayer() == p
+//				SetDestructableAnimationSpeed(d, animationSpeedHover)
+//				SetDestructableAnimation(d, "morph alternate")
+//				
+//		override function onHit(player p)
+//			SetDestructableAnimationSpeed(d, 6)
+//			SetDestructableAnimation(d, "morph alternate")
+//			QueueDestructableAnimation(d, "morph")	
+//			
+//		override function onDoubleHit(player p)
+//			skip
+//			
+//endpackage

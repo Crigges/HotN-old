@@ -1,0 +1,291 @@
+package Spell
+
+	import UnitClass
+	import HeroClass
+	import Setup
+	import ObjectId
+	import PreloadHandler
+
+	public constant int qSpellId 				= 852490 // ancestralspirit
+	public constant int wSpellId 				= 852491 // ancestralspirittarget
+	public constant int eSpellId 				= 852217 // animatedead
+	public constant int rSpellId 				= 852186 // antimagicshell
+	public constant int dSpellId 				= 852576 // attributemodskill
+	public constant int fSpellId 				= 852215 // auraunholy
+	
+	public enum SpellType
+		Q
+		W
+		E
+		R
+		D
+		F
+		
+	public function SpellType.toId() returns int
+		switch this
+			case SpellType.Q
+				return 'Q'
+			case SpellType.W
+				return 'W'
+			case SpellType.E
+				return 'E'
+			case SpellType.R
+				return 'R'
+			case SpellType.D
+				return 'D'
+			case SpellType.F
+				return 'F'
+			default
+				return -1
+				
+	public function SpellType.toOrderId() returns int
+		switch this
+			case SpellType.Q
+				return qSpellId
+			case SpellType.W
+				return wSpellId
+			case SpellType.E
+				return eSpellId
+			case SpellType.R
+				return rSpellId
+			case SpellType.D
+				return dSpellId
+			case SpellType.F
+				return fSpellId
+			default
+				return -1
+		
+	public enum TargetType
+		NOTHING
+		UNIT
+		POINT
+		UNIT_POINT
+		
+	public function	TargetType.toId() returns int
+		switch this
+			case TargetType.NOTHING
+				return '0'
+			case TargetType.UNIT
+				return '1'
+			case TargetType.POINT
+				return '2'
+			case TargetType.UNIT_POINT
+				return '3'
+			default
+				return -1
+			
+	
+	public class SpellSetup
+		SpellType sp
+		int spell
+		int spellbook
+		int maxLvl
+		ObjId castDummy = new ObjId()
+		Table pointCost = new Table()
+		
+		construct()
+			castDummy.setId2('S')
+			castDummy.setId3('P')
+		
+		function setTargetType(TargetType tt)
+			castDummy.setId4(tt.toId())
+			
+		function setSpellType(SpellType sp)
+			this.sp = sp
+			castDummy.setId1(sp.toId())
+			
+		function setMaxLvl(int lvl)
+			maxLvl = lvl
+			
+		function setNeededSkillpoints(int lvl, int points)
+			pointCost.saveInt(lvl, points)
+		
+		function setSpell(int abiCode)
+			spell = abiCode
+			
+		function setDummySpellBook(int abiCode)
+			spellbook = abiCode
+	
+	public constant int cleanSpellbook = 'ZAma'
+	
+	public class Spellcast
+		unit target
+		vec2 pos
+		Spell spell
+		
+		function force()
+			spell.forceCast(this)
+		
+	public abstract class Spell
+		int spell
+		int spellbook
+		int castDummy
+		int maxLvl
+		int lvl = 1
+		Table pointCost
+		SpellType st 
+		Hero owner
+		
+		construct(Hero owner, SpellType st)
+			this.owner = owner
+			this.st = st
+			switch st
+				case SpellType.Q
+					owner.spellQ = this
+				case SpellType.W
+					owner.spellW = this
+				case SpellType.E
+					owner.spellE = this
+				case SpellType.R
+					owner.spellR = this
+				case SpellType.D
+					owner.spellD = this
+				case SpellType.F
+					owner.spellF = this
+		
+		abstract function callOnCast(Hero caster, vec2 targetPos, Unit target)
+		
+		function incLvl() returns boolean
+			if lvl != maxLvl
+				SetUnitAbilityLevel(owner.u, spell, GetUnitAbilityLevel(owner.u, spell) + 1)
+				return true
+			else 
+				return false
+				
+		protected function readSetup(SpellSetup ss)
+			spell = ss.spell
+			spellbook = ss.spellbook
+			castDummy = ss.castDummy.getId()
+			maxLvl = ss.maxLvl
+			Hero.abiIdToSpell.put(spell, this)
+			owner.u.addAbility(spellbook)
+			//owner.u.addAbility(castDummy)
+			owner.u.addAbility(spell)
+			SetPlayerAbilityAvailable(owner.owner, spellbook, false)
+			
+			
+		protected static function timedDisableCastDummy()
+			timer t = GetExpiredTimer()
+			Spell s = t.getData() castTo Spell
+			SetPlayerAbilityAvailable(s.owner.owner, s.castDummy, false)
+			t.release()
+			t = null
+			
+		protected function enableCastDummy()
+			SetPlayerAbilityAvailable(owner.owner, castDummy, true)
+			
+		protected function disableCastDummyTimed()
+			getTimer()..setData(this castTo int).start(0.0, function timedDisableCastDummy)
+			
+		function getInstantSpellCast() returns Spellcast
+			Spellcast sc = new Spellcast()
+			sc.spell = this
+			return sc
+			
+		function getPointSpellCast(vec2 pos) returns Spellcast
+			Spellcast sc = new Spellcast()
+			sc.spell = this
+			sc.pos = pos
+			return sc
+			
+		function getUnitSpellCast(unit target) returns Spellcast
+			Spellcast sc = new Spellcast()
+			sc.spell = this
+			sc.target = target
+			return sc
+			
+		abstract function forceCast(Spellcast sc)
+			
+		function hide()
+			SetPlayerAbilityAvailable(owner.owner, spell, false)
+			
+		function show()
+			SetPlayerAbilityAvailable(owner.owner, spell, true)
+			
+		function resetCooldown()
+			UnitRemoveAbility(owner.u, spellbook)
+			UnitAddAbility(owner.u, spellbook)
+			
+	public abstract class InstantSpell extends Spell
+	
+		construct(Hero owner, SpellSetup ss, SpellType st)
+			super(owner, st)
+			ss.setTargetType(TargetType.NOTHING)
+			ss.setSpellType(st)
+			readSetup(ss)
+		
+		override function callOnCast(Hero caster, vec2 targetPos, Unit target)
+			onCast(caster)
+			
+		override function forceCast(Spellcast sc)
+			enableCastDummy()
+			IssueImmediateOrderById(owner.u, st.toOrderId())
+			disableCastDummyTimed()
+			
+		abstract function onCast(Hero caster)
+		
+		
+	public abstract class PointSpell extends Spell
+		
+		construct(Hero owner, SpellSetup ss, SpellType st)
+			super(owner, st)
+			ss.setTargetType(TargetType.POINT)
+			ss.setSpellType(st)
+			readSetup(ss)
+			
+		override function callOnCast(Hero caster, vec2 targetPos, Unit target)
+			onCast(caster, targetPos)
+			
+		override function forceCast(Spellcast sc)
+			//enableCastDummy()
+			IssuePointOrderById(owner.u, st.toOrderId(), sc.pos.x, sc.pos.y)
+			//disableCastDummyTimed()
+			
+		abstract function onCast(Hero caster, vec2 targetPos)
+		
+	public abstract class UnitSpell extends Spell
+		
+		construct(Hero owner, SpellSetup ss, SpellType st)
+			super(owner, st)
+			ss.setTargetType(TargetType.UNIT)
+			ss.setSpellType(st)
+			readSetup(ss)
+		
+		override function callOnCast(Hero caster, vec2 targetPos, Unit target)
+			onCast(caster, target)
+			
+		override function forceCast(Spellcast sc)
+			enableCastDummy()
+			IssueTargetOrderById(owner.u, st.toOrderId(), sc.target)
+			disableCastDummyTimed()
+			
+		abstract function onCast(Hero caster, Unit target)
+		
+	public abstract class PointOrUnitSpell extends Spell
+		
+		construct(Hero owner, SpellSetup ss, SpellType st)
+			super(owner, st)
+			ss.setTargetType(TargetType.UNIT_POINT)
+			ss.setSpellType(st)
+			readSetup(ss)
+		
+		override function callOnCast(Hero caster, vec2 targetPos, Unit target)
+			if target == null
+				onPointCast(caster, targetPos)
+			else
+				onUnitCast(caster, target)
+			
+		override function forceCast(Spellcast sc)
+			enableCastDummy()
+			if sc.target == null
+				IssuePointOrderById(owner.u, st.toOrderId(), sc.pos.x, sc.pos.y)
+			else
+				IssueTargetOrderById(owner.u, st.toOrderId(), sc.target)
+			disableCastDummyTimed()
+		
+		abstract function onPointCast(Hero caster, vec2 targetPos)
+		
+		abstract function onUnitCast(Hero caster, Unit target)
+			
+		
+endpackage

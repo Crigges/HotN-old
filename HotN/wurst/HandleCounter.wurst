@@ -1,0 +1,100 @@
+package HandleCounter
+	constant string TITLE = "HandleCounter"
+	leaderboard board = null
+	constant timer boardTimer = getTimer()
+	
+	constant player HANDLE = Player(0)
+	constant string HANDLE_TEXT = "current handlecount"
+	
+	constant player MAX_HANDLE = Player(1)
+	constant string MAX_HANDLE_TEXT = "max handlecount"
+	
+	constant string TIME_TEXT = "current time"
+	constant player TIME = Player(2)
+	
+	real updatePeriod = 0.25
+	int stackEndTreshold = 15
+    
+	timer clock = getTimer()
+	int seconds = 0
+	int maxHandleCount = 0
+	
+	function updateTime()
+		seconds++
+        
+	function callback()
+		LeaderboardSetItemValue(board, 0, getHandleCount())
+		LeaderboardSetItemValue(board, 1, getTime())
+
+	public function hideBoard()
+		boardTimer.release()
+		DestroyLeaderboard(board)
+
+	public function showBoard()
+		boardTimer.start(0., function actions)
+			
+	function actions()
+		board = CreateLeaderboard()
+		
+		LeaderboardSetLabel(board, TITLE)
+		PlayerSetLeaderboard(GetLocalPlayer(), board)
+		LeaderboardDisplay(board, true)
+		
+		LeaderboardAddItem(board, HANDLE_TEXT, 0, HANDLE)
+		LeaderboardSetItemValue(board, 0, getHandleCount())
+		
+		LeaderboardAddItem(board, MAX_HANDLE_TEXT, 1, MAX_HANDLE)
+		LeaderboardSetItemValue(board, 1, getMaxHandleCount())
+		
+		LeaderboardAddItem(board, TIME_TEXT, 2, TIME)
+		LeaderboardSetItemValue(board, 2, getTime())
+		
+		LeaderboardSetSizeByItemCount(board, 3)
+        
+		TimerStart(GetExpiredTimer(), updatePeriod, true, function callback)
+	
+	public function getHandleCount() returns int
+		location array loc
+		int next = 0
+		int prevIndex = 0
+		int index = 0
+		int a = 0
+				
+		while (next < stackEndTreshold)
+			loc[a] = Location(0., 0.)
+			index = GetHandleId(loc[a]) - 0x100000
+			a++
+			if index == prevIndex + 1
+				next++
+			else
+				next = 0
+			prevIndex = index
+			
+		index -= a
+		
+		while (a > 0)
+			a--
+			RemoveLocation(loc[a])
+			loc[a] = null
+			
+		if index > maxHandleCount
+			maxHandleCount = index
+		return index
+	
+	public function getMaxHandleCount() returns int
+		getHandleCount()
+		return maxHandleCount
+		
+	public function setUpdatePeriod(real r)
+		updatePeriod = r
+		
+	public function setStackEndTreshold(int i)
+		stackEndTreshold = i
+
+	public function getTime() returns int
+		return seconds
+
+	init
+		TimerStart(clock, 1., true, function updateTime)
+
+endpackage

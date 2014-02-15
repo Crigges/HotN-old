@@ -1,0 +1,75 @@
+package FloatingText
+	import UnitClass
+	import Setup
+	import InstanceBoard
+	
+	public class TextTag
+		use ShowInstances
+		Unit u
+		texttag tt
+		timer t
+		real amount
+		TextType tType
+		
+		
+		override static function classname() returns string
+			return "TextTag"
+	
+		construct(real amount, Unit u, int R, int B, int G, real size, TextType tType)
+			tt = CreateTextTag()
+			this.tType = tType
+			real x = u.u.getX() - 25
+			real y = u.u.getY() - 25
+			if tType == TextType.DAMAGE
+				x += 35
+			else if tType == TextType.HEAL
+				x -= 35
+			else if tType == TextType.DODGE or tType == TextType.MISS
+				y += 35
+			else if tType == TextType.GOLD
+				y -= 35
+			SetTextTagPos(tt, x, y, u.height + 10)
+			SetTextTagColor(tt, R, B, G, 255)
+			SetTextTagPermanent(tt, false)
+			SetTextTagLifespan(tt, 1.)
+			SetTextTagFadepoint(tt, 0.80)
+			SetTextTagVelocity(tt, 0., 0.08)
+			SetTextTagVisibility(tt, true)
+			if tType == TextType.DODGE
+				SetTextTagText(tt, "Dodge", size * 0.023 / 10)
+			else if tType == TextType.MISS
+				SetTextTagText(tt, "Miss", size * 0.023 / 10)
+			else if tType == TextType.GOLD
+				SetTextTagText(tt, "+" + I2S(R2I(amount)) + "g", size * 0.023 / 10)
+			else
+				SetTextTagText(tt, R2SW(amount, 0, 1), size * 0.023 / 10)
+			this.amount = amount
+			this.u = u
+			this.t = getTimer()
+			t.setData(this castTo int)
+			if tType == TextType.DOT
+				skip
+				this.u.dotTT = this
+				t.start(0.45, function destroyTextTag)
+			else if tType == TextType.DAMAGE
+				this.u.damageTT = this
+				t.start(1., function destroyTextTag)
+			else
+				this.u.healTT = this
+				t.start(1., function destroyTextTag)
+		
+		static function destroyTextTag()
+			destroy GetExpiredTimer().getData() castTo TextTag
+			
+		ondestroy
+			t.release()
+			DestroyTextTag(tt)
+			if tType == TextType.DAMAGE
+				u.damageTT = null
+			else if tType == TextType.HEAL
+				u.healTT = null
+			else if tType == TextType.DOT
+				u.dotTT = null
+
+
+endpackage

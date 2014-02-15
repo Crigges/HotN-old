@@ -1,0 +1,113 @@
+package Menu
+
+	import Setup
+	import PlayerClass
+	import Icon
+	import HashList
+	import Stack
+	import LinkedList
+	import HashMap
+
+	public abstract class Widget
+		element pos
+		element size
+		
+		construct(element pos, element size)
+			this.pos = pos
+			this.size = size
+		
+		abstract function showDirect(player p)
+		
+		abstract function hideDirect(player p)
+			
+		abstract function showFaded(player p)
+		
+		abstract function hideFaded(player p)		
+		
+	public abstract class WidgetEx extends Widget
+		
+		abstract function disable(player p)
+		
+		abstract function enable(player p)
+		
+		construct(element pos, element size)
+			super(pos, size)
+	
+	public abstract class Observable extends WidgetEx
+		WidgetEx content
+		
+		override function showFaded(player p)
+			content.showFaded(p)
+			
+		override function hideFaded(player p)
+			content.hideFaded(p)
+			
+		override function showDirect(player p)
+			content.showDirect(p)
+			
+		override function hideDirect(player p)
+			content.hideFaded(p)
+			
+		override function disable(player p)
+			content.disable(p)
+			
+		override function enable(player p)
+			content.enable(p)
+		
+		abstract function onHit(player p)
+
+		abstract function onDoubleHit(player p)
+		
+		abstract function onTrack(player p)
+			
+		abstract function onUnTrack(player p)
+		
+		construct(WidgetEx w)
+			super(w.pos, w.size)
+			content = w
+			
+	public abstract class Krebs extends WidgetEx
+		Observable c
+		
+		override function disable(player p)
+			c.disable(p)
+		
+		construct(element pos, element size)
+			super(pos, size)
+		
+			
+	public class WindowManager
+		static Stack<Window> array currentWindow
+		static Observable array currentObservable
+		
+		static function openWindow(Window w, player p)
+			skip//if currentWindow[GetPlayerId(p)].
+		
+		static function trackableHit(TrackableEx tr, player p)
+			currentWindow[GetPlayerId(p)].peek().getObervableAt(tr).onHit(p)
+			
+		static function trackableDoubleHit(TrackableEx tr, player p)
+			currentWindow[GetPlayerId(p)].peek().getObervableAt(tr).onDoubleHit(p)
+		
+		static function trackableTrack(TrackableEx tr, player p)
+			var ob = currentWindow[GetPlayerId(p)].peek().getObervableAt(tr)
+			var curr = currentObservable[GetPlayerId(p)]
+			if ob != curr
+				ob.onTrack(p)
+				curr.onUnTrack(p)
+	
+	public class Window
+		LinkedList<Widget> content = new LinkedList<Widget>()
+		HashMap<TrackableEx, Observable> trackMap = new HashMap<TrackableEx, Observable>()
+		
+		function add(Widget g)
+			content.add(g)
+			if g instanceof Observable
+				for int x = g.pos.x to g.pos.x + g.size.x - 1
+					for int y = g.pos.y to g.pos.y + g.size.y - 1
+						trackMap.put(getTrackableAt(element(x, y)), g castTo Observable)
+						
+		function getObervableAt(TrackableEx tr) returns Observable
+			return trackMap.get(tr)
+
+endpackage  

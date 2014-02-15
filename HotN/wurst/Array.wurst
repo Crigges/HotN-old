@@ -1,0 +1,24 @@
+package Array
+
+public class Array<T>
+	static int currentSize = 0
+	static T array content
+	int pos
+	int size
+
+	construct(int size)
+		if currentSize + size > 8191
+			printError("Not enought memory for new created array")
+			destroy this
+			I2S(1 div 0) // return 0
+		else
+			pos = currentSize
+			currentSize += size
+			this.size = size
+			
+	function get(int index) returns T
+		return content[index + pos]
+		
+	function set(int index, T data)
+		content[index + pos] = data
+

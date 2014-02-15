@@ -1,0 +1,105 @@
+package Shield
+
+	import UnitClass
+	import CustomClosureEvents
+	
+	public class ShieldList
+		Shield first = null
+		Shield last = null
+		real shieldSum = 0
+		
+		/** returns the reamaining damage */
+		function damage(real amount, Unit source) returns real
+			if first == null
+				return amount
+			if amount > shieldSum
+				shieldSum = 0
+			else
+				shieldSum -= amount
+			real remainingDmg = amount
+			Shield pos = first
+			while remainingDmg > 0 and pos != null
+				if pos.amount >= remainingDmg 		
+					pos.amount -= remainingDmg
+					return 0
+				else
+					remainingDmg -= pos.amount
+					pos.amount = 0
+					if pos.shieldDestroyed != null
+						pos.shieldDestroyed.fire(source, pos.target)
+					Shield buffer = pos
+					pos = buffer.next
+					destroy buffer
+			return remainingDmg
+			
+				
+					
+		function add(Shield s)
+			shieldSum += s.amount
+			if first == null
+				first = s
+				last = s
+			else
+				real time = s.getRemainingTime()
+				Shield pos = first
+				while pos != null
+					if first.getRemainingTime() > time
+						Shield buffer = pos.prev
+						pos.prev = s
+						buffer.next = s
+						s.prev = buffer
+						s.next = pos
+						break
+					else
+						pos = pos.next
+						
+		ondestroy
+			Shield pos = first
+			while pos != null
+				Shield buffer = pos
+				pos = pos.next
+				destroy buffer
+
+		
+	public class Shield
+		Shield prev
+		Shield next
+		ShieldList referingList
+		timer t = getTimer()
+		real amount
+		Unit target
+		Unit2Event shieldDestroyed = null
+		
+		construct(Unit u, real amount, real time, ShieldList referingList)
+			target = u
+			this.amount = amount
+			this.referingList = referingList
+			t.setData(this castTo int)
+			t.start(time, function onExpire)
+			
+		function registerOnDestroyEvent(Action<Units> action)
+			if shieldDestroyed == null
+				shieldDestroyed = new Unit2Event()
+			shieldDestroyed.addAction(action)
+			
+		function getRemainingTime() returns real
+			return TimerGetRemaining(t)
+			 
+		static function onExpire()
+			destroy GetExpiredTimer().getData() castTo thistype
+			
+		ondestroy
+			referingList.shieldSum -= amount
+			t.release()
+			if shieldDestroyed != null
+				destroy shieldDestroyed
+			if prev != null
+				prev.next = next
+			if next != null
+				next.prev = prev
+			if referingList.first == this
+				referingList.first = next
+			if referingList.last == this
+				referingList.last = prev
+
+endpackage

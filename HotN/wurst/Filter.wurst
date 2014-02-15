@@ -1,0 +1,31 @@
+package Filter
+
+	public unit filterCheckUnit
+	public player filterCheckPlayer
+	
+	public function notDead() returns boolean
+		return GetUnitAbilityLevel(GetFilterUnit(), 'dead') != 1
+			
+	public function notUnit() returns boolean
+		return not IsUnitType(GetFilterUnit(), UNIT_TYPE_UNDEAD) and filterCheckUnit != GetFilterUnit()
+		
+	public function allAllysAndNotUnit() returns boolean
+		if not IsUnitType(GetFilterUnit(), UNIT_TYPE_DEAD) and filterCheckUnit != GetFilterUnit() and IsUnitAlly(GetFilterUnit(), filterCheckPlayer)
+			return true
+		else
+			return false
+			
+	public function allEnemysAndNotUnit() returns boolean
+		if not IsUnitType(GetFilterUnit(), UNIT_TYPE_DEAD) and filterCheckUnit != GetFilterUnit() and IsUnitEnemy(GetFilterUnit(), filterCheckPlayer)
+			return true
+		else
+			return false
+			
+	public function allEnemys() returns boolean
+		if not IsUnitType(GetFilterUnit(), UNIT_TYPE_DEAD) and IsUnitEnemy(GetFilterUnit(), filterCheckPlayer)
+			return true
+		else
+			return false
+	
+	
+endpackage

@@ -1,0 +1,211 @@
+package TextHelper
+
+	import LinkedList
+	import Colors
+	import Char
+	import Texttag
+	import Image
+	import Setup
+	import ImageEx
+	import InstanceBoard
+	
+	constant charLengthFactor = 0.95
+	
+	public function string.toWord() returns Word
+		LinkedList<char> charList = this.toCharList()
+		for char c in charList
+			if c == char(' ')
+				printError("A word is not allowed to contain spaces")
+				destroy charList
+				return null
+		return new Word(this)
+		
+	public function string.toWord(color col) returns Word
+		LinkedList<char> charList = this.toCharList()
+		for char c in charList
+			if c == char(' ')
+				printError("A word is not allowed to contain spaces")
+				destroy charList
+				return null
+		Word w = new Word(this)
+		w.changeColor(col)
+		return w
+	
+	public function string.toTextBlock() returns TextBlock
+		return new TextBlock(parseWords(this))
+		
+	function parseWords(string s) returns LinkedList<Word>
+		LinkedList<char> charList = s.toCharList()
+		LinkedList<Word> wordList = new LinkedList<Word>()
+		string temp = ""
+		for char c in charList
+			if c != char(' ')
+				temp += c.toString()
+			else
+				wordList.add(new Word(temp))
+				temp = ""
+		wordList.add(new Word(temp))
+		destroy charList
+		return wordList
+		
+	public class TextBox
+		constant string boxPath = ""
+		real maxSpace = 0
+		Text content
+		
+		construct(element pos, vec2 size, Text content, OpenTo ot, Layer l)
+			//super(boxPath, pos, size, ot, l)
+			this.content = content
+			
+			
+			
+		function show(player p)
+//			if GetLocalPlayer() == p
+//				box.setPos(pos)
+//				box.showForPlayer(p)
+	
+	public class Text
+		LinkedList<TextBlock> textBlocks = null
+		real textLength = 0
+		
+		construct()
+			textBlocks = new LinkedList<TextBlock>()
+			
+		construct(TextBlock firstTextBlock)
+			textBlocks = new LinkedList<TextBlock>()
+			textBlocks.add(firstTextBlock)
+			textLength += firstTextBlock.wordLength
+			
+		construct(LinkedList<TextBlock> textBlocks)
+			this.textBlocks = textBlocks
+			for TextBlock tb in textBlocks
+				textLength += tb.wordLength
+				
+		function add(TextBlock tb)
+			textBlocks.add(tb)
+			
+			
+		function toString() returns string
+			string temp = ""
+			for TextBlock b in textBlocks
+				temp += b.toString()
+				temp += "\n"
+			return temp
+	
+	public class TextBlock
+		LinkedList<Word> words = null
+		real wordLength = 0
+		color col = color(255, 255, 255)
+		int textSize = 10
+		
+		construct()
+			words = new LinkedList<Word>()
+			
+		construct(Word firstWord)
+			words = new LinkedList<Word>()
+			words.add(firstWord)
+			
+		construct(LinkedList<Word> words)
+			this.words = words
+			for Word w in words
+				wordLength += w.length
+				
+		function add(LinkedList<Word> wordList)
+			words.addAll(wordList)
+			for Word w in words
+				wordLength += w.length
+			
+		function add(Word word)
+			words.add(word)
+			wordLength += word.length
+			
+		function changeContent(Word whichWord, Word newWord)
+			if not words.replace(whichWord, newWord)
+				printError("Replaceing was not Sucessful")
+				
+		function changeColor(color newColor)
+			col = newColor
+			
+		function setTextSize(int newSize)
+			textSize = newSize
+			
+		function op_plus(Word w) returns TextBlock
+			words.add(w)
+			return this
+			
+		function op_minus(Word w) returns TextBlock
+			words.remove(w)
+			return this
+			
+		function op_plus(TextBlock tb) returns TextBlock
+			this.add(tb.words)
+			destroy tb
+			return this
+			
+		function toString() returns string
+			string final = ""
+			color lastColor = color(-1, -1, -1)
+			for Word w in words
+				if w.hasColor 
+					if w.col != lastColor
+						final += "|r"
+						final += w.col.toColorString()
+						lastColor = w.col
+				else
+					if col != lastColor
+						final += "|r"
+						final += col.toColorString()
+						lastColor = col
+				final += w.w
+				final += " "
+			return final
+				
+			
+			
+		ondestroy
+			if words != null
+				destroy words
+		
+
+	class Word
+		use ShowInstances
+		string w = ""
+		real length = 0
+		boolean hasColor = false
+		color col = color(255, 255, 255)
+		private static LinkedList<Word> allWords = new LinkedList<Word>()
+		
+		override static function classname() returns string
+			return "Word"
+			
+		private construct(string word)
+			LinkedList<char> cList = word.toCharList()
+			for char c in cList
+				length += c.getWidth()
+			this.w = word
+			
+		function changeColor(color newColor)
+			col = newColor
+			hasColor = true
+			
+		function removeColor()
+			hasColor = false
+			
+		function op_plus(TextBlock tb)
+			tb.words.addtoStart(this)
+			
+	
+	init
+		skip
+//		TextBlock t = null
+//		Word w1 = "TestWort".toWord()
+//		Word w2 = "WortTest".toWord()
+//		TextBlock b = "".toTextBlock()
+//		print(b.wordLength.toString())
+//		w1.changeColor(color(255, 0, 0))
+//		w2.changeColor(color(0, 255, 0))
+//		b.changeColor(color(0, 0, 255))
+//		createTTEx(vec3(0, 0, 0), b.toString(), 5, colorA(255, 255, 255, 0))
+//		createTTEx(vec3(b.wordLength * 0.0425, 0, 0), "new", 10, colorA(255, 255, 255, 0))
+			
+endpackage

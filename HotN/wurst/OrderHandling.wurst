@@ -1,0 +1,116 @@
+package OrderHandling
+
+	import UnitClass
+	import HeroClass
+	import InstanceBoard
+
+	//OrderIds
+	public constant int smartId 				= 851971
+	public constant int stopId 					= 852529 // absorb
+	public constant int attackId 				= 852662 // acidbomb
+	public constant int scoreboardId 			= 852185 // acolyteharvest
+	public constant int exitDetectId 			= 852131 // ambush
+	public constant int skillMenuId 			= 852131 // ambush
+	
+	//SpellIds
+	public constant int stopSpell 				= 'stop'
+	public constant int attackSpell 			= 'attk'
+	public constant int scoreboardSpell 		= 'scor'
+	public constant int exitDetectSpell 		= 'exit'
+	
+	public constant int qSpellNoTarget 			= 'QSP0'
+	public constant int qSpellUnitTarget 		= 'QSP1'
+	public constant int qSpellPointTarget 		= 'QSP2'
+	public constant int qSpellUnitPointTarget 	= 'QSP3'
+	public constant int wSpellNoTarget 			= 'WSP4'
+	public constant int wSpellUnitTarget 		= 'WSP1'
+	public constant int wSpellPointTarget 		= 'WSP2'
+	public constant int wSpellUnitPointTarget 	= 'WSP3'
+	public constant int eSpellNoTarget 			= 'ESP0'
+	public constant int eSpellUnitTarget 		= 'ESP1'
+	public constant int eSpellPointTarget 		= 'ESP2'
+	public constant int eSpellUnitPointTarget 	= 'ESP3'
+	public constant int rSpellNoTarget 			= 'RSP0'
+	public constant int rSpellUnitTarget 		= 'RSP1'
+	public constant int rSpellPointTarget 		= 'RSP2'
+	public constant int rSpellUnitPointTarget 	= 'RSP3'
+	public constant int dSpellNoTarget 			= 'DSP0'
+	public constant int dSpellUnitTarget 		= 'DSP1'
+	public constant int dSpellPointTarget 		= 'DSP2'
+	public constant int dSpellUnitPointTarget 	= 'DSP3'
+	public constant int fSpellNoTarget 			= 'FSP0'
+	public constant int fpellUnitTarget 		= 'FSP1'
+	public constant int fSpellPointTarget 		= 'FSP2'
+	public constant int fSpellUnitPointTarget 	= 'FSP3'
+
+	public module GetOrders
+		static trigger orderDetect = CreateTrigger()..addAction(function callOnOrder)
+		
+		static function addOrderDetection(unit u)
+			orderDetect.registerUnitEvent(u, EVENT_UNIT_ISSUED_ORDER)
+			orderDetect.registerUnitEvent(u, EVENT_UNIT_ISSUED_POINT_ORDER)
+			orderDetect.registerUnitEvent(u, EVENT_UNIT_ISSUED_TARGET_ORDER)
+		
+		static function callOnOrder()
+			orderDetect.disable()
+			GetTriggerUnit().getUserData() castTo thistype.onOrder(vec2(GetOrderPointX(), GetOrderPointY()), GetOrderTargetUnit(), GetIssuedOrderId())
+			orderDetect.enable()
+			
+		abstract function onOrder(vec2 pos, unit target, int orderId)
+		
+	public abstract class Order
+		use ShowInstances
+		int orderId
+		
+		override static function classname() returns string
+			return "Order"
+		
+		abstract function issueToUnit(unit u) returns boolean
+		
+			
+	public class MoveOrder extends Order
+		static constant moveOrderId = 851986
+		vec2 pos
+		vec2 lastPos = vec2(0, 0)
+		
+		construct(vec2 pos)
+			this.orderId = orderId
+			this.pos = pos
+		
+		override function issueToUnit(unit u) returns boolean
+			Hero.orderDetect.disable()
+			IssuePointOrderById(u, moveOrderId, pos.x, pos.y)
+			Hero.orderDetect.enable()
+			vec2 currentPos = u.getPos()
+			boolean b = currentPos == lastPos
+			lastPos = currentPos
+			return b
+			
+	public class AttackOrder extends Order
+		static constant atkOrderId = 852541
+		unit target
+		
+		construct(unit target)
+			this.orderId = orderId
+			this.target = target
+		
+		override function issueToUnit(unit u) returns boolean
+			Hero.orderDetect.disable()
+			IssueTargetOrderById(u, atkOrderId, target)
+			Hero.orderDetect.enable()
+			return GetUnitAbilityLevel(u, 'dead') == 1
+			
+//	public class CaptureOrder extends Order
+//		ControlPoint cp
+//		
+//		construct(ControlPoint cp)
+//			this.cp = cp
+//		
+//		override function issueToUnit(unit u) returns boolean
+//			Hero h = u.getUserData() castTo Hero
+//			Hero.orderDetect.disable()
+//			cp.conquerOrderGet(h)
+//			Hero.orderDetect.enable()
+//			return h.ct != null and h.ct.captures
+
+endpackage

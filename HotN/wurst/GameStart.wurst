@@ -1,0 +1,460 @@
+package GameStart
+//Do NOT import this into any package!!!
+	import Buff
+	import Char
+	import Dot
+	import Filter
+	import HashList
+	import FloatingText
+	import HeroClass
+	import ItemClass
+	import Helper
+	import UnitClass
+	import PreloadHandler
+	import Image
+	import Trackable
+	import Setup
+	import Bonus
+	import TimedEffect
+	import AuraHelper
+	import Missle
+	import Fx
+	import ControlPoint
+	import HandleCounter
+	import LinkedList
+	import ObjectIds
+	import Colors
+	import PlayerClass
+	import Terrain
+	import Texttag
+	import CustomBar
+	import TrackableEventHandler
+	import Cooldown
+	import Stack
+	import Menu
+	import ImageEx
+	import HeroBar
+	import OrderHandling
+	import DebugFile
+	import ObjectId
+	import Spell
+	import SampleSpells
+	
+	trigger testt = CreateTrigger()..addAction(function setCallLimit)
+	Bonus lastBon = null
+	real hp = 0
+	int testc = 0
+	int testi = 0
+	real ttSize = 0.0300
+	real testr = 0
+	string tests = null
+	Spell testSpell = null
+	string testChar = ""
+	texttag testTag = createTTEx(vec3(0, 0, 0), "||||||||||||||||||||", 10, colorA(255, 255, 255, 255))
+	unit testu // = CreateUnit(Player(0), 'hpea', 0, 0, 0)
+	group testg = CreateGroup()
+	int progress = 0
+	int recursionCounter = 0
+	destructable testd = CreateDestructable('Icon', menuStart.x + 20, menuStart.y + 10, 0, 1, 1)
+	int callLimit = 1
+	HashList<Unit> tList = new HashList<Unit>()
+	LinkedList<Unit> lList = new LinkedList<Unit>()
+	
+	init
+		for int i = 0 to 11
+			if GetPlayerSlotState(Player(i)) == PLAYER_SLOT_STATE_PLAYING and GetPlayerController(Player(i)) == MAP_CONTROL_USER
+				allPlayers.add(Player(i))	
+				SetPlayerAbilityAvailable(Player(i), 'ZAph', false)	
+				SetPlayerAbilityAvailable(Player(i), 'ZAat', false)	
+				SetPlayerAbilityAvailable(Player(i), 'ZAst', false)	
+				SetPlayerAbilityAvailable(Player(i), 'ZAsc', false)
+		//Dot
+		getTimer().startPeriodic(0.5, function Dot.loopList)
+		//UnitClass
+		getTimer().startPeriodic(0.03, function callKnockback)
+		//Test Zeug
+		//for int i = 1 to 10
+		//	getTimer().startPeriodic(0.1, function tTTest)
+		//getTimer().startPeriodic(1., function printRegen)
+		trigger blub = CreateTrigger()
+		blub.addAction(function camTest)
+		blub.registerPlayerChatEvent(Player(0), "", false)
+//		new ControlPoint(vec2(2000, 0), Player(1))
+//		new ControlPoint(vec2(-2000, 0), Player(0))
+		EnablePreSelect(false, false)
+		//new Hero(CreateUnit(Player(0), 'H001', 0, 0, 0), 20, 100, 50, 200, 'ARHE', 100)
+//		h.addDot(last, 10000, 10)
+//		last.addDot(h, 10000, 10)
+		//last.u.addAbility('ZA01')
+		getTimer().startPeriodic(0.1, function forceKey)
+//		last castTo Hero.animationIndex = 2
+//		last castTo Hero.animationIntervall = 1
+//		last castTo Hero.hasPeriodicAnimation = true
+//		last castTo Hero.animationSpeed = 70
+//		last castTo Hero.captureOffsetDistance = 90
+		for player p in allPlayers
+			new Player(p)
+		//lastp.h = last castTo Hero
+//		createImage("war3mapImported\\background.blp", vec2(0, 0), 100, 100, Layer.L1).show()
+//		testImg = new Image("war3mapImported\\SorvButton.blp", element(20, 10), vec2(8, 2), OpenTo.TOP_RIGHT, Layer.L1)
+		for int i = 1 to 1
+			Hero h = new Hero(CreateUnit(Player(0), 'H001', 0, 0, 0), 20, 100, 50, 150, 'ARHE', 100)
+			h.animationIndex = 7
+			h.captureOffsetDistance = 35
+			h.captureOffsetZ = 20
+			h.captureEffectAttachmentPoint = "weapton"
+			h.captureEffect = "Abilities\\Weapons\\FarseerMissile\\FarseerMissile.mdl"
+			testSpell = new TestSpell1Setup(h, SpellType.Q)
+			//h.addStun(20)
+//			new Unit(CreateUnit(Player(0), 'hrif', -2000, 0, 0), 20, 100, 50, 200, 100)
+			//IssuePointOrder(last.u, "attack", 2000, 0)
+			//last.u.addAbility('tttt')
+			//SetHeroLevel(last.u, 10, true)
+			//last.bonusAgi(10)
+			//last.bonusAttack(10)
+			//last.bonusManaTimed(100, 5)
+			//last.bonusManaPerTimed-(50, 10)
+			//new Unit(CreateUnit(Player(1), 'hfoo', 0, 0, 0), 6, 100, 50, 70, 100)
+			//new Dot(last, last, 300, 60.)
+			//var b1 = new Buff(last.u, 'Bslo', 'A000', 15.)
+			//b1.addEffectTimed("Abilities\\Spells\\Items\\TomeOfRetraining\\TomeOfRetrainingCaster.mdl" , "origin", 1.5)
+		//new Unit(CreateUnit(Player(0), 'hsor', 0, 0, 0), 20, 100, 50, 70, 100)
+		//last.u.addAbility('AU_1')
+		//testi = GetHandleId(testu)
+		testt.registerPlayerChatEvent(Player(0), "", false)
+		TriggerRegisterPlayerEventEndCinematic(CreateTrigger()..addAction(function onEsc), Player(0))
+		//for int i = 1 to 500
+		//	Aura a = new Aura(last, 500, 'B000', null, 0.1)
+		//a.registerEnterEvent(function enter)
+		//a.registerLeaveEvent(function leave)
+		//trackable tr = CreateTrackable("320x320Track.mdl", 0, 0, 0)
+		//trigger t = CreateTrigger()
+		//t.addAction(function track)
+		//t.registerTrackableTrackEvent(tr)
+		//CreateUnit(Player(0), 'hpea', 500, 0, 0)
+		
+		//---------------------------------------------//
+		//-------------Preload Stuff-------------------//
+		//---------------------------------------------//
+		
+		Preload.startPreload()
+		
+		getTimer().startPeriodic(0.1, function textTag)
+		
+		//getTimer().startPeriodic(0.05, function noOpLimit)
+		
+		//---------------Attack Bons-------------------//
+		
+		
+	function textTag()
+		skip
+//		ttSize -= 0.0001
+//		SetTextTagText(testTag, "||||||||||||||||||||||||||||||||", ttSize)
+//		print(ttSize.toString())
+		
+	function noOpLimit()
+		Preload.preloadStatus++
+		if Preload.preloadStatus >= 83
+			GetExpiredTimer().release()
+		print("nooplimit" + Preload.preloadStatus.toString())
+		
+	//========================================================================================================================================================================================//
+	//========================================================================================================================================================================================//
+	//========================================================================================================================================================================================//
+		
+	class Preload
+		static constant real maxProgress = 20.33
+		static real progress = 0
+		static int preloadStatus = 0
+		static SimpleEvent preloadEnd = new SimpleEvent()
+		static boolean showProgress = false
+		//Trackables
+		static int trackCounter = 0
+		static trigger trackTrig = CreateTrigger()
+		static element trackPos = element(1, 1)
+		//Abilitys
+		static unit preloadDummy = CreateUnit(DUMMY_PLAYER, 'H001', 0, 0, 0)
+		static int abiCounter = 0
+		static int itemCounter = 0
+		
+		static function startPreload()
+			getTimer().start(0.0, function Preload.preload)
+			getTimer().start(1.0, function createBackground)
+		
+		static function preload()
+			real check = -1
+			switch preloadStatus
+				case 0
+					check = createTrackables()
+				case 1
+					check = preloadAbilitys()
+				case 2
+					check = createItems()
+				case 3
+					check = disableAbilitys()
+				case 4
+					ClearTextMessages()
+					print("Preload Done")
+					GetExpiredTimer().release()
+					preloadDummy.remove()
+					preloadEnd.fire()
+					destroy preloadEnd
+					return
+				default
+					printError("Invaild preload Status")
+			if check == -1
+				printError("An error while Preloading has ocurred")
+			else if check == 0
+				preloadStatus++
+				GetExpiredTimer().start(0.05, function preload)
+				progress += 0.05
+			else
+				GetExpiredTimer().start(check, function preload)
+				progress += check
+			if showProgress
+				ClearTextMessages()
+				print("Loaded: " + (100 * (progress / maxProgress)).toString() + "%")
+			
+					
+		static function createTrackables() returns real
+			for int i1 = 1 to 10
+					trackCounter++
+					if trackCounter <= 968
+						if not trackBlacklist.hasBoolean(trackPos.x, trackPos.y)
+							vec2 trackVec = vec2(menuStart.x + trackPos.x, menuStart.y + trackPos.y)
+							setTrackableAt(trackPos, new TrackableEx(trackVec, "track1.mdl")
+								..onClick((TrackableEx tr, player p) -> WindowManager.trackableHit(tr, p))
+								..onDoubleClick((TrackableEx tr, player p) -> WindowManager.trackableDoubleHit(tr, p))
+								..onTrack((TrackableEx tr, player p) -> WindowManager.trackableTrack(tr, p)))
+						if trackPos.y >= menuHeight
+							trackPos.y = 1
+							trackPos.x++
+						else
+							trackPos.y++
+					else
+						return 0.
+			return 0.01
+			
+		static function preloadAbilitys() returns real
+			preloadDummy.addAbility(preloadAbi.get(abiCounter))
+			if GetUnitAbilityLevel(preloadDummy, preloadAbi.get(abiCounter)) == 0
+				print("The Ability " + idInteger2IdString(preloadAbi.get(abiCounter)) + " was not sucessfully loaded")
+				return -1.
+			if abiCounter >= preloadAbi.getSize() - 1
+				return 0.
+			else
+				SetUnitAbilityLevel(preloadDummy, preloadAbi.get(abiCounter), 100)
+				abiCounter++
+				return (abilityLoadTime + GetUnitAbilityLevel(preloadDummy, preloadAbi.get(abiCounter - 1)) * abilityLoadTimeLevelBonus)
+		
+		static function createItems() returns real
+			permAttackTome[itemCounter] = CreateItem(permAttackTomeId.get(itemCounter), recycleGraveyard.x, recycleGraveyard.y)
+			if itemCounter >= permAttackTomeId.getSize() - 1
+				return 0.
+			else
+				itemCounter++
+				return 0.05
+				
+		static function disableAbilitys() returns real
+			ObjId id = new ObjId()
+			id.setId2('S')
+			id.setId3('P')
+			for int i1 = 0 to 5
+				id.setId1(i1 castTo SpellType.toId())
+				for int i2 = 0 to 3
+					id.setId4(i2.toString())
+					for int i3 = 0 to 11
+						SetPlayerAbilityAvailable(Player(i3), id.getId(), false)
+			return 0.
+				
+				
+		static function createBackground()
+			for int i1 = 0 to 4
+				for int i2 = 0 to 2
+					createImage("war3mapImported\\background.blp", vec2(menuStart.x + 2.5 + i1 * 9.9, menuStart.y + 2.5 + i2 * 9.9), 10, 10, Layer.L3).show()
+					
+					
+	init
+		Preload.preloadEnd.addAction((int i) -> afterPreload())
+					
+	//========================================================================================================================================================================================//
+	//========================================================================================================================================================================================//
+	//========================================================================================================================================================================================//
+	
+	function forceKey()
+		//ForceUIKey("I")
+		//ForceUIKey("L")
+		
+	function charMessung()
+		skip//print(vec2(GetOrderPointX(), GetOrderPointY()).toString())
+//		if testr != 0
+//			print(SquareRoot((testr - GetOrderPointX()).squared()).toString())
+//			testr = 0
+//		else
+//			testr = GetOrderPointX()
+		
+	function trackRaster()
+		trackable t = GetTriggeringTrackable()
+	
+//	public function trackHit()
+//		print("Der Buttom wurde von " + GetPlayerName(getEvent().triggerPlayer.p) + " angeklickt")
+//		
+//	public function trackDoubleHit()
+//		print("Der Buttom wurde von " + GetPlayerName(getEvent().triggerPlayer.p) + " doppelgeklickt")
+//		
+//	public function trackTrack()
+//		print("Der Buttom wurde von " + GetPlayerName(getEvent().triggerPlayer.p) + " observiert")
+//		
+//	public function trackUnTrack()
+//		print("Der Buttom wird nichtmehr von " + GetPlayerName(getEvent().triggerPlayer.p) + " observiert")
+		
+	function afterPreload()
+		
+		
+		
+	function camTest()
+		last.manaTT(1)
+		last.dodgeTT()
+		last.goldTT(1, Player(0))
+		last.normalTT(1)
+		
+	function printRegen()
+		
+		real buffer = last.u.getState(UNIT_STATE_MANA)
+		print((buffer - hp).toString())
+		hp = buffer
+		
+	function leave()
+		testc--
+		print(testc.toString())
+		
+	function enter()
+		testc++
+		print(testc.toString())
+		
+	function setCallLimit()
+		string chatString = GetEventPlayerChatString()
+		if SubString(chatString, 0, 1) == "a"
+			string cuttet = SubString(chatString, 1, 5)
+			SetUnitAnimationByIndex(last.u, S2I(cuttet))
+		switch chatString
+//			case "showD"
+//				testImg.showDirect(Player(0))
+//				testImg.showDirect(Player(1))
+//			case "hideD"
+//				testImg.hideDirect(Player(0))
+//				testImg.hideDirect(Player(1))
+//			case "showF"
+//				testImg.showFaded(Player(0))
+//				testImg.showFaded(Player(1))
+//			case "hideF"
+//				testImg.hideFaded(Player(0))
+//				testImg.hideFaded(Player(1))
+//			case "dis"
+//				testImg.disable(Player(0))
+//			case "en"
+//				testImg.enable(Player(0))
+//			case "grow"
+//				testImg.grow(Player(0))
+//			case "srink"
+//				testImg.srink(Player(0))
+			case "size+"
+				//testImg.setRealSize(testImg.realSize + (testImg.size * 1.05), Player(0))
+			case "size-"
+				//testImg.setRealSize(testImg.realSize + (testImg.size * 0.95), Player(0))
+			case "drag t t"
+				EnableDragSelect(true, true)
+			case "drag t f"
+				EnableDragSelect(true, false)
+			case "drag f t"
+				EnableDragSelect(false, true)
+			case "drag f f"
+				EnableDragSelect(false, false)
+			case "pre t t"
+				EnablePreSelect(true, true)
+			case "pre t f"
+				EnablePreSelect(true, false)
+			case "pre f t"
+				EnablePreSelect(false, true)
+			case "pre f f"
+				EnablePreSelect(false, false)
+			case "sel t t"
+				EnableSelect(true, true)
+			case "sel t f"
+				EnableSelect(true, false)
+			case "sel f t"
+				EnableSelect(false, true)
+			case "sel f f"
+				EnableSelect(false, false)
+			case "last"
+				SelectUnitForPlayerSingle(last.u, Player(0))
+			case "hp+"
+				last.bonusLife(10)
+			case "hp++"
+				last.bonusLife(100)
+			case "hp+++"
+				last.bonusLife(1000)
+			case "hp-"
+				last.bonusLife(-10)
+			case "hp--"
+				last.bonusLife(-100)
+			case "hp---"
+				last.bonusLife(-1000)
+			case "rev"
+				last castTo Hero.revive(vec2(100, 100))
+			case "shield1"
+				last.addShield(10, 10)
+			case "shield2"
+				last.addShield(100, 10)
+			case "shield3"
+				last.addShield(1000, 10)
+			case "canMove f"
+				last castTo Hero.acceptOrders = false
+			case "canMove t"
+				last castTo Hero.acceptOrders = true
+			case "swap"
+				SetPlayerAbilityAvailable(Player(0), 'A996', false)
+				SetPlayerAbilityAvailable(Player(0), 'A999', true)
+			case "bswap"
+				SetPlayerAbilityAvailable(Player(0), 'A996', true)
+				SetPlayerAbilityAvailable(Player(0), 'A999', false)
+			case "slot"
+				SetPlayerAbilityAvailable(Player(0), 'scor', false)
+			case "key"
+				print(GetLocalizedHotkey("ESC").toString())
+			case "abi"
+				print(GetUnitAbilityLevel(last.u, 'scor').toString())
+				SetUnitAbilityLevel(last.u, 'scor', 2)
+				print(GetUnitAbilityLevel(last.u, 'scor').toString())
+			case "cast"
+				IssueInstantPointOrder(last.u, "ancestralspirit", 0, 0, null)
+			case "cd"
+				cd()
+				
+		//SetUnitTimeScalePercent(last.u, S2R(GetEventPlayerChatString()))
+		//testr = S2R(GetEventPlayerChatString())
+		
+	function onEsc()
+		print("onEsc")
+//		print(GetUnitCurrentOrder(last.u).toString())
+		
+	function stopAnimation()
+		SetUnitTimeScalePercent(last.u, 0)
+		
+	function setCallLimit1()
+		callLimit = S2I(GetEventPlayerChatString())
+		
+	function tTTest()
+		for int i = 1 to callLimit
+			for Unit u in tList
+		print(callLimit.toString())
+		//last.bonusAttack(1.)
+		//last.bonusArmor(-1.)
+		//last.bonusAttackspeed(-1.)
+		//last.bonusLifeReg(0.5)
+		//last.addAttack(10)
+		//last.bonusLife(-10)
+		//testc += 1
+		//print(testc.toString())
+		
+endpackage

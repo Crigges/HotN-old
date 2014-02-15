@@ -1,0 +1,9 @@
+package EasyTimer
+
+public module ClassTimer
+	
+	function newClassTimer() returns timer
+		return getTimer()..setData(this castTo int)
+
+	static function getTimerObj() returns thistype
+		return GetExpiredTimer().getData() castTo thistype

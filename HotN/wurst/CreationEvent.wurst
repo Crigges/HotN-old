@@ -1,0 +1,23 @@
+package CreationEvent
+
+	import Setup
+	
+	public module CreationEvent
+		private static constant Event<thistype> create = new Event<thistype>()
+		private static constant Event<thistype> dest = new Event<thistype>()
+		
+		static function onCreation(Action<thistype> action) returns Action<thistype>
+			create.addAction(action)
+			return action
+			
+		static function onDestroy(Action<thistype> action) returns Action<thistype>
+			dest.addAction(action)
+			return action
+			
+		construct()
+			create.callActions(this)
+			
+		ondestroy
+			dest.callActions(this)
+
+endpackage

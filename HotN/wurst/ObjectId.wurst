@@ -1,0 +1,60 @@
+package ObjectId
+
+	import Setup
+	import Char
+	
+	public class ObjId
+		int id1
+		int id2
+		int id3
+		int id4
+		
+		construct(string s)
+			id1 = char(s.charAt(0)).toInt() * 16777216
+			id2 = char(s.charAt(1)).toInt() * 65536
+			id3 = char(s.charAt(2)).toInt() * 256
+			id4 = char(s.charAt(3)).toInt() 
+			
+		construct()
+			skip
+			
+			
+		function setId1(string char1)
+			id1 = char(char1.charAt(0)).toInt() * 16777216
+			
+		function setId2(string char2)
+			id2 = char(char2.charAt(1)).toInt() * 65536
+			
+		function setId3(string char3)
+			id3 = char(char3.charAt(2)).toInt() * 256
+			
+		function setId4(string char4)
+			id4 = char(char4.charAt(3)).toInt() 
+			
+		function setId1(int char1)
+			id1 = char1 * 16777216
+			
+		function setId2(int char2)
+			id2 = char2 * 65536
+			
+		function setId3(int char3)
+			id3 = char3 * 256
+			
+		function setId4(int char4)
+			id4 = char4
+			
+		function getId() returns int
+			return id1 + id2 + id3 + id4
+			
+		function toString() returns string
+			string result = ""
+			int remainingValue = getId()
+			int charValue
+			for int byteno = 0 to 3
+				charValue = ModuloInteger(remainingValue, 256)
+				remainingValue = remainingValue div 256
+				result = SubString(charMap, charValue, charValue + 1) + result
+			return result
+			
+
+endpackage

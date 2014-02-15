@@ -1,0 +1,97 @@
+package RockThrow	
+	import UnitClass
+	import Terrain
+	
+	init	
+		skip//registerSpellCastEvent('A999', function spellStartRockThrow)
+
+	function spellStartRockThrow()
+		print("casted")
+			
+	class RockThrow
+		
+		unit dummy
+		unit u
+		real dist
+		real range
+		real speed
+		real distd
+		real x
+		real y
+		real z
+		real grav
+		real currentZ
+		real ang
+		real damage
+		integer i
+		integer c
+		integer level
+		timer t
+		group g
+		effect e
+		
+		
+		construct(unit u, real x, real y)
+			c = 0
+			speed = 20
+			dist = 50
+			range = 400
+			this.u = u
+			this.x = x
+			this.y = y
+			i = R2I(distanceBetweenCoords(u.getX(), u.getY(), x, y) / speed)
+			this.x = 1//polarProjectionXD(u.getX(), speed, 1)//angleBetweenCoordsD(u.getX(), u.getY(), x, y))
+			this.y = 1//polarProjectionYD(u.getY(), speed, 1)//angleBetweenCoordsD(u.getX(), u.getY(), x, y))
+			dummy = CreateUnit(GetOwningPlayer(u), 'h003', u.getX(), u.getY(), 1)//angleBetweenCoordsD(u.getX(), u.getY(), x, y))
+			this.x = this.x - u.getX()
+			this.y = this.y - u.getY()
+			t = getTimer()
+			t.setData(this castTo int)
+			t.startPeriodic(0.03, function rockMoveCall) 
+			real dif = getTerrainZ(u.getX(), u.getY()) - getTerrainZ(x, y)
+			SetUnitFlyHeight(dummy, getTerrainZ(dummy.getX(), dummy.getY()) + 75.,0)
+			currentZ = getTerrainZ(dummy.getX(), dummy.getY()) + 75.
+			grav = 2 / (1 + (distanceBetweenCoords(u.getX(), u.getY(), x, y) / 750))
+			z = ((i * grav) / 2) - ((dif / i) + (75 / i))
+			UnitAddAbility(dummy, 'Amrf')
+			UnitRemoveAbility(dummy, 'Amrf')
+			UnitAddAbility(dummy, 'Arav')
+			UnitRemoveAbility(dummy, 'Arav')
+			SetUnitPathing(dummy, false)
+			
+		static function rockMoveCall()
+			timer t = GetExpiredTimer()
+			integer i = t.getData()
+			RockThrow tempObject = i castTo RockThrow
+			tempObject.rockMove()
+				
+						
+		function rockMove()
+			i--
+			c = c+1
+			//dummy.setX(dummy.getX() + x)
+			//dummy.setY(dummy.getY() + y)
+			SetUnitPosition(dummy, dummy.getX() + x, dummy.getY() + y)
+			SetUnitFacing(dummy, I2R(c))
+			currentZ = currentZ + z
+			real terrainZ = getTerrainZ(dummy.getX(), dummy.getY())
+			SetUnitFlyHeight(dummy, currentZ - terrainZ,0)
+			z = z - grav
+			if i <= 0
+				e = AddSpecialEffect("Abilities\\Spells\\Orc\\WarStomp\\WarStompCaster.mdl", dummy.getX(), dummy.getY())
+				e.destr()
+				g = CreateGroup() // hier wir ne neue Gruppe creiert
+				GroupEnumUnitsInRange(g, dummy.getX(), dummy.getY(), range, null)
+				for unit u in g
+					distd = 1- distanceBetweenCoords(u.getX(), u.getY(), dummy.getX(),dummy.getY())/range
+					ang = 1//angleBetweenCoordsD(dummy.getX(), dummy.getY(), u.getX(), u.getY())
+					x = 1//polarProjectionXD( u.getX(), dist*distd, ang ) - u.getX()
+					y = 1//polarProjectionYD ( u.getY(), dist*distd, ang ) - u.getY()
+					Unit rocky = GetUnitUserData(u) castTo Unit
+					rocky.addKnock(x,y)
+					rocky.lastKnocker = this.u.getUserData()castTo Unit
+				DestroyGroup(g)
+				RemoveUnit(dummy)
+				t.release()
+
+endpackage

@@ -1,0 +1,648 @@
+package Bonus
+	import UnitClass
+	import HeroClass
+	import Setup
+	
+	
+	public abstract class Bonus
+		
+		abstract function remove()
+		
+		ondestroy
+			remove()
+		
+//	public class Bonus
+//		private Unit u
+//		private real amount
+//		private BonType bon
+//		private timer t
+//		private boolean destroyBlocker = false
+//		
+//		construct(Unit u, real amount, real duration, BonType bon)
+//			
+//			switch bon
+//				case bon.ATTACK
+//					u.bonusAttack += roundReal(amount)
+//					u.updateState(Update.ATTACK)
+//						
+//				case bon.ATTACK_PER
+//					u.bonusAttackPer += roundReal(amount)
+//					u.updateState(Update.ATTACK)
+//						
+//				case bon.ARMOR
+//					u.bonusArmor += roundReal(amount)
+//					u.updateState(Update.ARMOR)
+//					
+//				case bon.ARMOR_PER
+//					u.bonusArmorPer += roundReal(amount)
+//					u.updateState(Update.ARMOR)
+//						
+//				case bon.ATTACKSPEED
+//					u.bonusAttackspeed += roundReal(amount)
+//					u.updateState(Update.ATTACKSPEED)
+//					
+//				case bon.MOVESPEED
+//					u.bonusMovespeed += roundReal(amount)
+//					u.updateState(Update.MOVESPEED)
+//					
+//				case bon.MOVESPEED_PER
+//					u.bonusMovespeedPer += roundReal(amount)
+//					u.updateState(Update.MOVESPEED)
+//					
+//				case bon.LIFE
+//					u.bonusLife += amount
+//					u.updateState(Update.LIFE)
+//					
+//				case bon.LIFE_PER
+//					u.bonusLifePer += amount
+//					u.updateState(Update.LIFE)
+//					
+//				case bon.LIFE_REG
+//					u.bonusLifeReg += amount
+//					u.updateState(Update.LIFE_REG)
+//					
+//				case bon.LIFE_REG_PER
+//					u.bonusLifeRegPer += amount
+//					u.updateState(Update.LIFE_REG)
+//					
+//				case bon.MANA
+//					u.bonusMana += amount
+//					u.updateState(Update.MANA)
+//				
+//				case bon.MANA_PER
+//					u.bonusManaPer += amount
+//					u.updateState(Update.MANA)
+//					
+//				case bon.MANA_REG
+//					u.bonusManaReg += amount
+//					u.updateState(Update.MANA_REG)
+//					
+//				case bon.MANA_REG_PER
+//					u.bonusManaRegPer += amount
+//					u.updateState(Update.MANA_REG)
+//					
+//				case bon.CRITCHANCE
+//					u.critchance += amount
+//					u.updateState(Update.CRITCHANCE)
+//					
+//				case bon.CRITDAMAGE
+//					u.critdamage += amount
+//					u.updateState(Update.CRITDAMAGE)
+//					
+//				case bon.EVADE
+//					u.evade += amount
+//					u.updateState(Update.EVADE)
+//					
+//				case bon.RESISTANCE
+//					u.bonusResistance += amount
+//					u.updateState(Update.RESISTANCE)
+//					
+//				case bon.RESISTANCE_PER
+//					u.bonusResistancePer += amount
+//					u.updateState(Update.RESISTANCE)
+//					
+//				case bon.HITCHANCE
+//					u.hitchance += amount
+//					u.updateState(Update.HITCHANCE)
+//					
+//				case bon.REDUCTION
+//					u.normalReduction += amount
+//					u.magicReduction += amount
+//					u.updateState(Update.NORMAL_REDUCTION)
+//					u.updateState(Update.MAGIC_REDUCTION)
+//					
+//				case bon.NORMAL_REDUCTION
+//					u.normalReduction += amount
+//					u.updateState(Update.NORMAL_REDUCTION)
+//					
+//				case bon.MAGIC_REDUCTION
+//					u.magicReduction += amount
+//					u.updateState(Update.MAGIC_REDUCTION)
+//					
+//				case bon.DEFLECTION
+//					u.normalDeflection += amount
+//					u.magicDeflection += amount
+//					u.updateState(Update.NORMAL_DEFLECTION)
+//					u.updateState(Update.MAGIC_DEFLECTION)
+//				
+//				case bon.NORMAL_DEFLECTION
+//					u.normalDeflection += amount
+//					u.updateState(Update.NORMAL_DEFLECTION)
+//					
+//				case bon.MAGIC_DEFLECTION
+//					u.magicDeflection += amount
+//					u.updateState(Update.MAGIC_DEFLECTION)
+//					
+//				case bon.BONUS_DAMAGE
+//					u.bonusDamage += amount
+//					u.updateState(Update.BONUS_DAMAGE)
+//					
+//				case bon.LIFESTEAL
+//					u.lifesteal += amount
+//					u.updateState(Update.LIFESTEAL)
+//					
+//				case bon.HEAL
+//					u.bonusHeal += amount
+//					u.updateState(Update.HEAL)
+//					
+//				case bon.SPELLPOWER
+//					u.spellpower += amount
+//					u.updateState(Update.SPELLPOWER)
+//					
+//				case bon.SPELLPOWER_PER
+//					u.spellpowerPer += amount
+//					u.updateState(Update.SPELLPOWER)
+//					
+//				case bon.MASS
+//					u.bonusMass += amount
+//					u.updateState(Update.MASS)
+//					
+//				case bon.MASS_PER
+//					u.bonusMassPer += amount
+//					u.updateState(Update.MASS)
+//									
+//				case bon.AGI
+//					let h = u castTo Hero
+//					h.bonusAgi += roundReal(amount)
+//					h.bonusAttackspeed += amount / 2
+//					h.evade += amount / 10
+//					h.critchance += amount / 7.5
+//					h.updateState(Update.AGI)
+//					h.updateState(Update.ATTACKSPEED)
+//										
+//				case bon.AGI_PER
+//					let h = u castTo Hero
+//					real thisBonus = h.getAgi(true)
+//					h.bonusAgiPer += roundReal(amount)
+//					thisBonus = h.getAgi(true) - thisBonus
+//					h.bonusAttackspeed += thisBonus / 2
+//					h.evade += thisBonus / 10
+//					h.critchance += thisBonus / 7.5
+//					h.updateState(Update.AGI)
+//					h.updateState(Update.ATTACKSPEED)
+//					h.updateState(Update.CRITCHANCE)
+//					h.updateState(Update.EVADE)
+//										
+//				case bon.STR
+//					let h = u castTo Hero
+//					h.bonusStr += roundReal(amount)
+//					h.bonusLife += amount * 10
+//					h.mass += amount / 2
+//					h.bonusLifeReg += amount * 0.1
+//					h.addAttack(amount)
+//					h.updateState(Update.STR)
+//					h.updateState(Update.LIFE)
+//					h.updateState(Update.LIFE_REG)
+//					h.updateState(Update.MASS)
+//					
+//					
+//				case bon.STR_PER
+//					let h = u castTo Hero
+//					real thisBonus = h.getStr(true)
+//					h.bonusStrPer += roundReal(amount)
+//					thisBonus = h.getStr(true) - thisBonus
+//					h.bonusLife += thisBonus * 10
+//					h.mass += thisBonus / 2
+//					h.bonusLifeReg += thisBonus * 0.1
+//					h.addAttack(thisBonus)
+//					h.updateState(Update.STR)
+//					h.updateState(Update.LIFE)
+//					h.updateState(Update.LIFE_REG)
+//					h.updateState(Update.MASS)
+//					
+//				case bon.INT
+//					let h = u castTo Hero
+//					h.bonusInt += roundReal(amount)
+//					h.bonusMana += amount * 10
+//					h.resistance += amount / 10
+//					h.bonusManaReg += amount * 0.2
+//					h.spellpower += amount
+//					h.updateState(Update.INT)
+//					h.updateState(Update.MANA)
+//					h.updateState(Update.MANA_REG)
+//					u.updateState(Update.SPELLPOWER)
+//					u.updateState(Update.RESISTANCE)
+//					
+//				case bon.INT_PER
+//					let h = u castTo Hero
+//					real thisBonus = h.getInt(true)
+//					h.bonusIntPer += roundReal(amount)
+//					thisBonus = h.getInt(true) - thisBonus
+//					h.bonusMana += thisBonus * 10
+//					h.resistance += thisBonus / 10
+//					h.bonusManaReg += thisBonus * 0.2
+//					h.spellpower += thisBonus
+//					h.updateState(Update.INT)
+//					h.updateState(Update.MANA)
+//					h.updateState(Update.MANA_REG)
+//					u.updateState(Update.SPELLPOWER)
+//					u.updateState(Update.RESISTANCE)
+//
+//				default
+//					printError("Der BonusTyp ist noch nicht implementiert, oder ungültig!")
+//			
+//			this.u = u
+//			this.amount = amount
+//			this.bon = bon
+//			if duration > 0.
+//				t = getTimer()
+//				t.setData(this castTo int)
+//				t.start(duration, function timedDestroy)
+//			else
+//				t = null
+//				
+//		function addDestroyProtection()
+//			if t == null	
+//				destroyBlocker = false
+//			else
+//				printError("You can't protect a timed Bonus from destroying")
+//			
+//		function removeDestroyProtection()
+//			destroyBlocker = true		
+//			
+//		function saveDestroy()
+//			if not destroyBlocker
+//				destroy this
+//
+//		static function timedDestroy()
+//			destroy GetExpiredTimer().getData() castTo Bonus
+//			
+//		ondestroy
+//			if t != null
+//				t.release()
+//			switch bon
+//				case bon.ATTACK
+//					u.bonusAttack -= roundReal(amount)
+//					u.updateState(Update.ATTACK)
+//					
+//				case bon.ATTACK_PER
+//					u.bonusAttackPer -= roundReal(amount)
+//					u.updateState(Update.ATTACK)
+//						
+//				case bon.ARMOR
+//					u.bonusArmor -= roundReal(amount)
+//					u.updateState(Update.ARMOR)
+//					
+//				case bon.ARMOR_PER
+//					u.bonusArmorPer -= roundReal(amount)
+//					u.updateState(Update.ARMOR)
+//						
+//				case bon.ATTACKSPEED
+//					u.bonusAttackspeed -= roundReal(amount)
+//					u.updateState(Update.ATTACKSPEED)
+//					
+//				case bon.MOVESPEED
+//					u.bonusMovespeed -= roundReal(amount)
+//					u.updateState(Update.MOVESPEED)
+//					
+//				case bon.MOVESPEED_PER
+//					u.bonusMovespeedPer -= roundReal(amount)
+//					u.updateState(Update.MOVESPEED)
+//					
+//				case bon.LIFE
+//					u.bonusLife -= amount
+//					u.updateState(Update.LIFE)
+//					
+//				case bon.LIFE_PER
+//					u.bonusLifePer -= amount
+//					u.updateState(Update.LIFE)
+//					
+//				case bon.LIFE_REG
+//					u.bonusLifeReg -= amount
+//					u.updateState(Update.LIFE_REG)
+//					
+//				case bon.LIFE_REG_PER
+//					u.bonusLifeRegPer -= amount
+//					u.updateState(Update.LIFE_REG)
+//					
+//				case bon.MANA
+//					u.bonusMana -= amount
+//					u.updateState(Update.MANA)
+//				
+//				case bon.MANA_PER
+//					u.bonusManaPer -= amount
+//					u.updateState(Update.MANA)
+//					
+//				case bon.MANA_REG
+//					u.bonusManaReg -= amount
+//					u.updateState(Update.MANA_REG)
+//					
+//				case bon.MANA_REG_PER
+//					u.bonusManaRegPer -= amount
+//					u.updateState(Update.MANA_REG)
+//					
+//				case bon.CRITCHANCE
+//					u.critchance -= amount
+//					u.updateState(Update.CRITCHANCE)
+//					
+//				case bon.CRITDAMAGE
+//					u.critdamage -= amount
+//					u.updateState(Update.CRITDAMAGE)
+//					
+//				case bon.EVADE
+//					u.evade -= amount
+//					u.updateState(Update.EVADE)
+//					
+//				case bon.RESISTANCE
+//					u.bonusResistance -= amount
+//					u.updateState(Update.RESISTANCE)
+//					
+//				case bon.RESISTANCE_PER
+//					u.bonusResistancePer -= amount
+//					u.updateState(Update.RESISTANCE)
+//					
+//				case bon.HITCHANCE
+//					u.hitchance -= amount
+//					u.updateState(Update.HITCHANCE)
+//					
+//				case bon.REDUCTION
+//					u.normalReduction = amount
+//					u.magicReduction -= amount
+//					u.updateState(Update.NORMAL_REDUCTION)
+//					u.updateState(Update.MAGIC_REDUCTION)
+//					
+//				case bon.NORMAL_REDUCTION
+//					u.normalReduction -= amount
+//					u.updateState(Update.NORMAL_REDUCTION)
+//					
+//				case bon.MAGIC_REDUCTION
+//					u.magicReduction -= amount
+//					u.updateState(Update.MAGIC_REDUCTION)
+//					
+//				case bon.DEFLECTION
+//					u.normalDeflection -= amount
+//					u.magicDeflection -= amount
+//					u.updateState(Update.NORMAL_DEFLECTION)
+//					u.updateState(Update.MAGIC_DEFLECTION)
+//				
+//				case bon.NORMAL_DEFLECTION
+//					u.normalDeflection -= amount
+//					u.updateState(Update.NORMAL_DEFLECTION)
+//					
+//				case bon.MAGIC_DEFLECTION
+//					u.magicDeflection -= amount
+//					u.updateState(Update.MAGIC_DEFLECTION)
+//					
+//				case bon.BONUS_DAMAGE
+//					u.bonusDamage -= amount
+//					u.updateState(Update.BONUS_DAMAGE)
+//					
+//				case bon.LIFESTEAL
+//					u.lifesteal -= amount
+//					u.updateState(Update.LIFESTEAL)
+//					
+//				case bon.HEAL
+//					u.bonusHeal -= amount
+//					u.updateState(Update.HEAL)
+//					
+//				case bon.SPELLPOWER
+//					u.spellpower -= amount
+//					u.updateState(Update.SPELLPOWER)
+//					
+//				case bon.SPELLPOWER_PER
+//					u.spellpowerPer -= amount
+//					u.updateState(Update.SPELLPOWER)
+//					
+//				case bon.MASS
+//					u.bonusMass -= amount
+//					u.updateState(Update.MASS)
+//					
+//				case bon.MASS_PER
+//					u.bonusMassPer -= amount
+//					u.updateState(Update.MASS)
+//									
+//				case bon.AGI
+//					let h = u castTo Hero
+//					h.bonusAgi -= roundReal(amount)
+//					h.bonusAttackspeed -= amount / 2
+//					h.evade -= amount / 10
+//					h.critchance -= amount / 7.5
+//					h.updateState(Update.AGI)
+//					h.updateState(Update.ATTACKSPEED)
+//										
+//				case bon.AGI_PER
+//					let h = u castTo Hero
+//					real thisBonus = h.getAgi(true)
+//					h.bonusAgiPer -= roundReal(amount)
+//					thisBonus = h.getAgi(true) - thisBonus
+//					h.bonusAttackspeed += thisBonus / 2
+//					h.evade += thisBonus / 10
+//					h.critchance += thisBonus / 7.5
+//					h.updateState(Update.AGI)
+//					h.updateState(Update.ATTACKSPEED)
+//					u.updateState(Update.CRITCHANCE)
+//					u.updateState(Update.EVADE)
+//										
+//				case bon.STR
+//					let h = u castTo Hero
+//					h.bonusStr -= roundReal(amount)
+//					h.bonusLife -= amount * 10
+//					h.mass -= amount / 2
+//					h.bonusLifeReg -= amount * 0.1
+//					h.addAttack(amount)
+//					h.updateState(Update.STR)
+//					h.updateState(Update.LIFE)
+//					h.updateState(Update.LIFE_REG)
+//					u.updateState(Update.MASS)
+//					
+//					
+//				case bon.STR_PER
+//					let h = u castTo Hero
+//					real thisBonus = h.getStr(true)
+//					h.bonusStrPer -= roundReal(amount)
+//					thisBonus = h.getStr(true) - thisBonus
+//					h.bonusLife += thisBonus * 10
+//					h.mass += thisBonus / 2
+//					h.bonusLifeReg += thisBonus * 0.1
+//					h.addAttack(thisBonus)
+//					h.updateState(Update.STR)
+//					h.updateState(Update.LIFE)
+//					h.updateState(Update.LIFE_REG)
+//					u.updateState(Update.MASS)
+//					
+//				case bon.INT
+//					let h = u castTo Hero
+//					h.bonusInt -= roundReal(amount)
+//					h.bonusMana -= amount * 10
+//					h.resistance -= amount / 10
+//					h.bonusManaReg -= amount * 0.2
+//					h.spellpower -= amount
+//					h.updateState(Update.INT)
+//					h.updateState(Update.MANA)
+//					h.updateState(Update.MANA_REG)
+//					u.updateState(Update.SPELLPOWER)
+//					u.updateState(Update.RESISTANCE)
+//					
+//				case bon.INT_PER
+//					let h = u castTo Hero
+//					real thisBonus = h.getInt(true)
+//					h.bonusIntPer -= roundReal(amount)
+//					thisBonus = h.getInt(true) - thisBonus
+//					h.bonusMana += thisBonus * 10
+//					h.resistance += thisBonus / 10
+//					h.bonusManaReg += thisBonus * 0.2
+//					h.spellpower += thisBonus
+//					h.updateState(Update.INT)
+//					h.updateState(Update.MANA)
+//					h.updateState(Update.MANA_REG)
+//					u.updateState(Update.SPELLPOWER)
+//					u.updateState(Update.RESISTANCE)
+//						
+//				default
+//					printError("Ein Objekt der Klasse \"Bonus\" konnte nicht zerstört werden!")
+//					
+//	public class TempBonus
+//		private Unit u
+//		private real amount
+//		private BonType bon
+//		
+//		construct(Unit u, real amount, BonType bon)
+//			
+//			switch bon
+//				case bon.ATTACK
+//					u.bonusAttack += roundReal(amount)
+//						
+//				case bon.ATTACK_PER
+//					u.bonusAttackPer += roundReal(amount)
+//						
+//				case bon.ARMOR
+//					u.bonusArmor += roundReal(amount)
+//					
+//				case bon.ARMOR_PER
+//					u.bonusArmorPer += roundReal(amount)
+//					
+//				case bon.CRITCHANCE
+//					u.critchance += amount
+//					
+//				case bon.CRITDAMAGE
+//					u.critdamage += amount
+//					
+//				case bon.EVADE
+//					u.evade += amount
+//					
+//				case bon.RESISTANCE
+//					u.bonusResistance += amount
+//					
+//				case bon.RESISTANCE_PER
+//					u.bonusResistancePer += amount
+//					
+//				case bon.HITCHANCE
+//					u.hitchance += amount
+//					
+//				case bon.REDUCTION
+//					u.normalReduction += amount
+//					u.magicReduction += amount
+//					
+//				case bon.NORMAL_REDUCTION
+//					u.normalReduction += amount
+//					
+//				case bon.MAGIC_REDUCTION
+//					u.magicReduction += amount
+//					
+//				case bon.DEFLECTION
+//					u.normalDeflection += amount
+//					u.magicDeflection += amount
+//				
+//				case bon.NORMAL_DEFLECTION
+//					u.normalDeflection += amount
+//					
+//				case bon.MAGIC_DEFLECTION
+//					u.magicDeflection += amount
+//					
+//				case bon.BONUS_DAMAGE
+//					u.bonusDamage += amount
+//					
+//				case bon.LIFESTEAL
+//					u.lifesteal += amount
+//										
+//				case bon.HEAL
+//					u.bonusHeal += amount
+//					
+//				case bon.SPELLPOWER
+//					u.spellpower += amount
+//					
+//				case bon.SPELLPOWER_PER
+//					u.spellpowerPer += amount
+//									
+//				default
+//					printError("Der BonusTyp ist noch nicht implementiert, oder ungültig!")
+//			
+//			this.u = u
+//			this.amount = amount
+//			this.bon = bon
+//				
+//			
+//		ondestroy
+//			switch bon
+//				case bon.ATTACK
+//					u.bonusAttack -= roundReal(amount)
+//					
+//				case bon.ATTACK_PER
+//					u.bonusAttackPer -= roundReal(amount)
+//						
+//				case bon.ARMOR
+//					u.bonusArmor -= roundReal(amount)
+//					
+//				case bon.ARMOR_PER
+//					u.bonusArmorPer -= roundReal(amount)
+//					
+//				case bon.CRITCHANCE
+//					u.critchance -= amount
+//					
+//				case bon.CRITDAMAGE
+//					u.critdamage -= amount
+//					
+//				case bon.EVADE
+//					u.evade -= amount
+//					
+//				case bon.RESISTANCE
+//					u.bonusResistance -= amount
+//					
+//				case bon.RESISTANCE_PER
+//					u.bonusResistancePer -= amount
+//					
+//				case bon.HITCHANCE
+//					u.hitchance -= amount
+//					
+//				case bon.REDUCTION
+//					u.normalReduction = amount
+//					u.magicReduction -= amount
+//					
+//				case bon.NORMAL_REDUCTION
+//					u.normalReduction -= amount
+//					
+//				case bon.MAGIC_REDUCTION
+//					u.magicReduction -= amount
+//					
+//				case bon.DEFLECTION
+//					u.normalDeflection -= amount
+//					u.magicDeflection -= amount
+//				
+//				case bon.NORMAL_DEFLECTION
+//					u.normalDeflection -= amount
+//					
+//				case bon.MAGIC_DEFLECTION
+//					u.magicDeflection -= amount
+//					
+//				case bon.BONUS_DAMAGE
+//					u.bonusDamage -= amount
+//					
+//				case bon.LIFESTEAL
+//					u.lifesteal -= amount
+//					
+//				case bon.HEAL
+//					u.bonusHeal -= amount
+//					
+//				case bon.SPELLPOWER
+//					u.spellpower -= amount
+//					
+//				case bon.SPELLPOWER_PER
+//					u.spellpowerPer -= amount
+//						
+//				default
+//					printError("Ein Objekt der Klasse \"TempBonus\" konnte nicht zerstört werden!")
+//					
+//	
+		
+
+endpackage

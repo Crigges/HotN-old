@@ -1,0 +1,51 @@
+package Lightning
+	
+	import Colors
+
+	public constant string CHAIN_LIGHTNING_PRIMARY = "CLPB"
+	public constant string CHAIN_LIGHTNING_SECONDARY = "CLSB"
+	public constant string DRAIN = "DRAB"
+	public constant string DRAIN_LIFE = "DRAL"
+	public constant string DRAIN_MANA = "DRAM"
+	public constant string FINGER_OF_DEATH = "AFOD"
+	public constant string FORKED_LIGHTNING = "FORK"
+	public constant string HEALING_WAVE_PRIMARY = "HWPB"
+	public constant string HEALING_WAVE_SECONDARY = "HWSB"
+	public constant string LIGHTNING_ATTACK = "CHIM"
+	public constant string MAGIC_LEASH = "LEAS"
+	public constant string MANA_BURN = "MBUR"
+	public constant string MANA_FLARE = "MFPB"
+	public constant string SPIRIT_LINK = "SPLK"
+		
+	/** Creates a 3D Lightning between two specific 3D positions*/
+	public function createLightning(string typ, vec3 pos1, vec3 pos2) returns lightning
+		return AddLightningEx(typ, true, pos1.x, pos1.y, pos1.z, pos2.x, pos2.y, pos2.z)
+		
+	public function createLightning(string typ, vec2 pos1, vec2 pos2) returns lightning
+		return AddLightning(typ, true, pos1.x, pos1.y, pos2.x, pos2.y)
+		
+	public function lightning.setPos(vec3 pos1, vec3 pos2)
+		MoveLightningEx(this, true, pos1.x, pos1.y, pos1.z, pos2.x, pos2.y, pos2.z)
+		
+	public function lightning.setPos(vec2 pos1, vec2 pos2)
+		MoveLightning(this, true, pos1.x, pos1.y, pos2.x, pos2.y)
+		
+	public function lightning.setColor(colorA col)
+		colorA lcol = col.toLightningColor()
+		SetLightningColor(this, lcol.red.toReal(), lcol.green.toReal(), lcol.blue.toReal(), lcol.alpha.toReal())
+
+	public function lightning.setColor(color col)
+		color lcol = col.toLightningColor()
+		SetLightningColor(this, lcol.red.toReal(), lcol.green.toReal(), lcol.blue.toReal(), GetLightningColorA(this))
+	
+	public function lightning.destr()
+		DestroyLightning(this)
+	
+	public function color.toLightningColor() returns color
+		return color(R2I((this.red) / 255), R2I((this.green) / 255), R2I((this.blue) / 255))	
+
+	public function colorA.toLightningColor() returns colorA
+		return colorA(R2I((this.red) / 255), R2I((this.green) / 255), R2I((this.blue) / 255), R2I((this.alpha) / 255))	
+		
+endpackage
+

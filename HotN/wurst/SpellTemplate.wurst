@@ -1,0 +1,70 @@
+package SpellTemplate
+	
+	/* ============Spell Template============
+	Dieses SpellTemplate ist ein Beispiel dafür wie man unter der verwendung des Package Spell eine korrekte Fähigkeit erstellt. 
+	Die Features der Hero sowie UnitClass sollte man kennen und verwenden.
+	Wichtiges zum SpellTemplate:
+	- Wann sollte ich die function "Unit.onSpell(Unit source) returns boolean" benutzten, und warum überhaupt?
+		onSpell lößt alle customEvents aus welche mit einem Spell verbunden sind, damit bspw. Zauberschilde verwirklicht werden können.
+		Der Funktionsaufruf sollte unmittelbar vor der tatsächlichen wirkung des Spells geschehen. Hat man bspw einen Spell welcher eine Feuerkugel auf das Ziel wirft,
+		dann sollte die Funktion erst dann aufgerufen werden wenn der Feuerball auf das Ziel trifft. 
+		Die Funktion gibt immer einen Boolean zurück welcher angibt ob der Spell gelungen ist oder nicht. Wird der durch ein Schild abgefangen gibt die funktion false
+		zurück und es sollte keine Wirkung eintreten.
+		Es ist verpflichtend die Funktion aufzurufen, und einen alternativen ablauf beim misslingen des Spells zu bereitzustellen.
+		Wann sollte ich onSpell aufrufen und wann nicht?
+			Grundsätzlich sollte jeder Spell nur einmal die Funktion onSpell aufrufen, es kann jedoch immer ausnahmen geben.
+	- Wartbarkeit der Spells
+		Jeder Spell sollte einfach wartbar sein, d.h. wenn man den Schaden pro Stufe verringern möchte, sollte es ein statisches klassenattribut der in der Setupklasse geben, 
+		welches man einfach abändern kann.
+		Damit Fehler leicher behoben werden können sollte auch das ein oder andere Kommentar nicht fehlen. 
+ 	- Performance von Spells	
+ 		Performance Spielt eine wichtige Rolle, stelle daher sicher, dass der Spell leakfrei und performant ist.
+ 	- Abändern der Attribute der UnitKlasse
+ 		Grundsätzlich ist dies verboten, es gibt passende natives dazu, aber auch hier kann es aunahmen geben. Verändere aber nur die Attrubute wenn du weißt was du tust.
+ 		Das schreiben von set und get Methoden ist nicht erforderlich, da alle attribute public sind.
+	- Hilfreiche Package Sammlung zum erstellen von Spells
+		UnitKlasse, AreaMarker, Buff, Dot, Filter, HeroClass, CustomEvent, Fx;
+	*/
+	
+	import UnitClass
+	import HeroClass
+	import Spell
+	
+	class SamplePointSpellSetup extends PointSpell
+		static SpellSetup setup = setSpellData(new SpellSetup())
+		//Add Spelldata here
+		static real sampleVar
+		
+		private static function setSpellData(SpellSetup ss) returns SpellSetup
+			ss.setSpell('ABCD')
+			ss.setDummySpellBook('EFGH')
+			ss.setMaxLvl(5)
+			ss.setNeededSkillpoints(1, 1)
+			ss.setNeededSkillpoints(2, 1)
+			ss.setNeededSkillpoints(3, 2)
+			ss.setNeededSkillpoints(4, 2)
+			ss.setNeededSkillpoints(5, 3)
+			return ss
+		
+		construct(Hero owner, SpellType st)
+			super(owner, setup, st)
+			
+		override function onCast(Hero caster, vec2 pos)
+			new SamplePointSpell(caster, pos, this)
+							
+	class SamplePointSpell
+		SamplePointSpellSetup setupData
+		timer t
+		
+		private construct(Hero caster, vec2 pos, SamplePointSpellSetup setupData)
+			t = getTimer()
+			t.setData(this castTo int)
+			t.startPeriodic(0.03, function callCallback) 
+			
+		private static function callCallback()
+			GetExpiredTimer().getData() castTo thistype.callback()
+		
+		private function callback()
+			skip
+
+endpackage

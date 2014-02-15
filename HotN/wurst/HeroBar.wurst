@@ -1,0 +1,152 @@
+package HeroBar
+	
+	import Setup
+	import Texttag
+	import HeroClass
+	import LinkedListModule
+	import Shield
+	
+	constant string hpColor = "|c00009900"
+	constant string hpColorDead = "|c00003300"
+	constant string shieldColor = "|c00999999"
+	constant string mpColor = "|c000000AA"
+	constant string mpColorDead = "|c00000022"
+	constant string endColor = "|r"
+	constant string marker = "|c00000000|||r"
+	constant string bar = "|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||"
+	constant int realBarCount = 125
+	constant int fakeBarCount = 250
+	constant int seperateAt = 250
+	
+	//Just for generating the strings
+	function test()
+		string s = ""
+		for int i = 1 to 250
+			s += "|"
+		print(s)
+
+	public class Bar
+		use LinkedListModule
+		static timer updatePos = getTimer()..startPeriodic(0.01, function updatePos)
+		static timer updateVision = getTimer()..startPeriodic(0.25, function updateVision)
+		Hero owner
+		boolean isVisible = true
+		boolean check = true
+		string hpFull
+		int markerDistance
+		texttag tt
+		
+		construct(Hero h)
+			owner = h
+			tt = CreateTextTag()
+			tt.setPos(h.getBarPos())
+			tt.setColor(colorA(0, 200, 0, 255))
+			updateEx()
+			
+		function disable()
+			tt.setVisibility(false)
+			check = false
+			
+		function enable()
+			tt.setVisibility(true)
+			check = true
+			update()
+			
+		static function updateVision()
+			Bar b = first
+			while(b != null)
+				if b.check
+					if IsVisibleToPlayer(b.owner.u.getX(), b.owner.u.getY(), GetLocalPlayer())
+						b.isVisible = true
+						b.tt.setVisibility(true)
+					else
+						b.isVisible = false
+						b.tt.setVisibility(false)
+					b.update()
+					b = b.next
+			
+		static function updatePos()
+			Bar b = first
+			while(b != null)
+				if b.isVisible
+					b.tt.setPos(b.owner.getBarPos())
+				b = b.next
+				
+		/** Gets called when the unit takes damage*/
+		function update()
+			real hp = owner.u.getHP()
+			real maxHp = GetUnitState(owner.u, UNIT_STATE_MAX_LIFE)
+			real per = hp / maxHp
+			int barsGot = roundReal(per * realBarCount) * 2
+			int shieldBars = roundReal((owner.shieldList.shieldSum / maxHp) * realBarCount) * 2
+			int barsLeft = (fakeBarCount - barsGot) - shieldBars
+			barsGot += (barsGot div (markerDistance + 2)) * 12
+			string hpGot = SubString(hpFull, 0, barsGot)
+			string shield = SubString(bar, 0, shieldBars)
+			int manaBarsGot = roundReal((GetUnitState(owner.u, UNIT_STATE_MANA) / GetUnitState(owner.u, UNIT_STATE_MAX_MANA)) * realBarCount) * 2
+			int manaBarsLeft = fakeBarCount - manaBarsGot
+			string manaGot = SubString(bar, 0, manaBarsGot) 
+			string manaDead = SubString(bar, 0, manaBarsLeft) 
+			string final
+			if barsLeft <= 0
+				final = hpGot + shieldColor + shield + endColor + "|n" + mpColor + manaGot + endColor + mpColorDead + manaDead + endColor
+			else
+				final = hpGot + shieldColor + shield + endColor + hpColorDead + SubString(bar, 0, barsLeft) + endColor + "|n" + mpColor + manaGot + endColor + mpColorDead + manaDead + endColor
+			SetTextTagText(tt, final, 0.01)
+		
+		/** Get's called when the maximum HP of the unit get changed*/
+		function updateEx()
+			timer t = getTimer()..setData(this castTo int)..start(0.0, function callUpdateEx)
+		
+		static function callUpdateEx()
+			timer t = GetExpiredTimer()
+			t.getData() castTo Bar.updateExDirect()
+			t.release()
+			t = null
+		
+		private function updateExDirect()
+			markerDistance = ((seperateAt * realBarCount div R2I(GetUnitState(owner.u, UNIT_STATE_MAX_LIFE))) - 1) * 2
+			hpFull = ""
+			for int i = 1 to fakeBarCount div (markerDistance + 2)
+				hpFull += SubString(bar, 0, markerDistance)
+				hpFull += marker
+			int charCount = (fakeBarCount div (markerDistance + 2)) * (markerDistance + 2)
+			hpFull += SubString(bar, 0, fakeBarCount - charCount)
+			update()
+		
+	public class BarTest
+		
+		string hpFull
+		real maxHp
+		int markerDistance
+		
+		construct(real maxHp)
+			this.maxHp = maxHp
+			updateEx()
+				
+		private function updateEx()
+			markerDistance = ((seperateAt * realBarCount div R2I(maxHp)) - 1) * 2
+			print("markerDistance = " + markerDistance.toString())
+			hpFull = ""
+			for int i = 1 to fakeBarCount div (markerDistance + 2)
+				hpFull += SubString(bar, 0, markerDistance)
+				hpFull += marker
+			print("hpFull 1 = " + hpFull)
+			int charCount = (fakeBarCount div (markerDistance + 2)) * (markerDistance + 2)
+			hpFull += SubString(bar, 0, fakeBarCount - charCount)
+			print(hpFull.length().toString())
+			print("hpFull 2 = " + hpFull)
+			update(maxHp)
+			
+		function update(real actualHp)
+			real hp = actualHp
+			real per = hp / maxHp
+			int barsGot = roundReal(per * realBarCount) * 2
+			int barsLeft = fakeBarCount - barsGot
+			barsGot += (barsGot div (markerDistance + 2)) * 12
+			string hpGot = SubString(hpFull, 0, barsGot)
+			string hpMissing = SubString(bar, 0, barsLeft)
+			string final = hpGot + hpColorDead + hpMissing + endColor
+			print("final = " + final)
+			
+endpackage
