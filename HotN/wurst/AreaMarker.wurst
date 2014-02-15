@@ -10,6 +10,7 @@ package AreaMarker
 		
 	class AreaMarker
 		image img
+		int bla
 		timer t = null
 		
 		construct(vec2 pos, real radius, player p, real duration)
