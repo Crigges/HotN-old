@@ -10,7 +10,6 @@ package AreaMarker
 		
 	class AreaMarker
 		image img
-		int krebschange
 		timer t = null
 		
 		construct(vec2 pos, real radius, player p, real duration)
