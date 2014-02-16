@@ -1,0 +1,173 @@
+package Chainlightning
+
+
+	/////////////////////////////////////////////////////////////
+	//////////////////     Konstanten         ///////////////////
+	////////////////////////////////////////////////////////////
+
+
+	import UnitClass
+	import AreaMarker
+	import Filter
+	import Buff
+	import Fx
+	import Stun
+	import Missle
+	import CustomEvent
+	import Lightning
+	
+	constant int spellID = 'A999'
+	constant real initialBlitzSpeed = 5
+	constant real secondBlitzSpeed = 10
+	constant real initianlBlitzDist = 600
+	constant real chainGroupRadius = 64
+	constant real chainGroupRangeNext = 800
+	constant int chainJumpNumber = 2
+	constant real chainSlowPer = 50
+	constant real chainSlowDur = 5
+	constant real chainStunDur = 3
+	constant real baseDmg = 50
+	constant string blitzString = FINGER_OF_DEATH
+	
+	
+	/////////////////////////////////////////////////////////////
+	///////////////////      Init         ///////////////////////
+	////////////////////////////////////////////////////////////
+	
+		
+	init	
+		trigger t = CreateTrigger()
+		t.addAction(function spellStart)
+		t.registerAnyUnitEvent(EVENT_PLAYER_UNIT_SPELL_CAST)
+	
+	function spellStart()
+		if GetSpellAbilityId() == spellID
+			new ChainlighningInit(GetTriggerUnit(), vec2(GetSpellTargetX(),GetSpellTargetY()))
+			
+			
+	/////////////////////////////////////////////////////////////
+	///////////         SkillShot       /////////////////////////
+	////////////////////////////////////////////////////////////				
+	
+	class ChainlighningInit
+		
+		Unit u
+		int jumps
+		
+		private construct(unit u, vec2 pos)
+			this.u=u.getUserData() castTo Unit
+			vec2 posU = u.getPos()
+			angle spellAngle = posU.angleTo(pos)
+			jumps = chainJumpNumber
+			Missle missle = new Missle(posU, pos, initialBlitzSpeed, chainGroupRadius, initianlBlitzDist, this.u, function allEnemysAndNotUnit)
+			missle.setEffect("Abilities\\Weapons\\VengeanceMissile\\VengeanceMissile.mdl")
+			Action a = missle.registerHitEvent(function onHit)
+			a.setData(this castTo int)
+			
+			
+		private static function onHit()
+			currentAction.getData() castTo ChainlighningInit.theSpellStunCheck(function onHit) 
+		
+		private function theSpellStunCheck(code onHit)
+			Unit uOld = triggerUnit
+			uOld.damageMagic(u, baseDmg)
+			vec2 posU = uOld.u.getPos()
+			
+			group g = CreateGroup()
+			filterCheckUnit = uOld.u
+			filterCheckPlayer = u.owner
+			GroupEnumUnitsInRange(g,posU.x,posU.y,chainGroupRangeNext, Condition(function allEnemysAndNotUnit))
+			Unit uNew = GroupPickRandomUnit(g).getUserData() castTo Unit
+			
+			if uNew != null
+				new Flash(u, uOld, uNew, jumps)
+			else 
+				uOld.addStun(chainStunDur)
+				
+			DestroyGroup(g)
+
+
+	/////////////////////////////////////////////////////////////
+	///////////         Flash           /////////////////////////
+	////////////////////////////////////////////////////////////
+				
+			
+	class Flash	
+		timer t = getTimer()
+		lightning l
+		Unit u
+		Unit uOld
+		Unit uNew
+		int jumps
+		int i
+		Table wasHit = new Table()
+		
+		construct(Unit u, Unit uOld, Unit uNew, int jumps)	
+			this.u=u
+			this.uOld=uOld
+			wasHit.saveBoolean(GetHandleId(uOld.u), true)
+			this.uNew=uNew
+			wasHit.saveBoolean(GetHandleId(uNew.u), true)
+			this.jumps=jumps-1
+			
+			i = R2I(1/0.03)
+			if jumps>0
+				vec2 pos = uOld.u.getPos()
+				vec2 pos2 = uNew.u.getPos()
+				l = createLightning(blitzString, pos, pos2)
+				t.setData(this castTo int)
+				t.startPeriodic(0.03, function callMove)
+			else
+				destroy this
+				
+		construct(Unit u, Unit uOld, Unit uNew, int jumps, code callMove)	
+			this.u=u
+			this.uOld=uOld
+			this.uNew=uNew
+			wasHit.saveBoolean(GetHandleId(uNew.u), true)
+			this.jumps=jumps-1
+			i = R2I(1/0.03)
+			if jumps>0
+				vec2 pos = uOld.u.getPos()
+				vec2 pos2 = uNew.u.getPos()
+				l = createLightning(blitzString, pos, pos2)
+				t.setData(this castTo int)
+				t.startPeriodic(0.03, callMove)
+			else
+				uOld.addStun(chainStunDur)
+				destroy this
+				
+		ondestroy
+			t.release()
+			destroy wasHit
+
+		private static function callMove()
+			GetExpiredTimer().getData() castTo Flash.move(function callMove)
+		
+		private function move(code callMove)
+			vec2 pos = uOld.u.getPos()
+			vec2 pos2 = uNew.u.getPos()
+			l.setPos(pos, pos2)
+			
+			i--
+			if i <= 0
+				l.destr()
+				t.release()
+				vec2 posU = uNew.u.getPos()			
+				group g = CreateGroup()
+				filterCheckUnit = u.u
+				GroupEnumUnitsInRange(g,posU.x,posU.y,chainGroupRangeNext, Condition(function allEnemysAndNotUnit))
+				for unit gu in g
+					if wasHit.loadBoolean(GetHandleId(gu))
+						GroupRemoveUnit(g, gu)
+				Unit uLatest = GroupPickRandomUnit(g).getUserData() castTo Unit
+			
+				if uLatest != null
+					new Flash(u, uNew, uLatest, jumps, callMove)
+				else 
+					uNew.addStun(chainStunDur)
+				
+				DestroyGroup(g)	
+					
+			
+endpackage

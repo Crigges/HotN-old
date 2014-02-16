@@ -1,0 +1,94 @@
+Introduction
+    This presentation shows an highly altered and innovative AoS-type Warcraft 3 modification.
+  This battleground consists of 4 capture points and an arena in the center of the map. The overall goal is 
+  to be the first team to score a specific number of points.
+
+  Due to the aim of seeking an high developed modification the Heart of the Night team put emphasis on all 
+  modding aspects equally. That means one has to find balance between performance, design and visualisation. 
+  
+
+Background
+  The story is in progress. The basic version of the story is an invasion which is placed on an
+island.
+
+
+
+Gameplay Components
+  Capture Points
+    Capture Points are special areas which are marked with the color of the controlling faction. One gets
+    control by simply attacking the capture point core or by standing in the control point area. 
+    Standing in an enemy control point area causes damage to the occupying units.
+
+  Arena
+    The Arena is an periodic event emphasizing the player vs. player experience this project wants to achieve.
+
+
+
+
+Basic Rules
+  
+
+
+Player's Scope
+  As a player, one chooses an original hero at the beginning.
+Every hero has full custom made abilities, 
+which let you experience the gameplay in a different way.
+
+We seek to go beyond that typical three standard abilities 
+and one ultimate ability one knows from certain DotA clones.
+The plannend number of heroes is 21.
+The classic effects of Warcraft 3 attributes were altered to fit the environment of the game.
+Now a hero has no particular attribute anymore which he or she has to stick to.
+
+Strength
+Attack Damage
+Hit Points 
+Mass (Mass influences the way a hero gets knockbacked.
+The higher the value the lesser damage and distance) 
+
+Agility
+Evasion 
+Accuracy 
+Critical Hit 
+Attack Speed 
+
+Intelligence
+Mana 
+Magic Resistance 
+Spell Power 
+
+
+
+Features
+custom original heroes 
+full mui costum spells 
+custom buff system 
+custom dot system 
+custom damage system 
+unique terrain 
+altered attributes 
+a full custom menu interface 
+Dynamic Knockbacks + Bouncing if terrain is not walkable 
+Arena Fights 
+
+
+
+Progress
+Release Date 24.12.2013
+
+
+Team
+bhusta - Project Leader, Terrainer
+Crigges - Co-Leader, Programmer
+Naze - Terrainer
+Rami - Programmer
+
+
+
+Changelog
+
+
+
+Credits
+Special Thanks to sorvage who made our new logo.
+

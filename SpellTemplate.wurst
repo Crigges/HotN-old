@@ -1,0 +1,33 @@
+package Beispie
+	
+	init	
+		trigger t = CreateTrigger()
+		t.addCondition(Condition(function spellCondition))
+		t.addAction(function spellStart)
+		t.registerAnyUnitEvent(EVENT_PLAYER_UNIT_SPELL_CAST)
+		
+	function spellCondition() returns boolean
+			if GetSpellAbilityId() == 'A002'
+				return true
+			else
+				return false
+	
+	function spellStart()
+		RockThrow rt = new RockThrow()
+			
+	class RockThrow
+		
+		timer t
+		unit u
+		
+		construct()
+			t = getTimer()
+			t.setData(this castTo int)
+			t.startPeriodic(0.03, function callCallback) 
+			
+		private static function callCallback()
+			GetExpiredTimer().getData() castTo thistype.callback()
+		
+		private function callback()
+			
+endpackage
