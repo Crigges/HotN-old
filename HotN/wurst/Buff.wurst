@@ -3,6 +3,7 @@ package Buff
 
 	public class Buff
 		Action<Units> action
+		Bonus bon = null
 		Unit u
 		int buffId
 		int abiId
@@ -32,6 +33,9 @@ package Buff
 		function addEffect(string fx, string attachment)
 			this.fx = u.u.addEffect(fx, attachment)
 			
+		function attachBonus(Bonus b)
+			this.bon = b
+			
 		function addEffectTimed(string fx, string attachment, real interval)
 			DestroyEffect(u.u.addEffect(fx, attachment))
 			real time = TimerGetRemaining(t)
@@ -60,6 +64,8 @@ package Buff
 				fxTimer.release()
 			UnitRemoveAbility(u.u, abiId)
 			UnitRemoveAbility(u.u, buffId)
+			if bon != null
+				destroy bon
 			if fx != null
 				DestroyEffect(fx)
 		 
