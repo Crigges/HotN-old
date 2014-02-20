@@ -21,9 +21,7 @@ package Buff
 			UnitAddAbility(u.u, abiId)
 			fx = null
 			fxTimer = null
-			action = u.registerDeath((Units data) -> begin
-				destroy this
-			end)
+			action = u.registerDeath((Units data) -> destroy this)
 			t = getTimer()
 			t.setData(this castTo int)
 			t.start(duration, function timerDestroyBuff) 

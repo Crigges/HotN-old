@@ -239,15 +239,12 @@ package UnitClass
 				deltaNorm = delta * (1/deltaLen)
 			real speed1central = vel1.dot(deltaNorm)
 			real speed2central = vel2.dot(deltaNorm)
-			real intersectionWidth = (radius + otherUnit.radius) - deltaLen
 			let futurePos1 = pos1 + vel1*0.01
 			let futurePos2 = pos2 + vel2*0.01
 			let futureDelta = (futurePos2 - futurePos1)
 			if futureDelta.length() < deltaLen
 				let vel1central = deltaNorm*speed1central
-				let vel1orthogonal = vel1 - vel1central
 				let vel2central = deltaNorm*speed2central
-				let vel2orthogonal = vel2 - vel2central
 				vel1 += (vel2central - vel1central) * bounceFactor
 				vel2 += (vel1central - vel2central) * bounceFactor
 				setKnock(vel1.x, vel1.y)
@@ -414,15 +411,6 @@ package UnitClass
 			
 		function getNormalReduction() returns real
 			return normalReduction
-				
-		function getAgi(boolean withBonus) returns real
-			return 0.
-			
-		function getStr(boolean withBonus) returns real
-			return 0.
-			
-		function getInt(boolean withBonus) returns real
-			return 0.
 		
 		//----------------------------------------------//
 		//--------------Statchange----------------------//
@@ -845,54 +833,6 @@ package UnitClass
 			
 		function updateManaReg()
 			updateState(roundReal(((manaReg + bonusManaReg) * (1. + (bonusManaRegPer / 100)) - manaReg)), manaRegRaw)
-		
-		function bonusAgi(real amount) returns Bonus
-			printError("Cannot add Stats to an Unit")
-			return null
-			
-		function bonusAgiTimed(real amount, real duration) returns Bonus
-			printError("Cannot add Stats to an Unit")
-			return null
-							
-		function bonusAgiPer(real amount) returns Bonus
-			printError("Cannot add Stats to an Unit")
-			return null
-			
-		function bonusAgiPerTimed(real amount, real duration) returns Bonus
-			printError("Cannot add Stats to an Unit")
-			return null
-
-		function bonusStr(real amount) returns Bonus
-			printError("Cannot add Stats to an Unit")
-			return null
-			
-		function bonusStrTimed(real amount, real duration) returns Bonus
-			printError("Cannot add Stats to an Unit")
-			return null
-				
-		function bonusStrPer(real amount) returns Bonus
-			printError("Cannot add Stats to an Unit")
-			return null
-			
-		function bonusStrPerTimed(real amount, real duration) returns Bonus
-			printError("Cannot add Stats to an Unit")
-			return null
-
-		function bonusInt(real amount) returns Bonus
-			printError("Cannot add Stats to an Unit")
-			return null
-			
-		function bonusIntTimed(real amount, real duration) returns Bonus
-			printError("Cannot add Stats to an Unit")
-			return null
-				
-		function bonusIntPer(real amount) returns Bonus
-			printError("Cannot add Stats to an Unit")
-			return null
-			
-		function bonusIntPerTimed(real amount, real duration) returns Bonus
-			printError("Cannot add Stats to an Unit")
-			return null
 				
 		function updateState(int amount, int raw)
 			print("update function called for " + raw.asFourchar())

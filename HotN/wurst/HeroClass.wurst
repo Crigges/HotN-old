@@ -113,12 +113,6 @@ package HeroClass
 				armor += amount
 				super.addAttack(I2R(-attackBuffer))
 				//clean unit
-				real bonusArmorBuffer = bonusArmor
-				real bonusArmorBufferPer = bonusArmorPer
-				real bonusLifeBuffer = bonusLife
-				real bonusLifeBufferPer = bonusLifePer
-				real bonusManaBuffer = bonusMana
-				real bonusManaBufferPer = bonusManaPer
 				updateState(0, armorRaw)
 				updateState(0, lifeRaw)
 				updateState(0, manaRaw)
@@ -177,19 +171,19 @@ package HeroClass
 //		override function bonusIntPerTimed(real amount, real duration) returns Bonus
 //			return new Bonus(this, amount, duration, BonType.INT_PER)
 			
-		override function getAgi(boolean withBonus) returns real
+		function getAgi(boolean withBonus) returns real
 			if withBonus
 				return (agi + bonusAgi) * (1. + (bonusAgiPer / 100))
 			else
 				return agi
 				
-		override function getStr(boolean withBonus) returns real
+		function getStr(boolean withBonus) returns real
 			if withBonus
 				return (str + bonusStr) * (1. + (bonusStrPer / 100))
 			else
 				return str
 				
-		override function getInt(boolean withBonus) returns real
+		function getInt(boolean withBonus) returns real
 			if withBonus
 				return (inte + bonusInt) * (1. + (bonusIntPer / 100))
 			else
