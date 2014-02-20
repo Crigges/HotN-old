@@ -101,7 +101,11 @@ package UnitClass
 		TextTag damageTT = null
 		TextTag healTT = null
 		TextTag dotTT = null
-		Table percentDamage = new Table()
+		// ----
+		real systemDamage = 0
+		real totalDamage = 0
+		Table playerDamage = new Table()
+		// ----
 		LinkedList<Dot> allDots =  new LinkedList<Dot>()
 		LinkedList<Buff> allBuffs =  new LinkedList<Buff>()
 		// CustomEvents	
@@ -149,7 +153,7 @@ package UnitClass
 			shieldList = new ShieldList()
 			owner = u.getOwner()
 			for int i = 0 to 11
-				percentDamage.saveReal(i, 0.)
+				playerDamage.saveReal(i, 0.)
 		
 		override static function classname() returns string
 			return "Unit"	
@@ -257,9 +261,10 @@ package UnitClass
 				onDeath.fire(source, this)
 				causeDeath.fire(source, this)
 				for int i = 0 to 11
-					if percentDamage.loadReal(i) != 0.
-						SetPlayerState(Player(i), PLAYER_STATE_RESOURCE_GOLD, GetPlayerState(Player(i), PLAYER_STATE_RESOURCE_GOLD) + R2I((percentDamage.loadReal(i) * bounty)+ 0.5))
-						goldTT((percentDamage.loadReal(i) * bounty) + 0.50, Player(i))
+					if playerDamage.loadReal(i) != 0.
+						int goldAmount = roundReal((playerDamage.loadReal(i) / totalDamage) * bounty)
+						SetPlayerState(Player(i), PLAYER_STATE_RESOURCE_GOLD, GetPlayerState(Player(i), PLAYER_STATE_RESOURCE_GOLD) + goldAmount)
+						goldTT(goldAmount * 1., Player(i))
 				u.kill()
 				
 //			timer t = getTimer()
@@ -316,6 +321,9 @@ package UnitClass
 		//----------------------------------------------//
 		//---------------Stat Gets----------------------//
 		//----------------------------------------------//
+		function getSystemDamage() returns real
+			return systemDamage / totalDamage
+		
 		function getAttack(boolean withBonus) returns real
 			if withBonus
 				return (attack + bonusAttack) * (1. + (bonusAttackPer / 100))
@@ -973,18 +981,23 @@ package UnitClass
 			if GetEventDamage() == 1
 				GetTriggerUnit().getUserData() castTo Unit.damageAtk(GetEventDamageSource().getUserData() castTo Unit)
 				
-		function dealDamage(real amount, Unit source) returns boolean
+		function dealDamage(real amount, Unit source, boolean reward) returns boolean
 			lastDamager = source
 			if source.isHero
 				lastHeroDamager = source castTo Hero
 			if vunerable
 				real tHP = u.getHP()
 				real currentAmount = shieldList.damage(amount, source)
+				totalDamage += amount
+				if not reward
+					systemDamage += amount
 				if tHP - 0.405 <= currentAmount
-					percentDamage.saveReal(ownerId, percentDamage.loadReal(ownerId) + (tHP / u.getState(UNIT_STATE_MAX_LIFE)))
+					if reward
+						playerDamage.saveReal(ownerId, playerDamage.loadReal(ownerId) + tHP)
 					kill(source)
 				else
-					percentDamage.saveReal(ownerId, percentDamage.loadReal(ownerId) + (amount / u.getState(UNIT_STATE_MAX_LIFE)))
+					if reward
+						playerDamage.saveReal(ownerId, playerDamage.loadReal(ownerId) + amount)
 				u.setHP(tHP - currentAmount)
 				if isHero or source.isHero
 					return true
@@ -996,14 +1009,14 @@ package UnitClass
 				return false
 
 		function damageAbs(Unit source, real amount)
-			if dealDamage(amount, source)
+			if dealDamage(amount, source, true)
 				absoluteTT(amount)
 
 		function damageSystem(real amount)
-			dealDamage(amount, lastHeroDamager)
+			dealDamage(amount, lastHeroDamager, false)
 				
 		function damageDot(Unit source, real amount)
-			if dealDamage(amount, source)
+			if dealDamage(amount, source, true)
 				dotTT(amount)
 				
 		function damageAtk(Unit source)
@@ -1043,7 +1056,7 @@ package UnitClass
 						if source.causeCritHitOn != null
 							amount = source.causeCritHitOn.fire(this, amount)
 					//Try to deal damage
-					if dealDamage(amount, source)
+					if dealDamage(amount, source, true)
 						//Create texttags
 						if isHero or source.isHero
 							if crit
@@ -1087,7 +1100,7 @@ package UnitClass
 			if source.causeMagicDamageOn != null
 				amount = source.causeMagicDamageOn.fire(this, amount)
 			//Try to deal damage
-			if dealDamage(amount, source)
+			if dealDamage(amount, source, true)
 			//Texttag creation
 				magicTT(amount)
 			//Damage reflection
@@ -1112,7 +1125,7 @@ package UnitClass
 			if source.causeNormalDamageOn != null
 				amount = source.causeNormalDamageOn.fire(this, amount)
 			//Try to deal damage
-			if dealDamage(amount, source)
+			if dealDamage(amount, source, true)
 				normalTT(amount)
 			if normalDeflection > 0. and amount > 0
 				source.damageAbs(this, amount * (normalDeflection / 100))
@@ -1123,8 +1136,6 @@ package UnitClass
 			if getMaxHP(true) - tHP < amount
 				currentAmount = getMaxHP(true) - tHP
 			u.setHP(tHP + amount)
-			//for int i = 0 to 11
-			//	percentDamage.saveReal(i, percentDamage.loadReal(i) * (1 - (amount / u.getState(UNIT_STATE_MAX_LIFE))))
 			return currentAmount
 				
 		function heal(Unit source, real takenAmount)
@@ -1276,6 +1287,6 @@ package UnitClass
 		ondestroy
 			destroy allDots
 			destroy allBuffs
-			destroy percentDamage
+			destroy playerDamage
 
 endpackage
