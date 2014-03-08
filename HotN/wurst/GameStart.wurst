@@ -55,7 +55,7 @@ package GameStart
 	group testg = CreateGroup()
 	int progress = 0
 	int recursionCounter = 0
-	destructable testd = CreateDestructable('Icon', menuStart.x + 20, menuStart.y + 10, 0, 1, 1)
+	destructable testd = CreateDestructable('Icon', menuStart.x + 20., menuStart.y + 10., 0, 1, 1)
 	int callLimit = 1
 	HashList<Unit> tList = new HashList<Unit>()
 	LinkedList<Unit> lList = new LinkedList<Unit>()
@@ -105,6 +105,8 @@ package GameStart
 			h.captureEffectAttachmentPoint = "weapton"
 			h.captureEffect = "Abilities\\Weapons\\FarseerMissile\\FarseerMissile.mdl"
 			testSpell = new TestSpell1Setup(h, SpellType.Q)
+			new Buff(h, "slow", 30)..attachBonus(h.bonusMovespeedPer(-50)).addEffect("Abilities\\Spells\\Human\\slow\\slowtarget.mdl", "origin")
+			
 			//h.addStun(20)
 //			new Unit(CreateUnit(Player(0), 'hrif', -2000, 0, 0), 20, 100, 50, 200, 100)
 			//IssuePointOrder(last.u, "attack", 2000, 0)
@@ -221,7 +223,7 @@ package GameStart
 					trackCounter++
 					if trackCounter <= 968
 						if not trackBlacklist.hasBoolean(trackPos.x, trackPos.y)
-							vec2 trackVec = vec2(menuStart.x + trackPos.x, menuStart.y + trackPos.y)
+							vec2 trackVec = vec2(menuStart.x + trackPos.x * 1., menuStart.y + trackPos.y * 1.)
 							setTrackableAt(trackPos, new TrackableEx(trackVec, "track1.mdl")
 								..onClick((TrackableEx tr, player p) -> WindowManager.trackableHit(tr, p))
 								..onDoubleClick((TrackableEx tr, player p) -> WindowManager.trackableDoubleHit(tr, p))

@@ -1,12 +1,14 @@
 package Buff
 	import UnitClass
-
+	import BuffTypes
+	import ObjectIds
+	//import Bonus
+	
 	public class Buff
 		Action<Units> action
 		Bonus bon = null
 		Unit u
-		int buffId
-		int abiId
+		bufftype btyp
 		effect fx
 		timer fxTimer
 		timer t
@@ -14,12 +16,13 @@ package Buff
 		string fxType
 		string attachment
 		
-		construct(Unit u, int buffId, int abiId, real duration)
+		construct(Unit u, string buffname, real duration)
 			this.u = u
-			this. buffId = buffId
-			this.abiId = abiId
+			btyp = getBuffType(buffname)
+			print(idInteger2IdString(btyp.abiId))
+			print(idInteger2IdString(btyp.buffId))
 			u.allBuffs.add(this)
-			UnitAddAbility(u.u, abiId)
+			UnitAddAbility(u.u, btyp.abiId)
 			fx = null
 			fxTimer = null
 			action = u.registerDeath((Units data) -> destroy this)
@@ -62,8 +65,8 @@ package Buff
 			u.allBuffs.remove(this)
 			if fxTimer != null
 				fxTimer.release()
-			UnitRemoveAbility(u.u, abiId)
-			UnitRemoveAbility(u.u, buffId)
+			UnitRemoveAbility(u.u, btyp.abiId)
+			UnitRemoveAbility(u.u, btyp.buffId)
 			if bon != null
 				destroy bon
 			if fx != null

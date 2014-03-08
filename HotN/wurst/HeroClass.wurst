@@ -90,7 +90,7 @@ package HeroClass
 			u.removeAbility('dead')
 			isDead = false
 			for int i = 0 to 11
-				percentDamage.saveReal(i, 0.)
+				playerDamage.saveReal(i, 0.)
 					
 //		function addAgi(real amount)
 //			agi += amount
@@ -189,9 +189,9 @@ package HeroClass
 			else
 				return inte
 				
-		override function dealDamage(real amount, Unit source) returns boolean
+		override function dealDamage(real amount, Unit source, boolean bonus) returns boolean
 			hb.update()
-			return super.dealDamage(amount, source)
+			return super.dealDamage(amount, source, bonus)
 
 		override function	updateLife()
 			hb.updateEx()

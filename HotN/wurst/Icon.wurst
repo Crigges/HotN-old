@@ -1,37 +1,26 @@
 package Icon
-//
-//	import Setup
-//	import Menu
-//	
-//	constant real animationSpeedHover = 3.5
-//	constant int dummyIcon = 'icon'
-//	
-//	public class Icon extends Observable
+
+	import Setup
+	import Menu
+	import IconType
+	
+	constant real animationSpeedHover = 3.5
+	constant int dummyIcon = 'icon'
+	
+//	public class Icon extends Widget
 //		destructable d = null
 //		int objId
-//		vec2 realPos
+//		element realPos
 //		vec2 localPos = recycleGraveyard
 //		
-//		construct(int objId, element pos)
-//			this.realPos = vec2(pos.x + menuStart.x, pos.y + menuStart.y)
-//			this.objId = objId
-//				
-//		function setIcontype(int objId, player p)
-//			if GetLocalPlayer() == p
-//				this.objId = objId
-//				d = CreateDestructable(objId, localPos.x, localPos.y, 0, scale, 1)
+//		construct(string name, element pos)
+//			super(pos, element(1, 1))
+//			realPos = element(pos.x + menuStart.x, pos.y + menuStart.y)
+//			this.objId = getIconType(name)
 //				
 //		override function hideDirect(player p)
-//			if canSee.loadBoolean(GetPlayerId(p))
-//				needToSee--
-//				canSee.saveBoolean(GetPlayerId(p), false)
-//				RemoveDestructable(d)
-//				if GetLocalPlayer() == p
-//					localPos = recycleGraveyard	
-//				if needToSee == 0
-//					d = null
-//				else
-//					d = CreateDestructable(objId, localPos.x, localPos.y, 0, scale, 1)
+//			if d != null
+//				d = CreateDestructable(objId, localPos.x, localPos.y, 0, scale, 1)
 //					
 //		override function showDirect(player p)
 //			if not canSee.loadBoolean(GetPlayerId(p))
@@ -76,5 +65,5 @@ package Icon
 //			
 //		override function onDoubleHit(player p)
 //			skip
-//			
-//endpackage
+			
+endpackage

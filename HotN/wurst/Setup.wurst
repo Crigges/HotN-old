@@ -54,7 +54,7 @@ package Setup
 	public constant string team1 = "Wargrin"
 	public constant string team2 = "Everliving"
 	public constant vec2 recycleGraveyard = vec2(0, 0)
-	public constant vec2 menuStart = vec2(1000, 0)
+	public constant element menuStart = element(1000, 0)
 	public constant hashtable trackBlacklist = InitHashtable()
 	public tuple element(int x, int y)
 	public constant int menuHeight = 22

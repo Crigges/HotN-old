@@ -22,19 +22,14 @@ package Menu
 			
 		abstract function showFaded(player p)
 		
-		abstract function hideFaded(player p)		
-		
-	public abstract class WidgetEx extends Widget
+		abstract function hideFaded(player p)	
 		
 		abstract function disable(player p)
 		
-		abstract function enable(player p)
-		
-		construct(element pos, element size)
-			super(pos, size)
+		abstract function enable(player p)	
 	
-	public abstract class Observable extends WidgetEx
-		WidgetEx content
+	public abstract class Observable extends Widget
+		Widget content
 		
 		override function showFaded(player p)
 			content.showFaded(p)
@@ -62,18 +57,9 @@ package Menu
 			
 		abstract function onUnTrack(player p)
 		
-		construct(WidgetEx w)
+		construct(Widget w)
 			super(w.pos, w.size)
 			content = w
-			
-	public abstract class Krebs extends WidgetEx
-		Observable c
-		
-		override function disable(player p)
-			c.disable(p)
-		
-		construct(element pos, element size)
-			super(pos, size)
 		
 			
 	public class WindowManager

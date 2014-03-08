@@ -657,11 +657,11 @@ package UnitClass
 			end)
 			
 		function bonusMovespeedPer(real amount) returns Bonus
-			bonusLife += amount
-			updateLife()
+			bonusMovespeedPer += amount
+			updateMovespeed()
 			return () -> begin
-				bonusLife -= amount
-				updateLife()
+				bonusMovespeedPer -= amount
+				updateMovespeed()
 			end
 			
 		function bonusMovespeedPerTimed(real amount, real duration)
@@ -841,6 +841,36 @@ package UnitClass
 			
 		function updateManaReg()
 			updateState(roundReal(((manaReg + bonusManaReg) * (1. + (bonusManaRegPer / 100)) - manaReg)), manaRegRaw)
+			
+		function bonusAgi(real amount) returns Bonus
+			return null
+			
+		function bonusAgiTimed(real ammount, real duration)
+			
+		function bonusAgiPer(real amount) returns Bonus
+			return null
+			
+		function bonusAgiPerTimed(real ammount, real duration)
+			
+		function bonusStr(real amount) returns Bonus
+			return null
+			
+		function bonusStrTimed(real ammount, real duration)
+			
+		function bonusStrPer(real amount) returns Bonus
+			return null
+			
+		function bonusStrPerTimed(real ammount, real duration)
+			
+		function bonusInt(real amount) returns Bonus
+			return null
+			
+		function bonusIntTimed(real ammount, real duration)
+			
+		function bonusIntPer(real amount) returns Bonus
+			return null
+			
+		function bonusIntPerTimed(real ammount, real duration)
 				
 		function updateState(int amount, int raw)
 			print("update function called for " + raw.asFourchar())
