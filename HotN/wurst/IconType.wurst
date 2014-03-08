@@ -1,0 +1,43 @@
+package IconType
+
+import HashMap
+import AbilityObjEditing
+import ObjectIds
+
+//add buffs here
+@compiletime function types()
+	addIconType("RingDesCrigges", "ReplaceableTextures\\CommandButtons\\BTNSlow.blp")
+	
+//======================================================================================================//
+	
+HashMap<int, int> iconMap = new HashMap<int, int>()
+int iconCount = '%000'
+boolean compiletime = true
+	
+function addIconType(string name, string iconPath)
+	if not compiletime
+		iconMap.put(StringHash(name), iconCount)
+	else
+		let u = createObjectDefinition("w3b", iconCount, 'YTlb')
+		u.setReal("bgsc", 0.0)
+		u.setString("bshd", "")
+		u.setInt("bcpd", 0)
+		u.setString("bsuf", "Icon")
+		u.setUnreal("boch", 0.0)
+		u.setUnreal("bsel", 0.0)
+		u.setString("bfil", "war3mapImported\\ButtonC.mdl")
+		u.setString("bnam", name)
+		u.setString("barm", "Ethereal")
+		u.setString("btar", "")
+		u.setInt("bcpr", 0)
+		u.setString("bptx", "")
+		u.setInt("btxi", 31)
+		u.setString("btxf", iconPath)	
+	iconCount++
+	
+public function getIconType(string name) returns int
+	return iconMap.get(StringHash(name)) 
+	
+init
+	compiletime = false
+	types()
