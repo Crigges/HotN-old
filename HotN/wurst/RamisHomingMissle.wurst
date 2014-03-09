@@ -1,0 +1,60 @@
+package RamisHomingMissle
+
+import Setup
+import UnitClass
+import Fx
+import ClosureEvents
+
+
+class Missle
+	
+	static constant real missleStartSpeed = 10
+	static constant real speedLost = 0.95
+	static constant real speedAccel = 20
+	static constant real missleRadius = 65
+	static constant real knockback = 50
+	
+	
+	Fx missle
+	Unit owner
+	Unit target
+	vec2 speed
+	timer t
+	timer destroyTimer
+	
+	construct(Unit owner, Unit target)
+		this.owner = owner
+		this.target = target
+		vec2 pos = owner.u.getPos()
+		vec2 posT = target.u.getPos()
+		speed = vec2(0,0).polarOffset(pos.angleTo(posT), missleStartSpeed)
+		missle = new Fx(pos.withZ(70), pos.angleTo(posT), "Abilities\\Weapons\\LordofFlameMissile\\LordofFlameMissile.mdl")
+		t = getTimer()..setData(this castTo int)..startPeriodic(0.03, () -> GetExpiredTimer().getData() castTo thistype.move())
+		destroyTimer = getTimer()..setData(this castTo int)..start(5, () -> destroy GetExpiredTimer().getData() castTo thistype)
+		
+	function move()
+		speed *= speedLost
+		vec2 posmissle = missle.getPos2()
+		vec2 speedtemp = vec2(0,0).polarOffset(posmissle.angleTo(target.u.getPos()), speedAccel)
+		speed += speedtemp
+		missle.setPos(posmissle + speed)
+		boolean wasHit = false
+		for unit u from ENUM_GROUP..enumUnitsInRange(posmissle + speed, missleRadius)
+			if u != owner.u
+				vec2 temp = vec2(0, 0).polarOffset(posmissle.angleTo(u.getPos()), knockback)
+				u.getUserData() castTo Unit..damageMagic(owner, 50).addKnock(temp.x, temp.y)
+				wasHit = true
+		if wasHit
+			destroy this
+			
+	ondestroy
+		destroy missle
+		t.release()
+		destroyTimer.release()
+
+init 
+	onUnitCast('A001', (unit caster, int level, unit target) -> new Missle(caster.getUserData() castTo Unit, target.getUserData() castTo Unit))
+	new Unit(CreateUnit(Player(0), 'Hamg', 0, 1000, 0), 10, 100, 80, 0, 0)
+	new Unit(CreateUnit(Player(0), 'Hamg', 0, 1000, 0), 10, 100, 80, 0, 0)
+	new Unit(CreateUnit(Player(0), 'Hamg', 0, 1000, 0), 10, 500, 80, 0, 0)
+	new Unit(CreateUnit(Player(0), 'Hamg', 0, 1000, 0), 10, 500, 80, 0, 0)
