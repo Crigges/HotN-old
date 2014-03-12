@@ -26,7 +26,15 @@ package Menu
 		
 		abstract function disable(player p)
 		
-		abstract function enable(player p)	
+		abstract function enable(player p)
+		
+		function clickAnimation(player p)
+			
+		function doubleClickAnimation(player p)
+			
+		function trackAnimation(player p)
+			
+		function untrackAnimation(player p)
 	
 	public abstract class Observable extends Widget
 		Widget content

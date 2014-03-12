@@ -13,12 +13,13 @@ import ObjectIds
 HashMap<int, int> iconMap = new HashMap<int, int>()
 int iconCount = '%000'
 boolean compiletime = true
+constant real restColor = 0.3
 	
 function addIconType(string name, string iconPath)
 	if not compiletime
 		iconMap.put(StringHash(name), iconCount)
 	else
-		let u = createObjectDefinition("w3b", iconCount, 'YTlb')
+		var u = createObjectDefinition("w3b", iconCount, 'YTlb')
 		u.setReal("bgsc", 0.0)
 		u.setString("bshd", "")
 		u.setInt("bcpd", 0)
@@ -32,11 +33,32 @@ function addIconType(string name, string iconPath)
 		u.setInt("bcpr", 0)
 		u.setString("bptx", "")
 		u.setInt("btxi", 31)
-		u.setString("btxf", iconPath)	
-	iconCount++
+		u.setString("btxf", iconPath)
+		u = createObjectDefinition("w3b", iconCount + 1, 'YTlb')
+		u.setReal("bgsc", 0.0)
+		u.setString("bshd", "")
+		u.setInt("bcpd", 0)
+		u.setString("bsuf", "Icon")
+		u.setUnreal("boch", 0.0)
+		u.setUnreal("bsel", 0.0)
+		u.setString("bfil", "war3mapImported\\ButtonC.mdl")
+		u.setString("bnam", name)
+		u.setString("barm", "Ethereal")
+		u.setString("btar", "")
+		u.setInt("bcpr", 0)
+		u.setString("bptx", "")
+		u.setInt("btxi", 31)
+		u.setString("btxf", iconPath)
+		u.setInt("bvcr", (255 * restColor).toInt())
+		u.setInt("bvcg", (255 * restColor).toInt())
+		u.setInt("bvcb", (255 * restColor).toInt())
+	iconCount += 2
 	
-public function getIconType(string name) returns int
-	return iconMap.get(StringHash(name)) 
+public function getIconType(string name) returns iconType
+	int i = iconMap.get(StringHash(name)) 
+	return iconType(i, i + 1)
+
+public tuple iconType(int normalId, int diableId)
 	
 init
 	compiletime = false

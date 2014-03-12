@@ -28,8 +28,6 @@ package GameStart
 	import Terrain
 	import Texttag
 	import CustomBar
-	import TrackableEventHandler
-	import Cooldown
 	import Stack
 	import Menu
 	import ImageEx
@@ -430,8 +428,6 @@ package GameStart
 				print(GetUnitAbilityLevel(last.u, 'scor').toString())
 			case "cast"
 				IssueInstantPointOrder(last.u, "ancestralspirit", 0, 0, null)
-			case "cd"
-				cd()
 				
 		//SetUnitTimeScalePercent(last.u, S2R(GetEventPlayerChatString()))
 		//testr = S2R(GetEventPlayerChatString())

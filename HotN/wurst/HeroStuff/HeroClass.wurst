@@ -1,5 +1,5 @@
 package HeroClass
-	
+	import StandardImports
 	import UnitClass
 	import Bonus
 	import Setup
@@ -9,7 +9,6 @@ package HeroClass
 	import HashMap
 	import Spell
 	import LinkedListModule
-	import Cooldown
 	
 	public int heroCount = 0
 	
@@ -278,7 +277,6 @@ package HeroClass
 				case exitDetectId
 					//addAbilityCastProtection('exit')
 					SetPlayerAbilityAvailable(owner, 'exit', false)
-					cd()
 					return
 				case scoreboardId
 					addAbilityCastProtection('scor')

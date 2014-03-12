@@ -29,32 +29,6 @@ package Helper
 			vec2 nvel2 = vel2
 			nvel2 += pv2
 			return nvel2
-			
-//	public function Unit.getNearestUnitInRange(real radius, code filter) returns Unit
-//		group g = CreateGroup()
-//		filterCheckPlayer = this.owner
-//		filterCheckUnit = this.u
-//		GroupEnumUnitsInRange(g, this.u.getX(), this.u.getY(), radius, Condition(filter))
-//		unit u1 = FirstOfGroup(g)
-//		if u1 == null
-//			return null
-//		else
-//			GroupRemoveUnit(g, u1)
-//			if FirstOfGroup(g) == null
-//				return u1.getUserData() castTo Unit
-//
-//			else
-//				GroupAddUnit(g, u1)
-//				vec2 prePos = this.u.getPos()
-//				unit hitUnit = null
-//				real minDist = 10000.
-//				for unit lu from g
-//					vec2 targetPos = lu.getPos()
-//					real currentDist = targetPos.distToVec(prePos)
-//					if currentDist < minDist
-//						minDist = currentDist
-//						hitUnit = lu
-//				return hitUnit.getUserData() castTo Unit
 				
 	public function int.pow(int n) returns int
 		if n == 0

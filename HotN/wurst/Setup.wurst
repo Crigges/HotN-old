@@ -7,7 +7,6 @@ package Setup
 	import public Helper
 	import public Array
 	import public DebugFile
-	import public Closures
 	import HashList
 	// Everything you declare here will be done first
 	// DONT import anything into here except packages from the StandardLib
@@ -23,17 +22,17 @@ package Setup
 		
 	
 	public timer timeTest = null
-	public constant int maxBonSize 			= 14
+	public constant int maxBonSize 				= 14
 	public constant int attackRaw 				= '(A)0' - '0'
-	public constant int attackSpeedRaw	= '(B)0' - '0'
+	public constant int attackSpeedRaw			= '(B)0' - '0'
 	public constant int armorRaw	 			= '(C)0' - '0'
 	public constant int lifeRaw		 			= '(D)0' - '0'
-	public constant int manaRaw		 		= '(E)0' - '0'
+	public constant int manaRaw		 			= '(E)0' - '0'
 	public constant int agiRaw		 			= '(F)0' - '0'
 	public constant int strRaw		 			= '(G)0' - '0'
 	public constant int intRaw		 			= '(H)0' - '0'
 	public constant int lifeRegRaw		 		= '(I)0' - '0'
-	public constant int manaRegRaw		 ='(J)0' - '0'
+	public constant int manaRegRaw		 		='(J)0' - '0'
 	public int array attackPerm
 	
 	public HashList<int> preloadAbi = new HashList<int>()

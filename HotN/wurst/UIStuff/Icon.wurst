@@ -1,0 +1,80 @@
+package Icon
+
+	import Setup
+	import Menu
+	import IconType
+	import HashMap
+	
+	constant real animationSpeedHover = 3.5
+	constant real animationSpeedHit = 3.5
+	constant int dummyIcon = 'icon'
+	
+	public class Icon extends Widget
+		HashMap<player, destructable> strucMap = new HashMap<player, destructable>()
+		iconType typ
+		element realPos
+		int scale
+		vec2 localPos = recycleGraveyard
+		
+		construct(string name, element pos, int scale)
+			super(pos, element(1, 1))
+			realPos = element(pos.x + menuStart.x, pos.y + menuStart.y)
+			typ = getIconType(name)
+			this.scale = scale
+				
+		override function hideDirect(player p)
+			destructable d = strucMap.get(p)
+			if d != null
+				RemoveDestructable(d)
+				strucMap.put(p, null)
+				
+					
+		override function showDirect(player p)
+			destructable d = strucMap.get(p)
+			print("KREBS")
+			if d == null		
+				strucMap.put(p, CreateDestructable(typ.normalId, realPos.x * 1., realPos.y * 1., 0, scale * 1., 1))
+				
+		override function showFaded(player p)
+			skip
+			
+		override function hideFaded(player p)
+			skip
+			
+		override function disable(player p)
+			destructable d = strucMap.get(p)
+			if d != null
+				RemoveDestructable(d)
+				int id = dummyIcon
+				if(GetLocalPlayer() == p)
+					id = typ.diableId
+				strucMap.put(p, CreateDestructable(id, realPos.x * 1., realPos.y * 1., 0, scale * 1., 1))
+				
+				
+			
+		override function enable(player p)
+			skip
+			
+		override function clickAnimation(player p)
+			if GetLocalPlayer() == p
+				destructable d = strucMap.get(p)
+				SetDestructableAnimationSpeed(d, animationSpeedHit)
+				SetDestructableAnimation(d, "morph")
+				QueueDestructableAnimation(d, "morph")
+				
+		override function trackAnimation(player p)
+			if GetLocalPlayer() == p
+				destructable d = strucMap.get(p)
+				SetDestructableAnimationSpeed(d, animationSpeedHover)
+				SetDestructableAnimation(d, "morph alternate")
+			
+		override function untrackAnimation(player p)
+			if GetLocalPlayer() == p
+				destructable d = strucMap.get(p)
+				SetDestructableAnimation(d, "morph alternate")
+				
+				
+	init
+		new Icon("bla", element(0,0), 100).showDirect(Player(0))
+			
+endpackage

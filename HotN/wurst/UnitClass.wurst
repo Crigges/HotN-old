@@ -1,4 +1,5 @@
 package UnitClass
+	import StandardImports
 	import Terrain
 	import Helper
 	import Dot
@@ -8,10 +9,8 @@ package UnitClass
 	import FloatingText
 	import public Bonus
 	import Shield
-	import Setup
 	import Stun
 	import HeroClass
-	import Closures
 	import LinkedList
 	import InstanceBoard
 	import public UnitEvents
