@@ -82,14 +82,12 @@ package UnitClass
 		real mass = 0
 		real bonusMass = 0
 		real bonusMassPer = 0
-		real knockX = 0
-		real knockY = 0
+		vec2 knockSpeed
 		real radius = 0
 		real height = 0
 		Unit lastKnocker = null
 		Unit lastCollision = null
-		real wallLocX = 0
-		real wallLocY = 0
+		vec2 wallLoc
 		boolean hasKnockback = false
 		boolean isHero = false
 		boolean isDead = false
@@ -159,69 +157,46 @@ package UnitClass
 			return "Unit"	
 	
 		function knockback()
-			if RAbsBJ(knockX) <= 0.5 and RAbsBJ(knockY) <= 0.5		
+			if knockSpeed.lengthSquared() <= 0.25		
 				knocklist.remove(this)
 				hasKnockback = false
-				knockX = 0
-				knockY = 0					
+				knockSpeed = vec2(0,0)			
 			else
-				real x = u.getX()
-				real y = u.getY()
-				if isTerrainWalkable(x, y) == true or IsUnitInRangeXY(u, wallLocX, wallLocY, 30) == true
+				vec2 pos = u.getPos()
+				if isTerrainWalkable(pos.x, pos.y) == true or IsUnitInRangeXY(u, wallLoc.x, wallLoc.y, 30) == true
 					group g = CreateGroup()
 					filterCheckUnit = u
-					GroupEnumUnitsInRange(g, x, y, radius, Condition(function notUnit))			
+					g.enumUnitsInRange(pos, radius, Condition(function notUnit))			
 					if  FirstOfGroup(g) == null		
-						x = x + knockX
-						y = y + knockY
-						u.setX(x)
-						u.setY(y)
-						knockX = knockX - (knockX * (mass / knockbackFactor))
-						knockY = knockY - (knockY * (mass / 5000))		
+						pos += knockSpeed
+						u.setPos(pos)
+						knockSpeed -= knockSpeed * (mass / knockbackFactor)
 					else					
 						Unit u2 = FirstOfGroup(g).getUserData() castTo Unit
 						if not u2 == lastCollision
 							collision(u2)
-							x = x + knockX
-							y = y + knockY
-							u.setX(x)
-							u.setY(y)
-							knockX = knockX - (knockX * (mass / knockbackFactor))
-							knockY = knockY - (knockY * (mass / knockbackFactor))
-							real ox = u2.u.getX()
-							real oy = u2.u.getY()
-							ox = ox + u2.knockX
-							oy = oy + u2.knockY
-							u2.u.setX(ox)
-							u2.u.setY(oy)
-							u2.knockX = u2.knockX - (u2.knockX * (u2.mass / knockbackFactor))
-							u2.knockY = u2.knockY - (u2.knockY * (u2.mass / knockbackFactor))	
+							pos += knockSpeed
+							u.setPos(pos)
+							knockSpeed -= knockSpeed * (mass / knockbackFactor)
+							vec2 pos2 = u2.u.getPos()
+							pos2 += knockSpeed
+							u2.u.setPos(pos2)
+							u2.knockSpeed -= u2.knockSpeed * (mass / knockbackFactor)
 						else		
-							x = x + knockX
-							y = y + knockY
-							u.setX(x)
-							u.setY(y)
-							knockX = knockX - (knockX * (mass / knockbackFactor))
-							knockY = knockY - (knockY * (mass / knockbackFactor))				
+							pos += knockSpeed
+							u.setPos(pos)
+							knockSpeed -= knockSpeed * (mass / knockbackFactor)				
 					DestroyGroup(g)
 					g = null				
 				else
 						
-					wallLocX = x
-					wallLocY = y
-					real speed = RAbsBJ(knockX) + RAbsBJ(knockY)
+					wallLoc = pos
+					real speed = knockSpeed.length()
 					damageAbs(lastKnocker, u.getState(UNIT_STATE_MAX_LIFE) * (speed/200))
-					vec2 nor = getPathingNormal(vec2(x, y))
-					vec2 vel =  vec2(knockX, knockY)
-					vec2 nvel = getBounceVec(vel, nor)
-					real nx = nvel.x
-					real ny = nvel.y
-					x = x + nx
-					y = y + ny
-					u.setX(x)
-					u.setY(y)
-					knockX = nx - (nx * (mass / 5000))
-					knockY = ny - (ny * (mass / 5000))
+					vec2 nvel = getBounceVec(knockSpeed, getPathingNormal(pos))
+					pos += nvel
+					u.setPos(pos)
+					knockSpeed = nvel - (nvel * (mass/knockbackFactor))
 					lastCollision = null
 
 
@@ -230,29 +205,33 @@ package UnitClass
 			otherUnit.lastCollision = this
 			if not IsUnitAlly(otherUnit.u, owner)
 				otherUnit.lastKnocker = lastKnocker
-			var pos1 = vec2(u.getX(), u.getY())			
-			var pos2 = vec2(otherUnit.u.getX(), otherUnit.u.getY())
-			var vel1 = vec2(knockX, knockY)
-			var vel2 = vec2(otherUnit.knockX, otherUnit.knockY)
+			// abspeichern der Position und der Geschwindigkeit
+			var pos1 = u.getPos()		
+			var pos2 = otherUnit.u.getPos()
+			// Differenzvektor wird gespeichert sowie die Distanz gespeichert
 			let delta = (pos2 - pos1)
 			let deltaLen = delta.length()
 			vec2 deltaNorm
+			// falls die Differenz 0 ist wird um error zu vermeiden senkrechter erstellt
 			if deltaLen == 0
 				deltaNorm = vec2(0,1)
 			else
+				// orthogonale wird erzeugt
 				deltaNorm = delta * (1/deltaLen)
-			real speed1central = vel1.dot(deltaNorm)
-			real speed2central = vel2.dot(deltaNorm)
-			let futurePos1 = pos1 + vel1*0.01
-			let futurePos2 = pos2 + vel2*0.01
+			// Skalarprodukt zwischen geschwindigkeit und orthogonale
+			real speed1central = knockSpeed.dot(deltaNorm)
+			real speed2central = otherUnit.knockSpeed.dot(deltaNorm)
+			// geprüft, ob sich objekte wirklich treffen
+			let futurePos1 = pos1 + knockSpeed*0.01
+			let futurePos2 = pos2 + otherUnit.knockSpeed*0.01
 			let futureDelta = (futurePos2 - futurePos1)
 			if futureDelta.length() < deltaLen
+				// Skalarprodukt wird mit orthogonale multipliziert
 				let vel1central = deltaNorm*speed1central
 				let vel2central = deltaNorm*speed2central
-				vel1 += (vel2central - vel1central) * bounceFactor
-				vel2 += (vel1central - vel2central) * bounceFactor
-				setKnock(vel1.x, vel1.y)
-				otherUnit.setKnock(vel2.x, vel2.y)
+				// geschwindigkeit hinzuaddiert
+				knockSpeed += (vel2central - vel1central) * bounceFactor
+				otherUnit.knockSpeed += (vel1central - vel2central) * bounceFactor
 				
 		function kill(Unit source)
 			if not isDead
@@ -286,32 +265,28 @@ package UnitClass
 			for Buff b in allBuffs
 				destroy b
 				
+		function addKnock(vec2 momentum)
+			addKnock(momentum.x, momentum.y)
 			
 		function addKnock(real x, real y)
-			wallLocX = 0
-			wallLocY = 0
-			knockX = knockX + x
-			knockY = knockY + y
+			wallLoc = vec2(0,0)
+			knockSpeed += vec2(x, y)
 			if not hasKnockback
 				hasKnockback = true
 				knocklist.add(this)
 			lastCollision = null
 			
 		function resetKnock()
-			wallLocX = 0
-			wallLocY = 0
-			knockX = 0
-			knockY = 0
+			wallLoc = vec2(0,0)
+			knockSpeed = vec2(0,0)
 			if hasKnockback
 				hasKnockback = false
 				knocklist.remove(this)
 			lastCollision = null
 			
 		function setKnock(real x, real y)
-			wallLocX = 0
-			wallLocY = 0
-			knockX = x
-			knockY = y
+			wallLoc = vec2(0,0)
+			knockSpeed = vec2(x,y)
 			if not hasKnockback
 				hasKnockback = true
 				knocklist.add(this)

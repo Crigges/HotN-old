@@ -8,11 +8,12 @@ import ClosureEvents
 
 class Missle
 	
-	static constant real missleStartSpeed = 10
-	static constant real speedLost = 0.95
-	static constant real speedAccel = 20
+	static constant real missleStartSpeed = 1
+	static constant real speedLost = 0.5
+	static constant real speedAccel = 0.5
 	static constant real missleRadius = 65
 	static constant real knockback = 50
+	static constant real knockbackRange = 500
 	
 	
 	Fx missle
@@ -21,8 +22,10 @@ class Missle
 	vec2 speed
 	timer t
 	timer destroyTimer
+	boolean canHitCaster
 	
 	construct(Unit owner, Unit target)
+		canHitCaster = false
 		this.owner = owner
 		this.target = target
 		vec2 pos = owner.u.getPos()
@@ -30,19 +33,30 @@ class Missle
 		speed = vec2(0,0).polarOffset(pos.angleTo(posT), missleStartSpeed)
 		missle = new Fx(pos.withZ(70), pos.angleTo(posT), "Abilities\\Weapons\\LordofFlameMissile\\LordofFlameMissile.mdl")
 		t = getTimer()..setData(this castTo int)..startPeriodic(0.03, () -> GetExpiredTimer().getData() castTo thistype.move())
-		destroyTimer = getTimer()..setData(this castTo int)..start(5, () -> destroy GetExpiredTimer().getData() castTo thistype)
+		destroyTimer = getTimer()
+			..setData(this castTo int)
+			..start(5, () -> 
+				destroy GetExpiredTimer().getData() castTo thistype)
 		
 	function move()
 		speed *= speedLost
 		vec2 posmissle = missle.getPos2()
+		if not canHitCaster and posmissle.distToVec(owner.u.getPos()) > missleRadius
+			canHitCaster = true
 		vec2 speedtemp = vec2(0,0).polarOffset(posmissle.angleTo(target.u.getPos()), speedAccel)
 		speed += speedtemp
 		missle.setPos(posmissle + speed)
 		boolean wasHit = false
-		for unit u from ENUM_GROUP..enumUnitsInRange(posmissle + speed, missleRadius)
-			if u != owner.u
-				vec2 temp = vec2(0, 0).polarOffset(posmissle.angleTo(u.getPos()), knockback)
-				u.getUserData() castTo Unit..damageMagic(owner, 50).addKnock(temp.x, temp.y)
+		ENUM_GROUP.enumUnitsInRange(posmissle + speed, missleRadius)
+		if canHitCaster and IsUnitInGroup(owner.u ,ENUM_GROUP)
+			for unit u from ENUM_GROUP..enumUnitsInRange(owner.u.getPos(), knockbackRange)
+				if u != owner.u
+					u.getUserData() castTo Unit.addKnock(owner.u.getPos().angleTo(u.getPos()).toVec((1 - (owner.u.getPos().distToVec(u.getPos()) / knockbackRange)) * knockback))
+			destroy this
+			return 
+		for unit u from ENUM_GROUP
+			if owner.u != u
+				u.getUserData() castTo Unit.addKnock(posmissle.angleTo(u.getPos()).toVec(knockback))
 				wasHit = true
 		if wasHit
 			destroy this
@@ -51,6 +65,7 @@ class Missle
 		destroy missle
 		t.release()
 		destroyTimer.release()
+		
 
 init 
 	onUnitCast('A001', (unit caster, int level, unit target) -> new Missle(caster.getUserData() castTo Unit, target.getUserData() castTo Unit))

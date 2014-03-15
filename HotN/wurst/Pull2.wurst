@@ -60,8 +60,7 @@ package Pull2//   Der Pull braucht nur noch einen Abbruch wenn nicht Pathable od
 				DestroyLightning(l)
 			else if dist > 100
 				
-				uut.knockX=uut.knockX*0.5
-				uut.knockY=uut.knockY*0.5
+				uut.knockSpeed *= 0.5
 				real x = 0//(polarProjectionXD(ut.getX(), (i/imax)*15*((distanceBetweenCoords(u.getX(),u.getY(),ut.getX(),ut.getY()))/600), angleBetweenCoordsD(ut.getX(),ut.getY(),u.getX(),u.getY()))-ut.getX())
 				real y = 0//(polarProjectionYD(ut.getY(), (i/imax)*15*((distanceBetweenCoords(u.getX(),u.getY(),ut.getX(),ut.getY()))/600), angleBetweenCoordsD(ut.getX(),ut.getY(),u.getX(),u.getY()))-ut.getY())
 				if isTerrainWalkable(ut.getX()+x,ut.getY()+y) == true
