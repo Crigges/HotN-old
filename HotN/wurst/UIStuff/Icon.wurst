@@ -11,6 +11,7 @@ package Icon
 	
 	public class Icon extends Widget
 		HashMap<player, destructable> strucMap = new HashMap<player, destructable>()
+		HashMap<player, boolean> isDisabled = new HashMap<player, boolean>()
 		iconType typ
 		element realPos
 		int scale
@@ -31,9 +32,14 @@ package Icon
 					
 		override function showDirect(player p)
 			destructable d = strucMap.get(p)
-			print("KREBS")
-			if d == null		
-				strucMap.put(p, CreateDestructable(typ.normalId, realPos.x * 1., realPos.y * 1., 0, scale * 1., 1))
+			if d == null
+				int id = dummyIcon
+				if GetLocalPlayer() == p	
+					if isDisabled.get(p)
+						id = typ.diableId
+					else
+						id = typ.normalId
+				strucMap.put(p, CreateDestructable(id, realPos.x * 1., realPos.y * 1., 0, scale * 1., 1))
 				
 		override function showFaded(player p)
 			skip
@@ -42,6 +48,17 @@ package Icon
 			skip
 			
 		override function disable(player p)
+			if not isDisabled.get(p)
+				isDisabled.put(p, true)
+				destructable d = strucMap.get(p)
+				if d != null
+					RemoveDestructable(d)
+					int id = dummyIcon
+					if(GetLocalPlayer() == p)
+						id = typ.diableId
+					strucMap.put(p, CreateDestructable(id, realPos.x * 1., realPos.y * 1., 0, scale * 1., 1))
+				
+		override function enable(player p)
 			destructable d = strucMap.get(p)
 			if d != null
 				RemoveDestructable(d)
@@ -49,11 +66,6 @@ package Icon
 				if(GetLocalPlayer() == p)
 					id = typ.diableId
 				strucMap.put(p, CreateDestructable(id, realPos.x * 1., realPos.y * 1., 0, scale * 1., 1))
-				
-				
-			
-		override function enable(player p)
-			skip
 			
 		override function clickAnimation(player p)
 			if GetLocalPlayer() == p
