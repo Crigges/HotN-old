@@ -2,7 +2,7 @@ package Menu
 
 	import Setup
 	import PlayerClass
-	import Icon
+	import initlater Icon
 	import HashList
 	import Stack
 	import LinkedList
@@ -30,14 +30,20 @@ package Menu
 		
 		function clickAnimation(player p)
 			
-		function doubleClickAnimation(player p)
-			
 		function trackAnimation(player p)
 			
 		function untrackAnimation(player p)
 	
-	public abstract class Observable extends Widget
+	public class Observable extends Widget
 		Widget content
+		PlayerAction click = null
+		PlayerAction dClick = null
+		PlayerAction track = null
+		PlayerAction unTrack = null
+		boolean playClickAnimation = true
+		boolean playDoubleClickAnimation = true
+		boolean playHoverAnimation = true
+		
 		
 		override function showFaded(player p)
 			content.showFaded(p)
@@ -56,18 +62,59 @@ package Menu
 			
 		override function enable(player p)
 			content.enable(p)
-		
-		abstract function onHit(player p)
-
-		abstract function onDoubleHit(player p)
-		
-		abstract function onTrack(player p)
 			
-		abstract function onUnTrack(player p)
+		function playClickAnimation(boolean value)
+			playClickAnimation = value
+			
+		function playDoubleClickAnimation(boolean value)
+			playHoverAnimation = value
+			
+		function playHoverAnimation(boolean value)
+			playHoverAnimation = value
+			
+		function setClickAction(PlayerAction p)
+			click = p
+		
+		function setDoubleClickAction(PlayerAction p)
+			dClick = p
+			
+		function setTrackAction(PlayerAction p)
+			track = p
+			
+		function setUnTrackAction(PlayerAction p)
+			unTrack = p
+		
+		function onClick(player p)
+			if click != null
+				click.run(p)
+			if playClickAnimation
+				content.clickAnimation(p)
+
+		function onDoubleClick(player p)
+			if dClick != null
+				dClick.run(p)
+			if not playClickAnimation and playDoubleClickAnimation
+				content.clickAnimation(p)
+		
+		function onTrack(player p)
+			if track != null
+				track.run(p)
+			if playHoverAnimation
+				content.trackAnimation(p)
+			
+		function onUnTrack(player p)
+			if unTrack != null
+				unTrack.run(p)
+			if playHoverAnimation
+				content.untrackAnimation(p)
 		
 		construct(Widget w)
 			super(w.pos, w.size)
 			content = w
+			
+	public abstract class PlayerAction
+	
+		abstract function run(player p)
 		
 			
 	public class WindowManager
@@ -75,13 +122,16 @@ package Menu
 		static Observable array currentObservable
 		
 		static function openWindow(Window w, player p)
-			skip//if currentWindow[GetPlayerId(p)].
+			currentWindow[GetPlayerId(p)].push(w)
+			
+		static function closeTopWindow(player p)
+			currentWindow[GetPlayerId(p)].pop()
 		
 		static function trackableHit(TrackableEx tr, player p)
-			currentWindow[GetPlayerId(p)].peek().getObervableAt(tr).onHit(p)
+			currentWindow[GetPlayerId(p)].peek().getObervableAt(tr).onClick(p)
 			
 		static function trackableDoubleHit(TrackableEx tr, player p)
-			currentWindow[GetPlayerId(p)].peek().getObervableAt(tr).onDoubleHit(p)
+			currentWindow[GetPlayerId(p)].peek().getObervableAt(tr).onDoubleClick(p)
 		
 		static function trackableTrack(TrackableEx tr, player p)
 			var ob = currentWindow[GetPlayerId(p)].peek().getObervableAt(tr)
@@ -103,5 +153,9 @@ package Menu
 						
 		function getObervableAt(TrackableEx tr) returns Observable
 			return trackMap.get(tr)
+			
+	init
+		for int i = 0 to 11
+			WindowManager.currentWindow[i] = new Stack<Window>()
 
 endpackage  

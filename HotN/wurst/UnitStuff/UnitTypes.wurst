@@ -1,0 +1,10 @@
+package UnitTypes
+
+import UnitObjEditing
+import ObjEditingNatives
+
+public class UnitType extends UnitDefinition
+	static int pos = '&000'
+
+	construct(string name)
+		super(pos, 'hpea')

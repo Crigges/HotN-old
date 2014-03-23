@@ -4,6 +4,7 @@ package Icon
 	import Menu
 	import IconType
 	import HashMap
+	import TypeCasting
 	
 	constant real animationSpeedHover = 3.5
 	constant real animationSpeedHit = 3.5
@@ -42,10 +43,10 @@ package Icon
 				strucMap.put(p, CreateDestructable(id, realPos.x * 1., realPos.y * 1., 0, scale * 1., 1))
 				
 		override function showFaded(player p)
-			skip
+			showDirect(p)
 			
 		override function hideFaded(player p)
-			skip
+			hideDirect(p)
 			
 		override function disable(player p)
 			if not isDisabled.get(p)
@@ -59,34 +60,32 @@ package Icon
 					strucMap.put(p, CreateDestructable(id, realPos.x * 1., realPos.y * 1., 0, scale * 1., 1))
 				
 		override function enable(player p)
-			destructable d = strucMap.get(p)
-			if d != null
-				RemoveDestructable(d)
-				int id = dummyIcon
-				if(GetLocalPlayer() == p)
-					id = typ.diableId
-				strucMap.put(p, CreateDestructable(id, realPos.x * 1., realPos.y * 1., 0, scale * 1., 1))
+			if isDisabled.get(p)
+				isDisabled.put(p, false)
+				destructable d = strucMap.get(p)
+				if d != null
+					RemoveDestructable(d)
+					int id = dummyIcon
+					if(GetLocalPlayer() == p)
+						id = typ.normalId
+					strucMap.put(p, CreateDestructable(id, realPos.x * 1., realPos.y * 1., 0, scale * 1., 1))
 			
 		override function clickAnimation(player p)
 			if GetLocalPlayer() == p
 				destructable d = strucMap.get(p)
 				SetDestructableAnimationSpeed(d, animationSpeedHit)
 				SetDestructableAnimation(d, "morph")
-				QueueDestructableAnimation(d, "morph")
+				QueueDestructableAnimation(d, "morph alternate")
 				
 		override function trackAnimation(player p)
 			if GetLocalPlayer() == p
 				destructable d = strucMap.get(p)
 				SetDestructableAnimationSpeed(d, animationSpeedHover)
-				SetDestructableAnimation(d, "morph alternate")
+				SetDestructableAnimation(d, "morph")
 			
 		override function untrackAnimation(player p)
 			if GetLocalPlayer() == p
 				destructable d = strucMap.get(p)
 				SetDestructableAnimation(d, "morph alternate")
-				
-				
-	init
-		new Icon("bla", element(0,0), 100).showDirect(Player(0))
 			
 endpackage

@@ -1,4 +1,7 @@
 package Image
+	import NoWurst
+	import Vectors
+	import MagicFunctions
 	import public Colors
 
 	public enum Layer
@@ -68,6 +71,6 @@ package Image
 		if this != null
 			DestroyImage(this)
 		else
-			printError("Nullpointer exeption by destroying an image")
+			error("Nullpointer exeption by destroying an image")
 	
 endpackage

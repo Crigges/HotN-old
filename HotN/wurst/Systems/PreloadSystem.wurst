@@ -1,0 +1,22 @@
+package PreloadSystem
+
+import LinkedList
+
+LinkedList<PreloadAction> actions = new LinkedList<PreloadAction>()
+
+public abstract class PreloadAction
+
+	construct()
+		actions.add(this)
+	
+	abstract function run() returns real
+	
+public function onPreload(PreloadAction action)
+	
+	
+init
+	onPreload(() -> begin
+		print("hello world")
+		return 123
+	end)
+	

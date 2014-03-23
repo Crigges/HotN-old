@@ -45,7 +45,7 @@ package InstanceBoard
 			multiboarditem mbi = mb.getItem(classId, 1)
 			mbi..setValue(count[classId].toString()).release()
 			
-		ondestroy
+		ondestroy 
 			count[classId]--
 			multiboarditem mbi = mb.getItem(classId, 1)
 			mbi..setValue(count[classId].toString()).release()

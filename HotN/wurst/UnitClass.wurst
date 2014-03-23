@@ -1,20 +1,20 @@
 package UnitClass
 	import Terrain
 	import Helper
-	import Dot
-	import Buff
-	import Filter
+	import initlater Dot
+	import initlater Buff
+	import initlater Filter
 	import Table
-	import FloatingText
-	import public Bonus
-	import Shield
+	import initlater FloatingText
+	import public initlater Bonus
+	import initlater Shield
 	import Setup
-	import Stun
-	import HeroClass
+	import initlater Stun
+	import initlater HeroClass
 	import LinkedList
 	import InstanceBoard
 	import StandardImports
-	import public UnitEvents
+	import public initlater UnitEvents
 	import CreationEvent
 	
 	public function callKnockback()

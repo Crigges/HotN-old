@@ -37,6 +37,8 @@ package GameStart
 	import ObjectId
 	import Spell
 	import SampleSpells
+	import Icon
+	import IconType
 	
 	trigger testt = CreateTrigger()..addAction(function setCallLimit)
 	Bonus lastBon = null
@@ -53,10 +55,11 @@ package GameStart
 	group testg = CreateGroup()
 	int progress = 0
 	int recursionCounter = 0
-	destructable testd = CreateDestructable('Icon', menuStart.x + 20., menuStart.y + 10., 0, 1, 1)
+	destructable testd //= CreateDestructable('Icon', menuStart.x + 20., menuStart.y + 10., 0, 1, 1)
 	int callLimit = 1
 	HashList<Unit> tList = new HashList<Unit>()
 	LinkedList<Unit> lList = new LinkedList<Unit>()
+	
 	
 	init
 		for int i = 0 to 11
@@ -167,13 +170,13 @@ package GameStart
 		static real progress = 0
 		static int preloadStatus = 0
 		static SimpleEvent preloadEnd = new SimpleEvent()
-		static boolean showProgress = false
+		static boolean showProgress = true
 		//Trackables
 		static int trackCounter = 0
 		static trigger trackTrig = CreateTrigger()
 		static element trackPos = element(1, 1)
 		//Abilitys
-		static unit preloadDummy = CreateUnit(DUMMY_PLAYER, 'H001', 0, 0, 0)
+		static unit preloadDummy = CreateUnit(DUMMY_PLAYER, DUMMY_UNIT_ID, 0, 0, 0)
 		static int abiCounter = 0
 		static int itemCounter = 0
 		
@@ -187,7 +190,7 @@ package GameStart
 				case 0
 					check = createTrackables()
 				case 1
-					check = preloadAbilitys()
+					check = 0//preloadAbilitys()
 				case 2
 					check = createItems()
 				case 3
@@ -338,26 +341,41 @@ package GameStart
 			string cuttet = SubString(chatString, 1, 5)
 			SetUnitAnimationByIndex(last.u, S2I(cuttet))
 		switch chatString
-//			case "showD"
-//				testImg.showDirect(Player(0))
-//				testImg.showDirect(Player(1))
-//			case "hideD"
-//				testImg.hideDirect(Player(0))
-//				testImg.hideDirect(Player(1))
-//			case "showF"
-//				testImg.showFaded(Player(0))
-//				testImg.showFaded(Player(1))
-//			case "hideF"
-//				testImg.hideFaded(Player(0))
-//				testImg.hideFaded(Player(1))
-//			case "dis"
-//				testImg.disable(Player(0))
-//			case "en"
-//				testImg.enable(Player(0))
-//			case "grow"
-//				testImg.grow(Player(0))
-//			case "srink"
-//				testImg.srink(Player(0))
+			case "showD"
+				WindowManager.openWindow(
+					new Window()..add(
+					new Observable(
+					new Icon("RingDesCrigges", element(5, 5), 4)
+					..showDirect(Player(0)))), Player(0))
+				//ic.showDirect(Player(0))
+				//testImg.showDirect(Player(0))
+				//testImg.showDirect(Player(1))
+			case "hideD"
+				//ic.hideDirect(Player(0))
+				//testImg.hideDirect(Player(0))
+				//testImg.hideDirect(Player(1))
+			case "showF"
+				//testImg.showFaded(Player(0))
+				//testImg.showFaded(Player(1))
+			case "hideF"
+				//testImg.hideFaded(Player(0))
+				//testImg.hideFaded(Player(1))
+			case "dis"
+				//ic.disable(Player(0))
+				//testImg.disable(Player(0))
+			case "en"
+				//ic.enable(Player(0))
+				//testImg.enable(Player(0))
+			case "click"
+				//ic.clickAnimation(Player(0))
+				//testImg.grow(Player(0))
+			case "dclick"
+				//ic.doubleClickAnimation(Player(0))
+				//testImg.srink(Player(0))
+			case "hoover"
+				//ic.trackAnimation(Player(0))
+			case "unhoover"
+				//ic.untrackAnimation(Player(0))
 			case "size+"
 				//testImg.setRealSize(testImg.realSize + (testImg.size * 1.05), Player(0))
 			case "size-"

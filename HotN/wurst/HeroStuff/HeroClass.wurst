@@ -1,13 +1,13 @@
 package HeroClass
 	import StandardImports
 	import UnitClass
-	import Bonus
+	import initlater Bonus
 	import Setup
-	import HeroBar
+	import initlater HeroBar
 	import Queue
-	import OrderHandling
+	import initlater OrderHandling
 	import HashMap
-	import Spell
+	import initlater Spell
 	import LinkedListModule
 	
 	public int heroCount = 0
