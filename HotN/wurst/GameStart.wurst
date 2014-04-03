@@ -39,6 +39,7 @@ package GameStart
 	import SampleSpells
 	import Icon
 	import IconType
+	import PreloadSystem
 	
 	trigger testt = CreateTrigger()..addAction(function setCallLimit)
 	Bonus lastBon = null
@@ -166,48 +167,40 @@ package GameStart
 	//========================================================================================================================================================================================//
 		
 	class Preload
-		static constant real maxProgress = 20.33
+		static constant real maxProgress = 1.905
+		static string array initOrder
 		static real progress = 0
-		static int preloadStatus = 0
+		static int preloadStatus = 1
 		static SimpleEvent preloadEnd = new SimpleEvent()
 		static boolean showProgress = true
-		//Trackables
-		static int trackCounter = 0
-		static trigger trackTrig = CreateTrigger()
-		static element trackPos = element(1, 1)
-		//Abilitys
-		static unit preloadDummy = CreateUnit(DUMMY_PLAYER, DUMMY_UNIT_ID, 0, 0, 0)
-		static int abiCounter = 0
-		static int itemCounter = 0
+		static int loopCounter = 0
+		
+		static function initOrder()
+			initOrder[1] = "Abilitys"
+			initOrder[2] = "Units"
+			initOrder[3] = "Items"
+			initOrder[4] = "Destructables"
+			initOrder[5] = "Buffs"
+			initOrder[6] = "Trackables"
 		
 		static function startPreload()
-			getTimer().start(0.0, function Preload.preload)
+			initOrder()
+			getTimer().start(1.0, function Preload.preload)
 			getTimer().start(1.0, function createBackground)
 		
 		static function preload()
-			real check = -1
-			switch preloadStatus
-				case 0
-					check = createTrackables()
-				case 1
-					check = 0//preloadAbilitys()
-				case 2
-					check = createItems()
-				case 3
-					check = disableAbilitys()
-				case 4
-					ClearTextMessages()
-					print("Preload Done")
-					GetExpiredTimer().release()
-					preloadDummy.remove()
-					preloadEnd.fire()
-					destroy preloadEnd
-					return
-				default
-					printError("Invaild preload Status")
-			if check == -1
+			if initOrder[preloadStatus] == null
+				ClearTextMessages()
+				print("Preload done in " + progress.toString() + " sec!")
+				GetExpiredTimer().release()
+				return
+			real check = preloadAction(initOrder[preloadStatus], loopCounter)
+			loopCounter++
+			if check == -2
 				printError("An error while Preloading has ocurred")
-			else if check == 0
+				return
+			else if check == -1
+				loopCounter = 0
 				preloadStatus++
 				GetExpiredTimer().start(0.05, function preload)
 				progress += 0.05
@@ -216,59 +209,27 @@ package GameStart
 				progress += check
 			if showProgress
 				ClearTextMessages()
-				print("Loaded: " + (100 * (progress / maxProgress)).toString() + "%")
+				print("Loading " + initOrder[preloadStatus] + ": " + (100 * (progress / maxProgress)).toString() + "%")
 			
 					
-		static function createTrackables() returns real
-			for int i1 = 1 to 10
-					trackCounter++
-					if trackCounter <= 968
-						if not trackBlacklist.hasBoolean(trackPos.x, trackPos.y)
-							vec2 trackVec = vec2(menuStart.x + trackPos.x * 1., menuStart.y + trackPos.y * 1.)
-							setTrackableAt(trackPos, new TrackableEx(trackVec, "track1.mdl")
-								..onClick((TrackableEx tr, player p) -> WindowManager.trackableHit(tr, p))
-								..onDoubleClick((TrackableEx tr, player p) -> WindowManager.trackableDoubleHit(tr, p))
-								..onTrack((TrackableEx tr, player p) -> WindowManager.trackableTrack(tr, p)))
-						if trackPos.y >= menuHeight
-							trackPos.y = 1
-							trackPos.x++
-						else
-							trackPos.y++
-					else
-						return 0.
-			return 0.01
-			
-		static function preloadAbilitys() returns real
-			preloadDummy.addAbility(preloadAbi.get(abiCounter))
-			if GetUnitAbilityLevel(preloadDummy, preloadAbi.get(abiCounter)) == 0
-				print("The Ability " + idInteger2IdString(preloadAbi.get(abiCounter)) + " was not sucessfully loaded")
-				return -1.
-			if abiCounter >= preloadAbi.getSize() - 1
-				return 0.
-			else
-				SetUnitAbilityLevel(preloadDummy, preloadAbi.get(abiCounter), 100)
-				abiCounter++
-				return (abilityLoadTime + GetUnitAbilityLevel(preloadDummy, preloadAbi.get(abiCounter - 1)) * abilityLoadTimeLevelBonus)
-		
-		static function createItems() returns real
-			permAttackTome[itemCounter] = CreateItem(permAttackTomeId.get(itemCounter), recycleGraveyard.x, recycleGraveyard.y)
-			if itemCounter >= permAttackTomeId.getSize() - 1
-				return 0.
-			else
-				itemCounter++
-				return 0.05
-				
-		static function disableAbilitys() returns real
-			ObjId id = new ObjId()
-			id.setId2('S')
-			id.setId3('P')
-			for int i1 = 0 to 5
-				id.setId1(i1 castTo SpellType.toId())
-				for int i2 = 0 to 3
-					id.setId4(i2.toString())
-					for int i3 = 0 to 11
-						SetPlayerAbilityAvailable(Player(i3), id.getId(), false)
-			return 0.
+//		static function createTrackables() returns real
+//			for int i1 = 1 to 10
+//					trackCounter++
+//					if trackCounter <= 968
+//						if not trackBlacklist.hasBoolean(trackPos.x, trackPos.y)
+//							vec2 trackVec = vec2(menuStart.x + trackPos.x * 1., menuStart.y + trackPos.y * 1.)
+//							setTrackableAt(trackPos, new TrackableEx(trackVec, "track1.mdl")
+//								..onClick((TrackableEx tr, player p) -> WindowManager.trackableHit(tr, p))
+//								..onDoubleClick((TrackableEx tr, player p) -> WindowManager.trackableDoubleHit(tr, p))
+//								..onTrack((TrackableEx tr, player p) -> WindowManager.trackableTrack(tr, p)))
+//						if trackPos.y >= menuHeight
+//							trackPos.y = 1
+//							trackPos.x++
+//						else
+//							trackPos.y++
+//					else
+//						return 0.
+//			return 0.01
 				
 				
 		static function createBackground()
@@ -342,11 +303,15 @@ package GameStart
 			SetUnitAnimationByIndex(last.u, S2I(cuttet))
 		switch chatString
 			case "showD"
+				var w = new Window()
 				WindowManager.openWindow(
-					new Window()..add(
+					w..add(
 					new Observable(
 					new Icon("RingDesCrigges", element(5, 5), 4)
 					..showDirect(Player(0)))), Player(0))
+				for element e in new ElementLoop(element(5, 15), element(8, 18))
+					w.add(new Icon("RingDesCrigges", e, 1)
+						..showDirect(Player(0)))
 				//ic.showDirect(Player(0))
 				//testImg.showDirect(Player(0))
 				//testImg.showDirect(Player(1))

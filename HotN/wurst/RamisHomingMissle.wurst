@@ -35,8 +35,8 @@ class Missle
 		t = getTimer()..setData(this castTo int)..startPeriodic(0.03, () -> GetExpiredTimer().getData() castTo thistype.move())
 		destroyTimer = getTimer()
 			..setData(this castTo int)
-			..start(5, () -> 
-				destroy GetExpiredTimer().getData() castTo thistype)
+			..start(5, 
+			() -> destroy GetExpiredTimer().getData() castTo thistype)
 		
 	function move()
 		speed *= speedLost

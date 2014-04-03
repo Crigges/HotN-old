@@ -9,8 +9,11 @@ package OeSetup
 
 	import Setup
 	import Helper
+	import PreloadSystem
+	
+	boolean compiletime = true
 		
-	@compiletime function createObjects()
+	function createObjects()
 		lifeAbilitys()
 		manaAbilitys()
 		agiAbilitys()
@@ -24,29 +27,41 @@ package OeSetup
 	
 	function lifeAbilitys()
 		for int i = 'a' to 'a' + (maxBonSize - 1)
-			var obj = new AbilityDefinitionMaxLifeBonusLesser(lifeRaw + i)
-			obj.setMaxLifeGained(1, (2).pow(i - 'a'))
-			obj.setItemAbility(false)
-			obj.setName("Bonus Life +")
-			obj.setEditorSuffix((2).pow(i - 'a').toString())
-		var objN = new AbilityDefinitionMaxLifeBonusLesser(lifeRaw + '-')
-		objN.setMaxLifeGained(1, -((2).pow(maxBonSize)))
-		objN.setItemAbility(false)
-		objN.setName("Bonus Life -")
-		objN.setEditorSuffix((2).pow(maxBonSize).toString())
+			if compiletime
+				var obj = new AbilityDefinitionMaxLifeBonusLesser(lifeRaw + i)
+				obj.setMaxLifeGained(1, (2).pow(i - 'a'))
+				obj.setItemAbility(false)
+				obj.setName("Bonus Life +")
+				obj.setEditorSuffix((2).pow(i - 'a').toString())
+			else
+				addAbilityToPreload(lifeRaw + i, 1)
+		if compiletime
+			var objN = new AbilityDefinitionMaxLifeBonusLesser(lifeRaw + '-')
+			objN.setMaxLifeGained(1, -((2).pow(maxBonSize)))
+			objN.setItemAbility(false)
+			objN.setName("Bonus Life -")
+			objN.setEditorSuffix((2).pow(maxBonSize).toString())
+		else
+			addAbilityToPreload(lifeRaw + '-', 1)
 		
 	function manaAbilitys()
 		for int i = 'a' to 'a' + (maxBonSize - 1)
-			var obj = new AbilityDefinitionMaxManaBonusLeast(manaRaw + i)
-			obj.setMaxManaGained(1, (2).pow(i - 'a'))
-			obj.setItemAbility(false)
-			obj.setName("Bonus Mana +")
-			obj.setEditorSuffix((2).pow(i - 'a').toString())
-		var objN = new AbilityDefinitionMaxManaBonusLeast(manaRaw + '-')
-		objN.setMaxManaGained(1, -((2).pow(maxBonSize)))
-		objN.setItemAbility(false)
-		objN.setName("Bonus Mana -")
-		objN.setEditorSuffix((2).pow(maxBonSize).toString())
+			if compiletime
+				var obj = new AbilityDefinitionMaxManaBonusLeast(manaRaw + i)
+				obj.setMaxManaGained(1, (2).pow(i - 'a'))
+				obj.setItemAbility(false)
+				obj.setName("Bonus Mana +")
+				obj.setEditorSuffix((2).pow(i - 'a').toString())
+			else
+				addAbilityToPreload(manaRaw + i, 1)
+		if compiletime
+			var objN = new AbilityDefinitionMaxManaBonusLeast(manaRaw + '-')
+			objN.setMaxManaGained(1, -((2).pow(maxBonSize)))
+			objN.setItemAbility(false)
+			objN.setName("Bonus Mana -")
+			objN.setEditorSuffix((2).pow(maxBonSize).toString())
+		else
+			addAbilityToPreload(manaRaw + '-', 1)
 				
 	function agiAbilitys()
 		for int i = 'a' to 'a' + (maxBonSize - 1)
@@ -168,6 +183,13 @@ package OeSetup
 		objN.setAmountRegenerated(1, -(((2).pow(maxBonSize))*0.05))
 		objN.setItemAbility(false)
 		objN.setName("Bonus manaReg -")
-		objN.setEditorSuffix((2).pow(maxBonSize).toString())	
+		objN.setEditorSuffix((2).pow(maxBonSize).toString())
+		
+	@compiletime function create()
+		createObjects()
+		
+	init
+		compiletime = false
+		createObjects()
 
 endpackage

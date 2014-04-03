@@ -2,9 +2,30 @@ package UnitTypes
 
 import UnitObjEditing
 import ObjEditingNatives
+import HashMap
+import UnitTypeHelper
+import PreloadSystem
 
-public class UnitType extends UnitDefinition
+public class UnitType
+	static constant originId = 'hfoo'
+	static HashMap<int, thistype> typesByName = new HashMap<int, thistype>()
 	static int pos = '&000'
+	static boolean compiletime = false
+	
+	//compiletime
+	UnitDefinition uDef = null
+	
+	//runntime
+	int id = 0
 
 	construct(string name)
-		super(pos, 'hpea')
+		if compiletime
+			uDef = createCleanUnit(pos)
+			addUnitToPreload(pos)
+		else
+			id = pos
+			typesByName.put(StringHash(name), this)
+		pos++
+		
+init 
+	UnitType.compiletime = true

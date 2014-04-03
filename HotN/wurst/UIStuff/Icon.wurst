@@ -6,8 +6,8 @@ package Icon
 	import HashMap
 	import TypeCasting
 	
-	constant real animationSpeedHover = 3.5
-	constant real animationSpeedHit = 3.5
+	constant real animationSpeedHover = 5
+	constant real animationSpeedHit = 8
 	constant int dummyIcon = 'icon'
 	
 	public class Icon extends Widget
@@ -19,7 +19,7 @@ package Icon
 		vec2 localPos = recycleGraveyard
 		
 		construct(string name, element pos, int scale)
-			super(pos, element(1, 1))
+			super(pos, element(scale, scale))
 			realPos = element(pos.x + menuStart.x, pos.y + menuStart.y)
 			typ = getIconType(name)
 			this.scale = scale
@@ -40,7 +40,7 @@ package Icon
 						id = typ.diableId
 					else
 						id = typ.normalId
-				strucMap.put(p, CreateDestructable(id, realPos.x * 1., realPos.y * 1., 0, scale * 1., 1))
+				strucMap.put(p, CreateDestructable(id, realPos.x + (scale - 1) * 0.5, realPos.y + (scale - 1) * 0.5, 0, scale * 1., 1))
 				
 		override function showFaded(player p)
 			showDirect(p)
@@ -68,14 +68,14 @@ package Icon
 					int id = dummyIcon
 					if(GetLocalPlayer() == p)
 						id = typ.normalId
-					strucMap.put(p, CreateDestructable(id, realPos.x * 1., realPos.y * 1., 0, scale * 1., 1))
+					strucMap.put(p, CreateDestructable(id, realPos.x -(scale - 1) * 0.5, realPos.y * 1., 0, scale * 1., 1))
 			
 		override function clickAnimation(player p)
 			if GetLocalPlayer() == p
 				destructable d = strucMap.get(p)
 				SetDestructableAnimationSpeed(d, animationSpeedHit)
-				SetDestructableAnimation(d, "morph")
-				QueueDestructableAnimation(d, "morph alternate")
+				SetDestructableAnimation(d, "morph alternate")
+				QueueDestructableAnimation(d, "morph")
 				
 		override function trackAnimation(player p)
 			if GetLocalPlayer() == p
@@ -86,6 +86,7 @@ package Icon
 		override function untrackAnimation(player p)
 			if GetLocalPlayer() == p
 				destructable d = strucMap.get(p)
+				SetDestructableAnimationSpeed(d, animationSpeedHover) 
 				SetDestructableAnimation(d, "morph alternate")
 			
 endpackage

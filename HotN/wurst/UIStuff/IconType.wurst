@@ -3,6 +3,7 @@ package IconType
 import HashMap
 import AbilityObjEditing
 import ObjectIds
+import PreloadSystem
 
 //add buffs here
 @compiletime function types()
@@ -18,6 +19,8 @@ constant real restColor = 0.3
 function addIconType(string name, string iconPath)
 	if not compiletime
 		iconMap.put(StringHash(name), iconCount)
+		addDestructableToPreload(iconCount)
+		addDestructableToPreload(iconCount + 1)
 	else
 		var u = createObjectDefinition("w3b", iconCount, 'YTlb')
 		u.setReal("bgsc", 0.0)

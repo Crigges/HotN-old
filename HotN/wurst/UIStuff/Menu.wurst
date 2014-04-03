@@ -7,6 +7,9 @@ package Menu
 	import Stack
 	import LinkedList
 	import HashMap
+	import PreloadSystem
+	import Trackable
+	import ClosureTimers
 
 	public abstract class Widget
 		element pos
@@ -128,17 +131,24 @@ package Menu
 			currentWindow[GetPlayerId(p)].pop()
 		
 		static function trackableHit(TrackableEx tr, player p)
-			currentWindow[GetPlayerId(p)].peek().getObervableAt(tr).onClick(p)
+			let t = currentWindow[GetPlayerId(p)].peek().getObervableAt(tr)
+			if t != null
+				t.onClick(p)
 			
 		static function trackableDoubleHit(TrackableEx tr, player p)
-			currentWindow[GetPlayerId(p)].peek().getObervableAt(tr).onDoubleClick(p)
+			let t = currentWindow[GetPlayerId(p)].peek().getObervableAt(tr)
+			if t != null
+				t.onDoubleClick(p)
 		
 		static function trackableTrack(TrackableEx tr, player p)
 			var ob = currentWindow[GetPlayerId(p)].peek().getObervableAt(tr)
 			var curr = currentObservable[GetPlayerId(p)]
 			if ob != curr
-				ob.onTrack(p)
-				curr.onUnTrack(p)
+				if ob != null
+					ob.onTrack(p)
+				if curr != null
+					curr.onUnTrack(p)
+				currentObservable[GetPlayerId(p)] = ob
 	
 	public class Window
 		LinkedList<Widget> content = new LinkedList<Widget>()
@@ -147,9 +157,8 @@ package Menu
 		function add(Widget g)
 			content.add(g)
 			if g instanceof Observable
-				for int x = g.pos.x to g.pos.x + g.size.x - 1
-					for int y = g.pos.y to g.pos.y + g.size.y - 1
-						trackMap.put(getTrackableAt(element(x, y)), g castTo Observable)
+				for element e in new ElementLoop(g.pos, g.pos + g.size - element(1, 1))
+					trackMap.put(getTrackableAt(e), g castTo Observable)
 						
 		function getObervableAt(TrackableEx tr) returns Observable
 			return trackMap.get(tr)
@@ -157,5 +166,24 @@ package Menu
 	init
 		for int i = 0 to 11
 			WindowManager.currentWindow[i] = new Stack<Window>()
+		var w = new ElementLoop(menuStart, menuStart + element(menuWidth, menuHeight))
+		onPreload("Trackables", (int i) -> begin
+			real ret = 0.02
+			for int dum = 1 to 10
+				element e
+				if w.hasNext()
+					e = w.next()
+				else
+					print("earls")
+					ret = -1
+					break
+				var tr = new TrackableEx(e.toVec(), "track.mdl")
+				setTrackableAt(e - menuStart, tr)
+				tr.onClick((TrackableEx track, player p) -> WindowManager.trackableHit(track, p))
+				tr.onDoubleClick((TrackableEx track, player p) -> WindowManager.trackableDoubleHit(track, p))
+				tr.onTrack((TrackableEx track, player p) -> WindowManager.trackableTrack(track, p))
+			return ret
+		end)
+		
 
 endpackage  

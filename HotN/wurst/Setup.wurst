@@ -32,7 +32,7 @@ package Setup
 	public constant int strRaw		 			= '(G)0' - '0'
 	public constant int intRaw		 			= '(H)0' - '0'
 	public constant int lifeRegRaw		 		= '(I)0' - '0'
-	public constant int manaRegRaw		 		='(J)0' - '0'
+	public constant int manaRegRaw		 		= '(J)0' - '0'
 	public int array attackPerm
 	
 	public HashList<int> preloadAbi = new HashList<int>()
@@ -68,6 +68,9 @@ package Setup
 	public function element.op_plus(element other) returns element
 		return element(this.x + other.x, this.y + other.y)
 		
+	public function element.op_minus(element other) returns element
+		return element(this.x - other.x, this.y - other.y)
+		
 	public function element.op_div(int i) returns element
 		return element(this.x div i, this.y div i)
 		
@@ -78,331 +81,42 @@ package Setup
 		return tracks[(menuWidth + 1) * pos.x + pos.y]
 		
 	public function setTrackableAt(element pos, TrackableEx tr)
-		tracks[(menuWidth + 1) * pos.x + pos.y] = tr	
+		tracks[(menuWidth + 1) * pos.x + pos.y] = tr
+		
+	public class ElementLoop
+		element a
+		element b
+		int start
+	
+		construct(element a, element b)
+			this.a = a
+			this.b = b
+			start = a.x
+			
+		function iterator() returns thistype
+			return this
+			
+		function hasNext() returns boolean
+			return (a.x <= b.x and a.y <= b.y)
+			
+		function next() returns element
+			element ret = a
+			if a.x >= b.x
+				a.y++
+				a.x = start
+			else
+				a.x++
+			return ret
+			
+		function close()
+			destroy this
+			
+			
+		
 		
 	init
 		trackBlacklist.saveBoolean(1, 1, true)
 		
-		//-----------------------//
-		//------BonusMod---------//
-		//-----------------------//
-		
-		for int i1 = '(A)a' to '(G)a' step 256 * 256
-			for int i2 = i1 to i1 + 10
-		
-//		//------AttackBons-------//
-//		
-//		attackBon[0] = '(B)a' // + 1
-//		attackBon[1] = '(B)b' // + 2
-//		attackBon[2] = '(B)c' // + 4
-//		attackBon[3] = '(B)d' // + 8
-//		attackBon[4] = '(B)e' // + 16
-//		attackBon[5] = '(B)f' // + 32
-//		attackBon[6] = '(B)g' // + 64
-//		attackBon[7] = '(B)h' // + 128
-//		attackBon[8] = '(B)i' // + 256
-//		attackBon[9] = '(B)j' // + 512
-//		attackBonNeg = '(B)-' // -1024
-		
-		//-------Attack Perm-------//
-		
-		attackPerm[0] = '(Z)a' // + 1
-		attackPerm[1] = '(Z)b' // + 2
-		attackPerm[2] = '(Z)c' // + 4
-		attackPerm[3] = '(Z)d' // + 8
-		attackPerm[4] = '(Z)e' // + 16
-		attackPerm[5] = '(Z)f' // + 32
-		attackPerm[6] = '(Z)g' // + 64
-		attackPerm[7] = '(Z)h' // + 128
-		attackPerm[8] = '(Z)i' // + +256
-		
-		permAttackTomeId.add('(Z)j')	// + 1
-		permAttackTomeId.add('(Z)k')	// + 2
-		permAttackTomeId.add('(Z)l')	// + 4
-		permAttackTomeId.add('(Z)m')	// + 8
-		permAttackTomeId.add('(Z)n')	// + 16
-		permAttackTomeId.add('(Z)o')	// + 32
-		permAttackTomeId.add('(Z)p')	// + 64
-		permAttackTomeId.add('(Z)q')	// + 128
-		permAttackTomeId.add('(Z)r')	// + 256
-		permAttackNegTomeId = '(Z)s'	// - 512
-		
-		//----AttackSpeedBons----//
-		
-//		attackSpeedBon[0] = '(I)a' // + 1
-//		attackSpeedBon[1] = '(I)b' // + 2
-//		attackSpeedBon[2] = '(I)c' // + 4
-//		attackSpeedBon[3] = '(I)d' // + 8
-//		attackSpeedBon[4] = '(I)e' // + 16
-//		attackSpeedBon[5] = '(I)f' // + 32
-//		attackSpeedBon[6] = '(I)g' // + 64
-//		attackSpeedBon[7] = '(I)h' // + 128
-//		attackSpeedBon[8] = '(I)i' // + 256
-//		attackSpeedBonNeg = '(I)-' // - 512
-//		
-//		//-------ArmorBons-------//
-//		
-//		armorBon[0] = '(A)a' // + 1
-//		armorBon[1] = '(A)b' // + 2
-//		armorBon[2] = '(A)c' // + 4
-//		armorBon[3] = '(A)d' // + 8
-//		armorBon[4] = '(A)e' // + 16
-//		armorBon[5] = '(A)f' // + 32
-//		armorBon[6] = '(A)g' // + 64
-//		armorBon[7] = '(A)h' // + 128
-//		armorBon[8] = '(A)i' // + 256
-//		armorBon[9] = '(A)j' // + 512
-//		armorBonNeg = '(A)-' // - 1024
-//		
-//		//--------HPBons--------//
-//		
-//		hpBon[0] = '(Y)a' // + 1
-//		hpBon[1] = '(Y)b' // + 2
-//		hpBon[2] = '(Y)c' // + 4
-//		hpBon[3] = '(Y)d' // + 8
-//		hpBon[4] = '(Y)e' // + 16
-//		hpBon[5] = '(Y)f' // + 32
-//		hpBon[6] = '(Y)g' // + 64
-//		hpBon[7] = '(Y)h' // + 128
-//		hpBon[8] = '(Y)i' // + 256
-//		hpBon[9] = '(Y)j' // + 512
-//		hpBon[10] = '(Y)k'// + 1024
-//		hpBon[11] = '(Y)l'// + 2048
-//		hpBonNeg = '(Y)-' // - 4096
-//				
-//		//-------ManaBons-------//
-//		
-//		manaBon[0] = '(X)a' // + 1
-//		manaBon[1] = '(X)b' // + 2
-//		manaBon[2] = '(X)c' // + 4
-//		manaBon[3] = '(X)d' // + 8
-//		manaBon[4] = '(X)e' // + 16
-//		manaBon[5] = '(X)f' // + 32
-//		manaBon[6] = '(X)g' // + 64
-//		manaBon[7] = '(X)h' // + 128
-//		manaBon[8] = '(X)i' // + 256
-//		manaBon[9] = '(X)j' // + 512
-//		manaBon[10] = '(X)k'// + 1024
-//		manaBon[11] = '(X)l'// + 2048
-//		manaBonNeg = '(X)-' // - 4096
-//				
-//		//-------Agility-------//
-//		
-//		agiBon[0] = '(G)a' // + 1
-//		agiBon[1] = '(G)b' // + 2
-//		agiBon[2] = '(G)c' // + 4
-//		agiBon[3] = '(G)d' // + 8
-//		agiBon[4] = '(G)e' // + 16
-//		agiBon[5] = '(G)f' // + 32
-//		agiBon[6] = '(G)g' // + 64
-//		agiBon[7] = '(G)h' // + 128
-//		agiBon[8] = '(G)i' // + 256
-//		agiBonNeg = '(G)-' // - 512
-//				
-//		//-------Strength-------//
-//		
-//		strBon[0] = '(F)a' // + 1
-//		strBon[1] = '(F)b' // + 2
-//		strBon[2] = '(F)c' // + 4
-//		strBon[3] = '(F)d' // + 8
-//		strBon[4] = '(F)e' // + 16
-//		strBon[5] = '(F)f' // + 32
-//		strBon[6] = '(F)g' // + 64
-//		strBon[7] = '(F)h' // + 128
-//		strBon[8] = '(F)i' // + 256
-//		strBonNeg = '(F)-' // - 512
-//						
-//		//------Inteligenz-------//
-//		
-//		intBon[0] = '(H)a' // + 1
-//		intBon[1] = '(H)b' // + 2
-//		intBon[2] = '(H)c' // + 4
-//		intBon[3] = '(H)d' // + 8
-//		intBon[4] = '(H)e' // + 16
-//		intBon[5] = '(H)f' // + 32
-//		intBon[6] = '(H)g' // + 64
-//		intBon[7] = '(H)h' // + 128
-//		intBon[8] = '(H)i' // + 256
-//		intBonNeg = '(H)-' // - 512
-//					
-//		//------LifeReg-------//
-//		
-//		lifeRegBon[0] = '(W)a' // + 0.1
-//		lifeRegBon[1] = '(W)b' // + 0.2
-//		lifeRegBon[2] = '(W)c' // + 0.4
-//		lifeRegBon[3] = '(W)d' // + 0.8
-//		lifeRegBon[4] = '(W)e' // + 1.6
-//		lifeRegBon[5] = '(W)f' // + 3.2
-//		lifeRegBon[6] = '(W)g' // + 6.4
-//		lifeRegBon[7] = '(W)h' // + 12.8
-//		lifeRegBon[8] = '(W)i' // + 25.6
-//		lifeRegBon[9] = '(W)j' // + 51.2
-//		lifeRegBon[10] = '(W)k' //+ 102.4 
-//		lifeRegBon[11] = '(W)l' //+ 204.8
-//						
-//		//------ManaReg-------//
-//		
-//		manaRegBon[0] = '(V)a' // + 0.1
-//		manaRegBon[1] = '(V)b' // + 0.2
-//		manaRegBon[2] = '(V)c' // + 0.4
-//		manaRegBon[3] = '(V)d' // + 0.8
-//		manaRegBon[4] = '(V)e' // + 1.6
-//		manaRegBon[5] = '(V)f' // + 3.2
-//		manaRegBon[6] = '(V)g' // + 6.4
-//		manaRegBon[7] = '(V)h' // + 12.8
-//		manaRegBon[8] = '(V)i' // + 25.6
-//		manaRegBon[9] = '(V)j' // + 51.2
-//		manaRegBon[10] = '(V)k' //+ 102.4 
-//		manaRegBon[11] = '(V)l' //+ 204.8
-//		
-//		
-//		//------Perm HP|Mana------//
-//		
-//		permHp = 'HP_+'
-//		permHpNeg = 'HP_-'
-//		permMp = 'MP_+'
-//		permMpNeg = 'HP_-'
-		
-		//------PreloadArray------//
-		
-		preloadAbi.add('(A)a')
-		preloadAbi.add('(A)b')
-		preloadAbi.add('(A)c')
-		preloadAbi.add('(A)d')
-		preloadAbi.add('(A)e')
-		preloadAbi.add('(A)f')
-		preloadAbi.add('(A)g')
-		preloadAbi.add('(A)h')
-		preloadAbi.add('(A)i')
-		preloadAbi.add('(A)j')
-		preloadAbi.add('(A)-')
-		
-		preloadAbi.add('(B)a')
-		preloadAbi.add('(B)b')
-		preloadAbi.add('(B)c')
-		preloadAbi.add('(B)d')
-		preloadAbi.add('(B)e')
-		preloadAbi.add('(B)f')
-		preloadAbi.add('(B)g')
-		preloadAbi.add('(B)h')
-		preloadAbi.add('(B)i')
-		preloadAbi.add('(B)j')
-		preloadAbi.add('(B)-')
-		
-		preloadAbi.add('(Z)a')
-		preloadAbi.add('(Z)b')
-		preloadAbi.add('(Z)c')
-		preloadAbi.add('(Z)d')
-		preloadAbi.add('(Z)e')
-		preloadAbi.add('(Z)f')
-		preloadAbi.add('(Z)g')
-		preloadAbi.add('(Z)h')
-		preloadAbi.add('(Z)i')
-		preloadAbi.add('(Z)t')
-		
-		preloadAbi.add('(I)a')
-		preloadAbi.add('(I)b')
-		preloadAbi.add('(I)c')
-		preloadAbi.add('(I)d')
-		preloadAbi.add('(I)e')
-		preloadAbi.add('(I)f')
-		preloadAbi.add('(I)g')
-		preloadAbi.add('(I)h')
-		preloadAbi.add('(I)i')
-		preloadAbi.add('(I)-')
-		
-		preloadAbi.add('(Y)a')
-		preloadAbi.add('(Y)b')
-		preloadAbi.add('(Y)c')
-		preloadAbi.add('(Y)d')
-		preloadAbi.add('(Y)e')
-		preloadAbi.add('(Y)f')
-		preloadAbi.add('(Y)g')
-		preloadAbi.add('(Y)h')
-		preloadAbi.add('(Y)i')
-		preloadAbi.add('(Y)j')
-		preloadAbi.add('(Y)k')
-		preloadAbi.add('(Y)l')
-		preloadAbi.add('(Y)-')
-		
-		preloadAbi.add('(X)a')
-		preloadAbi.add('(X)b')
-		preloadAbi.add('(X)c')
-		preloadAbi.add('(X)d')
-		preloadAbi.add('(X)e')
-		preloadAbi.add('(X)f')
-		preloadAbi.add('(X)g')
-		preloadAbi.add('(X)h')
-		preloadAbi.add('(X)i')
-		preloadAbi.add('(X)j')
-		preloadAbi.add('(X)k')
-		preloadAbi.add('(X)l')
-		preloadAbi.add('(X)-')
-		
-		preloadAbi.add('(F)a')
-		preloadAbi.add('(F)b')
-		preloadAbi.add('(F)c')
-		preloadAbi.add('(F)d')
-		preloadAbi.add('(F)e')
-		preloadAbi.add('(F)f')
-		preloadAbi.add('(F)g')
-		preloadAbi.add('(F)h')
-		preloadAbi.add('(F)i')
-		preloadAbi.add('(F)-')
-
-		preloadAbi.add('(G)a')
-		preloadAbi.add('(G)b')
-		preloadAbi.add('(G)c')
-		preloadAbi.add('(G)d')
-		preloadAbi.add('(G)e')
-		preloadAbi.add('(G)f')
-		preloadAbi.add('(G)g')
-		preloadAbi.add('(G)h')
-		preloadAbi.add('(G)i')
-		preloadAbi.add('(G)-')
-		
-		preloadAbi.add('(H)a')
-		preloadAbi.add('(H)b')
-		preloadAbi.add('(H)c')
-		preloadAbi.add('(H)d')
-		preloadAbi.add('(H)e')
-		preloadAbi.add('(H)f')
-		preloadAbi.add('(H)g')
-		preloadAbi.add('(H)h')
-		preloadAbi.add('(H)i')
-		preloadAbi.add('(H)-')
-		
-		preloadAbi.add('(W)a')
-		preloadAbi.add('(W)b')
-		preloadAbi.add('(W)c')
-		preloadAbi.add('(W)d')
-		preloadAbi.add('(W)e')
-		preloadAbi.add('(W)f')
-		preloadAbi.add('(W)g')
-		preloadAbi.add('(W)h')
-		preloadAbi.add('(W)i')
-		preloadAbi.add('(W)j')
-		preloadAbi.add('(W)k')
-		preloadAbi.add('(W)l')
-		
-		preloadAbi.add('(V)a')
-		preloadAbi.add('(V)b')
-		preloadAbi.add('(V)c')
-		preloadAbi.add('(V)d')
-		preloadAbi.add('(V)e')
-		preloadAbi.add('(V)f')
-		preloadAbi.add('(V)g')
-		preloadAbi.add('(V)h')
-		preloadAbi.add('(V)i')
-		preloadAbi.add('(V)j')
-		preloadAbi.add('(V)k')
-		preloadAbi.add('(V)l')
-		
-		preloadAbi.add('HP_+')
-		preloadAbi.add('HP_-')
-		preloadAbi.add('MP_+')
-		preloadAbi.add('MP_-')
-	
 	
 	public enum Update
 		ATTACK //

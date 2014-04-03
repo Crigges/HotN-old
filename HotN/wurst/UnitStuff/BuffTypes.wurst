@@ -4,6 +4,7 @@ import HashMap
 import BuffObjEditing
 import AbilityObjEditing
 import ObjectIds
+import PreloadSystem
 
 //add buffs here
 function types()
@@ -18,6 +19,8 @@ boolean compiletime = true
 function addBuffType(string buffName, string iconPath, string tooltip, string tooltipEx)
 	if not compiletime
 		buffMap.put(StringHash(buffName), buffCount)
+		addBuffToPreload(buffCount)
+		addAbilityToPreload(buffCount + 1, 1)
 	else
 		BuffDefinition bf = new BuffDefinition(buffCount, 'BNso')
 		bf.setIconNormal(1, iconPath)
