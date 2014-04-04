@@ -17,7 +17,7 @@ package HeroClass
 		use LinkedListModule
 		static constant trigger castDetect = CreateTrigger()..addAction(function handleCasts)
 		static constant HashMap<int, Spell> abiIdToSpell = new HashMap<int, Spell>()
-		static constant timer checkOrders = getTimer()..startPeriodic(0.01, function checkOrders)
+		static constant timer checkOrders  = getTimer()//..startPeriodic(0.01, function checkOrders)
 		real agi
 		real bonusAgi
 		real bonusAgiPer

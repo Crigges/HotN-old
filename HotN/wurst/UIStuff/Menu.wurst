@@ -125,10 +125,20 @@ package Menu
 		static Observable array currentObservable
 		
 		static function openWindow(Window w, player p)
+			w.wantToClose.put(p, false)
+			w.showContent(p)
 			currentWindow[GetPlayerId(p)].push(w)
 			
 		static function closeTopWindow(player p)
-			currentWindow[GetPlayerId(p)].pop()
+			currentWindow[GetPlayerId(p)].pop().hideContent(p)
+			while true
+				if currentWindow[GetPlayerId(p)].peek().wantToClose.get(p)
+					currentWindow[GetPlayerId(p)].pop().hideContent(p)
+				else
+					break
+			
+		static function closeWindowForPlayer(Window w, player p)
+			w.wantToClose.put(p, true)
 		
 		static function trackableHit(TrackableEx tr, player p)
 			let t = currentWindow[GetPlayerId(p)].peek().getObervableAt(tr)
@@ -153,6 +163,15 @@ package Menu
 	public class Window
 		LinkedList<Widget> content = new LinkedList<Widget>()
 		HashMap<TrackableEx, Observable> trackMap = new HashMap<TrackableEx, Observable>()
+		HashMap<player, boolean> wantToClose = new HashMap<player, boolean>()
+		
+		function showContent(player p)
+			for Widget g in content
+				g.showDirect(p)
+				
+		function hideContent(player p)
+			for Widget g in content
+				g.hideDirect(p)
 		
 		function add(Widget g)
 			content.add(g)
@@ -174,7 +193,6 @@ package Menu
 				if w.hasNext()
 					e = w.next()
 				else
-					print("earls")
 					ret = -1
 					break
 				var tr = new TrackableEx(e.toVec(), "track.mdl")

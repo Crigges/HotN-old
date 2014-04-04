@@ -40,6 +40,7 @@ package GameStart
 	import Icon
 	import IconType
 	import PreloadSystem
+	import ClosureTimers
 	
 	trigger testt = CreateTrigger()..addAction(function setCallLimit)
 	Bonus lastBon = null
@@ -143,7 +144,7 @@ package GameStart
 		
 		Preload.startPreload()
 		
-		getTimer().startPeriodic(0.1, function textTag)
+		//getTimer().startPeriodic(0.1, function textTag)
 		
 		//getTimer().startPeriodic(0.05, function noOpLimit)
 		
@@ -167,7 +168,7 @@ package GameStart
 	//========================================================================================================================================================================================//
 		
 	class Preload
-		static constant real maxProgress = 1.905
+		static constant real maxProgress = 10.015
 		static string array initOrder
 		static real progress = 0
 		static int preloadStatus = 1
@@ -302,7 +303,7 @@ package GameStart
 			string cuttet = SubString(chatString, 1, 5)
 			SetUnitAnimationByIndex(last.u, S2I(cuttet))
 		switch chatString
-			case "showD"
+			case "w1"
 				var w = new Window()
 				WindowManager.openWindow(
 					w..add(
@@ -315,11 +316,25 @@ package GameStart
 				//ic.showDirect(Player(0))
 				//testImg.showDirect(Player(0))
 				//testImg.showDirect(Player(1))
-			case "hideD"
+			case "w2"
+				var w = new Window()
+				WindowManager.openWindow(
+					w..add(
+					new Observable(
+					new Icon("RingDesCrigges", element(10, 5), 2)
+					..showDirect(Player(0)))), Player(0))
+				WindowManager.closeWindowForPlayer(w, Player(0))
 				//ic.hideDirect(Player(0))
 				//testImg.hideDirect(Player(0))
 				//testImg.hideDirect(Player(1))
-			case "showF"
+			case "w3"
+				var w = new Window()
+				WindowManager.openWindow(
+					w..add(
+					new Observable(
+					new Icon("RingDesCrigges", element(15, 5), 2)
+					..showDirect(Player(0)))), Player(0))
+				doAfter(5, () -> WindowManager.closeTopWindow(Player(0)))
 				//testImg.showFaded(Player(0))
 				//testImg.showFaded(Player(1))
 			case "hideF"

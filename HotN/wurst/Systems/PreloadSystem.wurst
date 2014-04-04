@@ -69,7 +69,6 @@ init
 				printError("Could not load the ability " + idInteger2IdString(a.id))
 				ret = -2
 			else
-				doAfter(1., () -> preloadDummy.removeAbility(a.id))
 				ret = abilityLoadTime + abilityLoadTimeLvlBonus * (a.lvl - 1)
 		return ret
 	end)
