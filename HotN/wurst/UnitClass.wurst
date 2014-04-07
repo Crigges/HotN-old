@@ -898,87 +898,87 @@ package UnitClass
 		//----------------------------------------------//
 		
 		function critTT(real dmg)
-			if IsVisibleToPlayer(u.getX(), u.getY(), GetLocalPlayer())
-				if damageTT == null
-					new TextTag(dmg, this, 255, 20, 20, 10., TextType.DAMAGE)
-				else
-					real tempAmount = damageTT.amount
-					destroy damageTT
-					new TextTag(dmg + tempAmount, this, 255, 20, 20, 10., TextType.DAMAGE)
+//			if IsVisibleToPlayer(u.getX(), u.getY(), GetLocalPlayer())
+//				if damageTT == null
+//					new TextTag(dmg, this, 255, 20, 20, 10., TextType.DAMAGE)
+//				else
+//					real tempAmount = damageTT.amount
+//					destroy damageTT
+//					new TextTag(dmg + tempAmount, this, 255, 20, 20, 10., TextType.DAMAGE)
 					
 		function normalTT(real dmg)
-			if IsVisibleToPlayer(u.getX(), u.getY(), GetLocalPlayer())
-				if damageTT == null
-					new TextTag(dmg, this, 255, 50, 50, 10., TextType.DAMAGE)
-				else
-					real tempAmount = damageTT.amount
-					destroy damageTT
-					new TextTag(dmg + tempAmount, this, 255, 50, 50, 9., TextType.DAMAGE)
+//			if IsVisibleToPlayer(u.getX(), u.getY(), GetLocalPlayer())
+//				if damageTT == null
+//					new TextTag(dmg, this, 255, 50, 50, 10., TextType.DAMAGE)
+//				else
+//					real tempAmount = damageTT.amount
+//					destroy damageTT
+//					new TextTag(dmg + tempAmount, this, 255, 50, 50, 9., TextType.DAMAGE)
 					
 		function magicTT(real dmg)
-			if IsVisibleToPlayer(u.getX(), u.getY(), GetLocalPlayer())
-				if damageTT == null
-					new TextTag(dmg, this, 10, 255, 10, 9., TextType.DAMAGE)
-				else
-					real tempAmount = damageTT.amount
-					destroy damageTT
-					new TextTag(dmg + tempAmount, this, 10, 255, 10, 9., TextType.DAMAGE)
+//			if IsVisibleToPlayer(u.getX(), u.getY(), GetLocalPlayer())
+//				if damageTT == null
+//					new TextTag(dmg, this, 10, 255, 10, 9., TextType.DAMAGE)
+//				else
+//					real tempAmount = damageTT.amount
+//					destroy damageTT
+//					new TextTag(dmg + tempAmount, this, 10, 255, 10, 9., TextType.DAMAGE)
 					
 		function absoluteTT(real dmg)
-			if IsVisibleToPlayer(u.getX(), u.getY(), GetLocalPlayer())
-				if damageTT == null
-					new TextTag(dmg, this, 0, 0, 0, 9., TextType.DAMAGE)
-				else
-					real tempAmount = damageTT.amount
-					destroy damageTT
-					new TextTag(dmg + tempAmount, this, 0, 0, 0, 9., TextType.DAMAGE)
+//			if IsVisibleToPlayer(u.getX(), u.getY(), GetLocalPlayer())
+//				if damageTT == null
+//					new TextTag(dmg, this, 0, 0, 0, 9., TextType.DAMAGE)
+//				else
+//					real tempAmount = damageTT.amount
+//					destroy damageTT
+//					new TextTag(dmg + tempAmount, this, 0, 0, 0, 9., TextType.DAMAGE)
 					
 		function healTT(real dmg)
-			if IsVisibleToPlayer(u.getX(), u.getY(), GetLocalPlayer())
-				if healTT == null
-					new TextTag(dmg, this, 35, 35, 255, 9., TextType.HEAL)
-				else
-					real tempAmount = healTT.amount
-					destroy healTT
-					new TextTag(dmg + tempAmount, this, 35, 35, 255, 9., TextType.HEAL)
+//			if IsVisibleToPlayer(u.getX(), u.getY(), GetLocalPlayer())
+//				if healTT == null
+//					new TextTag(dmg, this, 35, 35, 255, 9., TextType.HEAL)
+//				else
+//					real tempAmount = healTT.amount
+//					destroy healTT
+//					new TextTag(dmg + tempAmount, this, 35, 35, 255, 9., TextType.HEAL)
 					
 		function manaTT(real dmg)
-			if IsVisibleToPlayer(u.getX(), u.getY(), GetLocalPlayer())
-				if healTT == null
-					new TextTag(dmg, this, 80, 255, 80, 9., TextType.HEAL)
-				else
-					real tempAmount = healTT.amount
-					destroy healTT
-					new TextTag(dmg + tempAmount, this, 80, 255, 80, 9., TextType.HEAL)
+//			if IsVisibleToPlayer(u.getX(), u.getY(), GetLocalPlayer())
+//				if healTT == null
+//					new TextTag(dmg, this, 80, 255, 80, 9., TextType.HEAL)
+//				else
+//					real tempAmount = healTT.amount
+//					destroy healTT
+//					new TextTag(dmg + tempAmount, this, 80, 255, 80, 9., TextType.HEAL)
 			
 		function dotTT(real dmg)
-			if IsVisibleToPlayer(u.getX(), u.getY(), GetLocalPlayer())
-				if dotTT == null
-					new TextTag(dmg, this, 255, 0, 255, 7., TextType.DOT)
-				else
-					real tempAmount = dotTT.amount
-					destroy dotTT
-					new TextTag(dmg + tempAmount, this, 255, 0, 255, 7., TextType.DOT)
+//			if IsVisibleToPlayer(u.getX(), u.getY(), GetLocalPlayer())
+//				if dotTT == null
+//					new TextTag(dmg, this, 255, 0, 255, 7., TextType.DOT)
+//				else
+//					real tempAmount = dotTT.amount
+//					destroy dotTT
+//					new TextTag(dmg + tempAmount, this, 255, 0, 255, 7., TextType.DOT)
 					
 		function missTT()
-			if IsVisibleToPlayer(u.getX(), u.getY(), GetLocalPlayer())
-				new TextTag(0., this, 0, 255, 255, 8., TextType.MISS)
+//			if IsVisibleToPlayer(u.getX(), u.getY(), GetLocalPlayer())
+//				new TextTag(0., this, 0, 255, 255, 8., TextType.MISS)
 
 		function dodgeTT()
-			if IsVisibleToPlayer(u.getX(), u.getY(), GetLocalPlayer())
-				new TextTag(0., this, 0, 255, 128, 8., TextType.DODGE)
+//			if IsVisibleToPlayer(u.getX(), u.getY(), GetLocalPlayer())
+//				new TextTag(0., this, 0, 255, 128, 8., TextType.DODGE)
 				
 		function invuTT()
-			if IsVisibleToPlayer(u.getX(), u.getY(), GetLocalPlayer())
+//			if IsVisibleToPlayer(u.getX(), u.getY(), GetLocalPlayer())
 				
 
 		function goldTT(real dmg, player p)
-			if IsVisibleToPlayer(u.getX(), u.getY(), GetLocalPlayer()) and GetLocalPlayer() == p
-				new TextTag(dmg, this, 255, 255, 0, 11., TextType.GOLD)
+//			if IsVisibleToPlayer(u.getX(), u.getY(), GetLocalPlayer()) and GetLocalPlayer() == p
+//				new TextTag(dmg, this, 255, 255, 0, 11., TextType.GOLD)
 				
 		function goldHeroTT(real dmg, player p)
-			if IsVisibleToPlayer(u.getX(), u.getY(), GetLocalPlayer()) and GetLocalPlayer() == p
-				new TextTag(dmg, this, 255, 255, 0, 16., TextType.GOLD)
+//			if IsVisibleToPlayer(u.getX(), u.getY(), GetLocalPlayer()) and GetLocalPlayer() == p
+//				new TextTag(dmg, this, 255, 255, 0, 16., TextType.GOLD)
 		
 		//----------------------------------------------//
 		//--------------Damage--------------------------//

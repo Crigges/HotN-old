@@ -305,14 +305,25 @@ package GameStart
 		switch chatString
 			case "w1"
 				var w = new Window()
+				//w.add(new Icon("RingDesCrigges", element(0, 0), 1)..showDirect(Player(0)))
+				//w.add(new Icon("RingDesCrigges", element(1, 1), 1)..showDirect(Player(0)))
+				w.add(new Observable(new Icon("RingDesCrigges", element(44, 22), 1)..showDirect(Player(0))))
+				w.add(new Observable(new Icon("RingDesCrigges", element(44, 21), 1)..showDirect(Player(0))))
+				w.add(new Observable(new Icon("RingDesCrigges", element(44, 20), 1)..showDirect(Player(0))))
+				w.add(new Observable(new Icon("RingDesCrigges", element(43, 22), 1)..showDirect(Player(0))))
+				w.add(new Observable(new Icon("RingDesCrigges", element(43, 21), 1)..showDirect(Player(0))))
+				w.add(new Observable(new Icon("RingDesCrigges", element(43, 20), 1)..showDirect(Player(0))))
+				//w.add(new Icon("RingDesCrigges", element(20, 44), 1)..showDirect(Player(0)))
 				WindowManager.openWindow(
 					w..add(
 					new Observable(
-					new Icon("RingDesCrigges", element(5, 5), 4)
-					..showDirect(Player(0)))), Player(0))
-				for element e in new ElementLoop(element(5, 15), element(8, 18))
-					w.add(new Icon("RingDesCrigges", e, 1)
-						..showDirect(Player(0)))
+					new Icon("RingDesCrigges", element(1, 1), 1)
+						..showDirect(Player(0)))), Player(0))
+				
+				for element e in new ElementLoop(element(5, 5), element(9, 9))
+					w.add(new Observable(new Icon("RingDesCrigges", e, 1)
+						..showDirect(Player(0)))..setDoubleClickAction((player p) -> print("Das Observable wurde von spieler " + p.getName() + " angeklickt")))
+				WindowManager.openWindow(w, Player(1))
 				//ic.showDirect(Player(0))
 				//testImg.showDirect(Player(0))
 				//testImg.showDirect(Player(1))
@@ -323,7 +334,7 @@ package GameStart
 					new Observable(
 					new Icon("RingDesCrigges", element(10, 5), 2)
 					..showDirect(Player(0)))), Player(0))
-				WindowManager.closeWindowForPlayer(w, Player(0))
+				w.onVoidClick((player p) -> WindowManager.closeTopWindow(p))
 				//ic.hideDirect(Player(0))
 				//testImg.hideDirect(Player(0))
 				//testImg.hideDirect(Player(1))
@@ -334,7 +345,7 @@ package GameStart
 					new Observable(
 					new Icon("RingDesCrigges", element(15, 5), 2)
 					..showDirect(Player(0)))), Player(0))
-				doAfter(5, () -> WindowManager.closeTopWindow(Player(0)))
+				w.onVoidClick((player p) -> WindowManager.closeTopWindow(p))
 				//testImg.showFaded(Player(0))
 				//testImg.showFaded(Player(1))
 			case "hideF"

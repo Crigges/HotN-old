@@ -15,10 +15,10 @@ package AreaMarker
 		
 		construct(vec2 pos, real radius, player p, real duration)
 			img = createImage("ReplaceableTextures\\Selection\\SelectionCircleSmall.blp", pos, (radius * 2.1875) / 2, (radius * 2.1875) / 2, Layer.L3)
-			if IsPlayerAlly(GetLocalPlayer(), p)
-				img.setColor(color(0, 255, 0))
-			else
-				img.setColor(color(255, 0, 0))
+//			if IsPlayerAlly(GetLocalPlayer(), p)
+//				img.setColor(color(0, 255, 0))
+//			else
+//				img.setColor(color(255, 0, 0))
 			img.show()
 			if duration > 0
 				t = getTimer()

@@ -39,7 +39,7 @@ package Image
 	/** Hides the image for a specific player */
 	public function image.hideForPlayer(player p)
 		if GetLocalPlayer() == p
-			SetImageRenderAlways(this, true)
+			SetImageRenderAlways(this, false)
 			
 	/** Set the image 2D position */
 	public function image.setPos(vec2 pos)

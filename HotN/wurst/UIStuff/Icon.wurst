@@ -8,9 +8,9 @@ package Icon
 	
 	constant real animationSpeedHover = 5
 	constant real animationSpeedHit = 8
-	constant int dummyIcon = 'icon'
+	constant int dummyIcon = 'Icon'
 	
-	public class Icon extends Widget
+	public class Icon extends WidgetEx
 		HashMap<player, destructable> strucMap = new HashMap<player, destructable>()
 		HashMap<player, boolean> isDisabled = new HashMap<player, boolean>()
 		iconType typ
@@ -28,7 +28,7 @@ package Icon
 			destructable d = strucMap.get(p)
 			if d != null
 				RemoveDestructable(d)
-				strucMap.put(p, null)
+				strucMap.remove(p)
 				
 					
 		override function showDirect(player p)

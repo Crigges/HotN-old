@@ -36,17 +36,21 @@ package Menu
 		function trackAnimation(player p)
 			
 		function untrackAnimation(player p)
+			
+	public abstract class WidgetEx extends Widget
+	
+		construct(element pos, element size)
+			super(pos, size)
 	
 	public class Observable extends Widget
-		Widget content
+		WidgetEx content
 		PlayerAction click = null
 		PlayerAction dClick = null
 		PlayerAction track = null
 		PlayerAction unTrack = null
 		boolean playClickAnimation = true
 		boolean playDoubleClickAnimation = true
-		boolean playHoverAnimation = true
-		
+		boolean playHoverAnimation = true	
 		
 		override function showFaded(player p)
 			content.showFaded(p)
@@ -58,7 +62,7 @@ package Menu
 			content.showDirect(p)
 			
 		override function hideDirect(player p)
-			content.hideFaded(p)
+			content.hideDirect(p)
 			
 		override function disable(player p)
 			content.disable(p)
@@ -111,7 +115,7 @@ package Menu
 			if playHoverAnimation
 				content.untrackAnimation(p)
 		
-		construct(Widget w)
+		construct(WidgetEx w)
 			super(w.pos, w.size)
 			content = w
 			
@@ -141,17 +145,19 @@ package Menu
 			w.wantToClose.put(p, true)
 		
 		static function trackableHit(TrackableEx tr, player p)
-			let t = currentWindow[GetPlayerId(p)].peek().getObervableAt(tr)
+			let t = currentWindow[GetPlayerId(p)].peek().getObservableAt(tr)
 			if t != null
 				t.onClick(p)
+			else
+				currentWindow[GetPlayerId(p)].peek().voidClick(p)
 			
 		static function trackableDoubleHit(TrackableEx tr, player p)
-			let t = currentWindow[GetPlayerId(p)].peek().getObervableAt(tr)
+			let t = currentWindow[GetPlayerId(p)].peek().getObservableAt(tr)
 			if t != null
 				t.onDoubleClick(p)
 		
 		static function trackableTrack(TrackableEx tr, player p)
-			var ob = currentWindow[GetPlayerId(p)].peek().getObervableAt(tr)
+			var ob = currentWindow[GetPlayerId(p)].peek().getObservableAt(tr)
 			var curr = currentObservable[GetPlayerId(p)]
 			if ob != curr
 				if ob != null
@@ -164,6 +170,7 @@ package Menu
 		LinkedList<Widget> content = new LinkedList<Widget>()
 		HashMap<TrackableEx, Observable> trackMap = new HashMap<TrackableEx, Observable>()
 		HashMap<player, boolean> wantToClose = new HashMap<player, boolean>()
+		PlayerAction voidClick = null
 		
 		function showContent(player p)
 			for Widget g in content
@@ -179,13 +186,21 @@ package Menu
 				for element e in new ElementLoop(g.pos, g.pos + g.size - element(1, 1))
 					trackMap.put(getTrackableAt(e), g castTo Observable)
 						
-		function getObervableAt(TrackableEx tr) returns Observable
+		function getObservableAt(TrackableEx tr) returns Observable
 			return trackMap.get(tr)
+			
+		function voidClick(player p)
+			if voidClick != null
+				voidClick.run(p)
+			
+		function onVoidClick(PlayerAction a)
+			voidClick = a
+			
 			
 	init
 		for int i = 0 to 11
 			WindowManager.currentWindow[i] = new Stack<Window>()
-		var w = new ElementLoop(menuStart, menuStart + element(menuWidth, menuHeight))
+		var w = new ElementLoop(menuStart + element(1, 1), menuStart + element(menuWidth, menuHeight))
 		onPreload("Trackables", (int i) -> begin
 			real ret = 0.02
 			for int dum = 1 to 10
@@ -195,11 +210,12 @@ package Menu
 				else
 					ret = -1
 					break
-				var tr = new TrackableEx(e.toVec(), "track.mdl")
-				setTrackableAt(e - menuStart, tr)
-				tr.onClick((TrackableEx track, player p) -> WindowManager.trackableHit(track, p))
-				tr.onDoubleClick((TrackableEx track, player p) -> WindowManager.trackableDoubleHit(track, p))
-				tr.onTrack((TrackableEx track, player p) -> WindowManager.trackableTrack(track, p))
+				if GetRandomInt(1, 100) > 10
+					var tr = new TrackableEx(e.toVec(), "track.mdl")
+					setTrackableAt(e - menuStart, tr)
+					tr.onClick((TrackableEx track, player p) -> WindowManager.trackableHit(track, p))
+					tr.onDoubleClick((TrackableEx track, player p) -> WindowManager.trackableDoubleHit(track, p))
+					tr.onTrack((TrackableEx track, player p) -> WindowManager.trackableTrack(track, p))
 			return ret
 		end)
 		
