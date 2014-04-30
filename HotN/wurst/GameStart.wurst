@@ -79,12 +79,6 @@ package GameStart
 		//UnitClass
 		getTimer().startPeriodic(0.03, function callKnockback)
 		//Test Zeug
-		doAfter(5, () -> begin
-			new Pane(element(5, 5), element(16, 16), Layer.L1)..showDirect(Player(0)).add(new TextBox(element(5, 5), element(16, 16), 50, Layer.L1)..setText("Hallo frotty du bist ein spasti, dieser text sollte einen automatischen zeilenumbruch haben, frotty ist trotzdem ein ochse!!!", Player(0))..showDirect(Player(0)))
-			new Icon("RingDesCrigges", element(16, 16), 1).showDirect(Player(0))
-			new Pane(element(22, 4), element(8, 8), Layer.L1)
-			new Pane(element(35, 4), element(12, 12), Layer.L1)
-		end)
 		//for int i = 1 to 10
 		//	getTimer().startPeriodic(0.1, function tTTest)
 		//getTimer().startPeriodic(1., function printRegen)
@@ -269,23 +263,22 @@ package GameStart
 		switch chatString
 			case "w1"
 				var w = new Window()
-				//w.add(new Icon("RingDesCrigges", element(0, 0), 1)..showDirect(Player(0)))
-				//w.add(new Icon("RingDesCrigges", element(1, 1), 1)..showDirect(Player(0)))
-				w.add(new Observable(new Icon("RingDesCrigges", element(44, 22), 1)))
-				w.add(new Observable(new Icon("RingDesCrigges", element(44, 21), 1)..showDirect(Player(0))))
-				w.add(new Observable(new Icon("RingDesCrigges", element(44, 20), 1)))
-				w.add(new Observable(new Icon("RingDesCrigges", element(1, 1), 1)..showDirect(Player(0))))
-				w.add(new Observable(new Icon("RingDesCrigges", element(43, 22), 1)..showDirect(Player(0))))
-				w.add(new Observable(new Icon("RingDesCrigges", element(43, 21), 1)..showDirect(Player(0))))
-				w.add(new Observable(new Icon("RingDesCrigges", element(43, 20), 1)..showDirect(Player(0))))
-				//w.add(new Icon("RingDesCrigges", element(20, 44), 1)..showDirect(Player(0)))
+				Pane pane = new Pane(element(2, 2), element(40, 20), Layer.L3)
+				w.add(pane)
+				TextBox tb = new TextBox(element(5, 5), element(10, 5), 200, Layer.L2)
+				tb.setText("Hallo Bhusta", Player(0))
+				tb.setColor(color(255, 0, 0))
+				w.add(tb)
+				Icon ic = new Icon("RingDesCrigges", element(22, 11), 2)
+				Observable ob = new Observable(ic)
+				ob.setClickAction((player p) -> begin
+					print("Spieler " + p.getName() + " hat auf den Ring Des crigges geklickt")
+				end)
+				w.onVoidClick((player p) -> begin
+					WindowManager.closeTopWindow(p)
+				end)
+				w.add(ob)
 				WindowManager.openWindow(w, Player(0))
-				
-				
-				WindowManager.openWindow(w, Player(1))
-				//ic.showDirect(Player(0))
-				//testImg.showDirect(Player(0))
-				//testImg.showDirect(Player(1))
 			case "w2"
 				var w = new Window()
 				WindowManager.openWindow(
