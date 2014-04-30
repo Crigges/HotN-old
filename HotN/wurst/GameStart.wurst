@@ -271,7 +271,7 @@ package GameStart
 				var w = new Window()
 				//w.add(new Icon("RingDesCrigges", element(0, 0), 1)..showDirect(Player(0)))
 				//w.add(new Icon("RingDesCrigges", element(1, 1), 1)..showDirect(Player(0)))
-				w.add(new Observable(new Icon("RingDesCrigges", element(44, 22), 1)..showDirect(Player(0))))
+				w.add(new Observable(new Icon("RingDesCrigges", element(44, 22), 1)))
 				w.add(new Observable(new Icon("RingDesCrigges", element(44, 21), 1)..showDirect(Player(0))))
 				w.add(new Observable(new Icon("RingDesCrigges", element(44, 20), 1)))
 				w.add(new Observable(new Icon("RingDesCrigges", element(1, 1), 1)..showDirect(Player(0))))
