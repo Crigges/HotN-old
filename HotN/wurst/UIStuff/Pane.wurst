@@ -8,7 +8,7 @@ import ClassInit
 import LinkedList
 
 public class Pane extends Widget
-	static int tileSize = 4
+	static int tileSize = 2
 	static element tileDimensions = element(tileSize, tileSize)
 	static string array backgroundTextures
 	static string horizontalSide = "Seite1.blp" 
@@ -18,10 +18,10 @@ public class Pane extends Widget
 	static string rightTopCorner = "Steinecke3.blp"
 	static string leftTopCorner = "Steinecke2.blp"
 	static vec2 sizeFix = vec2(2., 2)
-	static vec2 posFixBot = vec2(-0.5, -26)
-	static vec2 posFixTop = vec2(-0.5, 40)
-	static vec2 posFixRight = vec2(32, 0)
-	static vec2 posFixLeft = vec2(-32, 0)
+	static vec2 posFixBot = vec2(-0.5 / (4 / tileSize), -26 / (4 / tileSize))
+	static vec2 posFixTop = vec2(-0.5 / (4 / tileSize), 40 / (4 / tileSize))
+	static vec2 posFixRight = vec2(32 / (4 / tileSize), 0 / (4 / tileSize))
+	static vec2 posFixLeft = vec2(-32 / (4 / tileSize), 0)
 	
 	ImageList list = new ImageList()
 	LinkedList<Widget> content = new LinkedList<Widget>()
