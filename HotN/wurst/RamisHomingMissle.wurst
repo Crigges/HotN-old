@@ -8,9 +8,9 @@ import ClosureEvents
 
 class Missle
 	
-	static constant real missleStartSpeed = 1
-	static constant real speedLost = 0.5
-	static constant real speedAccel = 0.5
+	static constant real missleStartSpeed = 10
+	static constant real speedLost = 0.99
+	static constant real speedAccel = 10
 	static constant real missleRadius = 65
 	static constant real knockback = 50
 	static constant real knockbackRange = 500
@@ -35,7 +35,7 @@ class Missle
 		t = getTimer()..setData(this castTo int)..startPeriodic(0.03, () -> GetExpiredTimer().getData() castTo thistype.move())
 		destroyTimer = getTimer()
 			..setData(this castTo int)
-			..start(5, 
+			..start(10, 
 			() -> destroy GetExpiredTimer().getData() castTo thistype)
 		
 	function move()
@@ -69,7 +69,3 @@ class Missle
 
 init 
 	onUnitCast('A001', (unit caster, int level, unit target) -> new Missle(caster.getUserData() castTo Unit, target.getUserData() castTo Unit))
-	new Unit(CreateUnit(Player(0), 'Hamg', 0, 1000, 0), 10, 100, 80, 0, 0)
-	new Unit(CreateUnit(Player(0), 'Hamg', 0, 1000, 0), 10, 100, 80, 0, 0)
-	new Unit(CreateUnit(Player(0), 'Hamg', 0, 1000, 0), 10, 500, 80, 0, 0)
-	new Unit(CreateUnit(Player(0), 'Hamg', 0, 1000, 0), 10, 500, 80, 0, 0)

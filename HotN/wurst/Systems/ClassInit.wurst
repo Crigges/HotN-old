@@ -1,0 +1,13 @@
+package ClassInit
+
+public module ClassInit
+	static boolean helper = helper()
+
+	static function helper() returns boolean
+		classInit()
+		return true
+
+	static abstract function classInit()
+	
+
+	

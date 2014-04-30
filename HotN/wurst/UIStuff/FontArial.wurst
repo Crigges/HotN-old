@@ -1,0 +1,215 @@
+package FontArial
+
+import Char
+
+constant int FONT_HEIGHT = 56
+constant int FONT_RESOLUTION = 64
+string array paths
+int array widths
+
+public function getFontHeight() returns int
+	return FONT_HEIGHT
+	 
+public function getFontResolution() returns int
+	return FONT_RESOLUTION
+
+public function getFontPath(char c) returns string
+	return paths[c.toInt()]
+
+public function getFontWidth(char c) returns int
+	return widths[c.toInt()]
+	
+public function initFont(string path)
+	paths['!'] = path + "char1.blp"
+	paths['.'] = path + "char2.blp"
+	paths['#'] = path + "char3.blp"
+	paths['$'] = path + "char4.blp"
+	paths['%'] = path + "char5.blp"
+	paths['&'] = path + "char6.blp"
+	paths['''] = path + "char7.blp"
+	paths['('] = path + "char8.blp"
+	paths[')'] = path + "char9.blp"
+	paths['*'] = path + "char10.blp"
+	paths['+'] = path + "char11.blp"
+	paths[','] = path + "char12.blp"
+	paths['-'] = path + "char13.blp"
+	paths['.'] = path + "char14.blp"
+	paths['/'] = path + "char15.blp"
+	paths['0'] = path + "char16.blp"
+	paths['1'] = path + "char17.blp"
+	paths['2'] = path + "char18.blp"
+	paths['3'] = path + "char19.blp"
+	paths['4'] = path + "char20.blp"
+	paths['5'] = path + "char21.blp"
+	paths['6'] = path + "char22.blp"
+	paths['7'] = path + "char23.blp"
+	paths['8'] = path + "char24.blp"
+	paths['9'] = path + "char25.blp"
+	paths[':'] = path + "char26.blp"
+	paths[';'] = path + "char27.blp"
+	paths['<'] = path + "char28.blp"
+	paths['='] = path + "char29.blp"
+	paths['>'] = path + "char30.blp"
+	paths['.'] = path + "char31.blp"
+	paths['@'] = path + "char32.blp"
+	paths['A'] = path + "char33.blp"
+	paths['B'] = path + "char34.blp"
+	paths['C'] = path + "char35.blp"
+	paths['D'] = path + "char36.blp"
+	paths['E'] = path + "char37.blp"
+	paths['F'] = path + "char38.blp"
+	paths['G'] = path + "char39.blp"
+	paths['H'] = path + "char40.blp"
+	paths['I'] = path + "char41.blp"
+	paths['J'] = path + "char42.blp"
+	paths['K'] = path + "char43.blp"
+	paths['L'] = path + "char44.blp"
+	paths['M'] = path + "char45.blp"
+	paths['N'] = path + "char46.blp"
+	paths['O'] = path + "char47.blp"
+	paths['P'] = path + "char48.blp"
+	paths['Q'] = path + "char49.blp"
+	paths['R'] = path + "char50.blp"
+	paths['S'] = path + "char51.blp"
+	paths['T'] = path + "char52.blp"
+	paths['U'] = path + "char53.blp"
+	paths['V'] = path + "char54.blp"
+	paths['W'] = path + "char55.blp"
+	paths['X'] = path + "char56.blp"
+	paths['Y'] = path + "char57.blp"
+	paths['Z'] = path + "char58.blp"
+	paths['['] = path + "char59.blp"
+	paths['.'] = path + "char60.blp"
+	paths[']'] = path + "char61.blp"
+	paths['^'] = path + "char62.blp"
+	paths['_'] = path + "char63.blp"
+	paths['`'] = path + "char64.blp"
+	paths['a'] = path + "char65.blp"
+	paths['b'] = path + "char66.blp"
+	paths['c'] = path + "char67.blp"
+	paths['d'] = path + "char68.blp"
+	paths['e'] = path + "char69.blp"
+	paths['f'] = path + "char70.blp"
+	paths['g'] = path + "char71.blp"
+	paths['h'] = path + "char72.blp"
+	paths['i'] = path + "char73.blp"
+	paths['j'] = path + "char74.blp"
+	paths['k'] = path + "char75.blp"
+	paths['l'] = path + "char76.blp"
+	paths['m'] = path + "char77.blp"
+	paths['n'] = path + "char78.blp"
+	paths['o'] = path + "char79.blp"
+	paths['p'] = path + "char80.blp"
+	paths['q'] = path + "char81.blp"
+	paths['r'] = path + "char82.blp"
+	paths['s'] = path + "char83.blp"
+	paths['t'] = path + "char84.blp"
+	paths['u'] = path + "char85.blp"
+	paths['v'] = path + "char86.blp"
+	paths['w'] = path + "char87.blp"
+	paths['x'] = path + "char88.blp"
+	paths['y'] = path + "char89.blp"
+	paths['z'] = path + "char90.blp"
+	paths['{'] = path + "char91.blp"
+	paths['|'] = path + "char92.blp"
+	paths['}'] = path + "char93.blp"
+	paths['~'] = path + "char94.blp"
+	widths['!'] = 13
+	widths['.'] = 14
+	widths['#'] = 29
+	widths['$'] = 28
+	widths['%'] = 45
+	widths['&'] = 33
+	widths['''] = 9
+	widths['('] = 17
+	widths[')'] = 16
+	widths['*'] = 19
+	widths['+'] = 30
+	widths[','] = 14
+	widths['-'] = 18
+	widths['.'] = 14
+	widths['/'] = 13
+	widths['0'] = 28
+	widths['1'] = 28
+	widths['2'] = 27
+	widths['3'] = 27
+	widths['4'] = 28
+	widths['5'] = 28
+	widths['6'] = 28
+	widths['7'] = 27
+	widths['8'] = 28
+	widths['9'] = 28
+	widths[':'] = 14
+	widths[';'] = 13
+	widths['<'] = 29
+	widths['='] = 30
+	widths['>'] = 29
+	widths['.'] = 14
+	widths['@'] = 51
+	widths['A'] = 33
+	widths['B'] = 34
+	widths['C'] = 35
+	widths['D'] = 36
+	widths['E'] = 33
+	widths['F'] = 30
+	widths['G'] = 39
+	widths['H'] = 36
+	widths['I'] = 14
+	widths['J'] = 24
+	widths['K'] = 33
+	widths['L'] = 28
+	widths['M'] = 42
+	widths['N'] = 36
+	widths['O'] = 38
+	widths['P'] = 33
+	widths['Q'] = 39
+	widths['R'] = 36
+	widths['S'] = 34
+	widths['T'] = 30
+	widths['U'] = 36
+	widths['V'] = 32
+	widths['W'] = 46
+	widths['X'] = 32
+	widths['Y'] = 32
+	widths['Z'] = 30
+	widths['['] = 13
+	widths['.'] = 14
+	widths[']'] = 13
+	widths['^'] = 23
+	widths['_'] = 27
+	widths['`'] = 17
+	widths['a'] = 28
+	widths['b'] = 28
+	widths['c'] = 25
+	widths['d'] = 28
+	widths['e'] = 28
+	widths['f'] = 15
+	widths['g'] = 28
+	widths['h'] = 27
+	widths['i'] = 11
+	widths['j'] = 7
+	widths['k'] = 25
+	widths['l'] = 11
+	widths['m'] = 41
+	widths['n'] = 27
+	widths['o'] = 28
+	widths['p'] = 28
+	widths['q'] = 28
+	widths['r'] = 17
+	widths['s'] = 25
+	widths['t'] = 14
+	widths['u'] = 28
+	widths['v'] = 24
+	widths['w'] = 35
+	widths['x'] = 24
+	widths['y'] = 24
+	widths['z'] = 25
+	widths['{'] = 16
+	widths['|'] = 14
+	widths['}'] = 16
+	widths['~'] = 29
+	// Space:
+	widths[' '] = 29
+
+init
+	initFont("Chars\\")

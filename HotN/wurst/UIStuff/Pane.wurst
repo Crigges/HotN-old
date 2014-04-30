@@ -1,0 +1,74 @@
+package Pane
+
+import StandardImports
+import Menu
+import ImageEx
+import ImageList
+import ClassInit
+import LinkedList
+
+public class Pane extends Widget
+	static int tileSize = 4
+	static element tileDimensions = element(tileSize, tileSize)
+	static string array backgroundTextures
+	static string horizontalSide = "Seite1.blp" 
+	static string verticalSide = "Seite2.blp"
+	static string leftBotCorner = "Steinecke1.blp"
+	static string rightBotCorner = "Steinecke4.blp"
+	static string rightTopCorner = "Steinecke3.blp"
+	static string leftTopCorner = "Steinecke2.blp"
+	static vec2 sizeFix = vec2(2., 2)
+	static vec2 posFixBot = vec2(-0.5, -26)
+	static vec2 posFixTop = vec2(-0.5, 40)
+	static vec2 posFixRight = vec2(32, 0)
+	static vec2 posFixLeft = vec2(-32, 0)
+	
+	ImageList list = new ImageList()
+	LinkedList<Widget> content = new LinkedList<Widget>()
+	
+	construct(element pos, element size, Layer l)
+		super(pos, size)
+		list.add(createImage(leftBotCorner, pos, tileDimensions, sizeFix, l))
+		list.add(createImage(leftTopCorner, pos + element(0, size.y), tileDimensions, sizeFix, l))
+		list.add(createImage(rightBotCorner, pos + element(size.x, 0), tileDimensions, sizeFix, l))
+		list.add(createImage(rightTopCorner, pos + element(size.x, size.y), tileDimensions, sizeFix, l))
+		for int i = pos.x + tileSize to pos.x + size.x - tileSize step tileSize
+			list.add(createImage(horizontalSide, element(i, pos.y), posFixBot,tileDimensions, sizeFix, l))
+			list.add(createImage(horizontalSide, element(i, pos.y + size.y), posFixTop,tileDimensions, sizeFix, l))
+		for int i = pos.y + tileSize to pos.y + size.y - tileSize step tileSize
+			list.add(createImage(verticalSide, element(pos.x, i), posFixLeft,tileDimensions, sizeFix, l))
+			list.add(createImage(verticalSide, element(pos.x + size.x, i), posFixRight,tileDimensions, sizeFix, l))
+			
+	function add(Widget toAdd)
+		content.add(toAdd)
+			
+	override function onAdd(Window w)
+		for Widget wi in content 
+			w.add(wi)
+		
+	override function showDirect(player p)
+		if GetLocalPlayer() == p
+			for image img in list
+				img.show()
+			for Widget w in content 
+				w.showDirect(p)
+	
+	override function hideDirect(player p)
+		if GetLocalPlayer() == p
+			for image img in list
+				img.hide()
+			for Widget w in content 
+				w.hideDirect(p)
+	
+	override function enable(player p)
+		if GetLocalPlayer() == p
+			for Widget wi in content
+				wi.enable(p)
+		
+	override function disable(player p)
+		if GetLocalPlayer() == p
+			for Widget wi in content
+				wi.disable(p)
+
+
+

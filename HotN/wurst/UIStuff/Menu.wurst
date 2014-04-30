@@ -1,49 +1,45 @@
 package Menu
 
-	import Setup
-	import PlayerClass
-	import initlater Icon
-	import HashList
+	import StandardImports
 	import Stack
 	import LinkedList
 	import HashMap
 	import PreloadSystem
 	import Trackable
-	import ClosureTimers
+	import ClassInit
 
 	public abstract class Widget
+		use ClassInit
+		static string array backgroundTexture
 		element pos
 		element size
+		
+		override static function classInit()
+			for int i = 1 to 8
+				backgroundTexture[i] = "Hintergrund" + i.toString() + ".blp"
 		
 		construct(element pos, element size)
 			this.pos = pos
 			this.size = size
+			
+		function onAdd(Window _w)
 		
 		abstract function showDirect(player p)
 		
 		abstract function hideDirect(player p)
-			
-		abstract function showFaded(player p)
-		
-		abstract function hideFaded(player p)	
 		
 		abstract function disable(player p)
 		
 		abstract function enable(player p)
 		
-		function clickAnimation(player p)
+		function clickAnimation(player _p)
 			
-		function trackAnimation(player p)
+		function trackAnimation(player _p)
 			
-		function untrackAnimation(player p)
-			
-	public abstract class WidgetEx extends Widget
-	
-		construct(element pos, element size)
-			super(pos, size)
+		function untrackAnimation(player _p)
 	
 	public class Observable extends Widget
-		WidgetEx content
+		Widget content
 		PlayerAction click = null
 		PlayerAction dClick = null
 		PlayerAction track = null
@@ -52,11 +48,8 @@ package Menu
 		boolean playDoubleClickAnimation = true
 		boolean playHoverAnimation = true	
 		
-		override function showFaded(player p)
-			content.showFaded(p)
-			
-		override function hideFaded(player p)
-			content.hideFaded(p)
+		override function onAdd(Window w)
+			w.addClickDetection(this)
 			
 		override function showDirect(player p)
 			content.showDirect(p)
@@ -115,7 +108,7 @@ package Menu
 			if playHoverAnimation
 				content.untrackAnimation(p)
 		
-		construct(WidgetEx w)
+		construct(Widget w)
 			super(w.pos, w.size)
 			content = w
 			
@@ -182,9 +175,11 @@ package Menu
 		
 		function add(Widget g)
 			content.add(g)
-			if g instanceof Observable
-				for element e in new ElementLoop(g.pos, g.pos + g.size - element(1, 1))
-					trackMap.put(getTrackableAt(e), g castTo Observable)
+			g.onAdd(this)
+				
+		function addClickDetection(Observable o)
+			for element e in new ElementLoop(o.pos, o.pos + o.size - element(1, 1))
+				trackMap.put(getTrackableAt(e), o)
 						
 		function getObservableAt(TrackableEx tr) returns Observable
 			return trackMap.get(tr)
@@ -200,7 +195,7 @@ package Menu
 	init
 		for int i = 0 to 11
 			WindowManager.currentWindow[i] = new Stack<Window>()
-		var w = new ElementLoop(menuStart + element(1, 1), menuStart + element(menuWidth, menuHeight))
+		var w = new ElementLoop(element(1, 1), element(menuWidth, menuHeight))
 		onPreload("Trackables", (int i) -> begin
 			real ret = 0.02
 			for int dum = 1 to 10
@@ -210,12 +205,11 @@ package Menu
 				else
 					ret = -1
 					break
-				if GetRandomInt(1, 100) > 10
-					var tr = new TrackableEx(e.toVec(), "track.mdl")
-					setTrackableAt(e - menuStart, tr)
-					tr.onClick((TrackableEx track, player p) -> WindowManager.trackableHit(track, p))
-					tr.onDoubleClick((TrackableEx track, player p) -> WindowManager.trackableDoubleHit(track, p))
-					tr.onTrack((TrackableEx track, player p) -> WindowManager.trackableTrack(track, p))
+				var tr = new TrackableEx(e.toVec() + menuStart, "track2.mdx")
+				setTrackableAt(e, tr)
+				tr.onClick((TrackableEx track, player p) -> WindowManager.trackableHit(track, p))
+				tr.onDoubleClick((TrackableEx track, player p) -> WindowManager.trackableDoubleHit(track, p))
+				tr.onTrack((TrackableEx track, player p) -> WindowManager.trackableTrack(track, p))
 			return ret
 		end)
 		

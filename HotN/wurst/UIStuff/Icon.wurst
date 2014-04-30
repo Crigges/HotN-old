@@ -10,82 +10,76 @@ package Icon
 	constant real animationSpeedHit = 8
 	constant int dummyIcon = 'Icon'
 	
-	public class Icon extends WidgetEx
-		HashMap<player, destructable> strucMap = new HashMap<player, destructable>()
-		HashMap<player, boolean> isDisabled = new HashMap<player, boolean>()
+	public class Icon extends Widget
+		destructable array[12] structs
+		boolean array[12] isDisabled
 		iconType typ
 		vec2 realPos
 		int scale
 		
 		construct(string name, element pos, int scale)
 			super(pos, element(scale, scale))
-			realPos = element(pos.x + menuStart.x, pos.y + menuStart.y).toVec()
+			realPos = pos.toVec() + menuStart
 			realPos += vec2((scale - 1) * 0.5, (scale - 1) * 0.5)
 			typ = getIconType(name)
 			this.scale = scale
 				
 		override function hideDirect(player p)
-			destructable d = strucMap.get(p)
+			destructable d = structs[p.getId()]
 			if d != null
 				RemoveDestructable(d)
-				strucMap.remove(p)
-				
+				structs[p.getId()] = null
 					
 		override function showDirect(player p)
-			destructable d = strucMap.get(p)
+			destructable d = structs[p.getId()]
 			if d == null
 				int id = dummyIcon
 				if GetLocalPlayer() == p	
-					if isDisabled.get(p)
+					if isDisabled[p.getId()]
 						id = typ.diableId
+						print("is Disabled")
 					else
 						id = typ.normalId
-				strucMap.put(p, CreateDestructable(id, realPos.x, realPos.y, 0, scale * 1., 1))
-				
-		override function showFaded(player p)
-			showDirect(p)
-			
-		override function hideFaded(player p)
-			hideDirect(p)
+				structs[p.getId()] = CreateDestructable(id, realPos.x, realPos.y, 0, scale * 1., 1)
 			
 		override function disable(player p)
-			if not isDisabled.get(p)
-				isDisabled.put(p, true)
-				destructable d = strucMap.get(p)
+			if not isDisabled[p.getId()]
+				isDisabled[p.getId()] = true
+				destructable d = structs[p.getId()]
 				if d != null
 					RemoveDestructable(d)
 					int id = dummyIcon
 					if(GetLocalPlayer() == p)
 						id = typ.diableId
-					strucMap.put(p, CreateDestructable(id, realPos.x, realPos.y, 0, scale * 1., 1))
+					structs[p.getId()] = CreateDestructable(id, realPos.x, realPos.y, 0, scale * 1., 1)
 				
 		override function enable(player p)
-			if isDisabled.get(p)
-				isDisabled.put(p, false)
-				destructable d = strucMap.get(p)
+			if isDisabled[p.getId()]
+				isDisabled[p.getId()] = false 
+				destructable d = structs[p.getId()]
 				if d != null
 					RemoveDestructable(d)
 					int id = dummyIcon
 					if(GetLocalPlayer() == p)
 						id = typ.normalId
-					strucMap.put(p, CreateDestructable(id, realPos.x, realPos.y, 0, scale * 1., 1))
+					structs[p.getId()] = CreateDestructable(id, realPos.x, realPos.y, 0, scale * 1., 1)
 			
 		override function clickAnimation(player p)
 			if GetLocalPlayer() == p
-				destructable d = strucMap.get(p)
+				destructable d = structs[p.getId()]
 				SetDestructableAnimationSpeed(d, animationSpeedHit)
 				SetDestructableAnimation(d, "morph alternate")
 				QueueDestructableAnimation(d, "morph")
 				
 		override function trackAnimation(player p)
 			if GetLocalPlayer() == p
-				destructable d = strucMap.get(p)
+				destructable d = structs[p.getId()]
 				SetDestructableAnimationSpeed(d, animationSpeedHover)
 				SetDestructableAnimation(d, "morph")
 			
 		override function untrackAnimation(player p)
 			if GetLocalPlayer() == p
-				destructable d = strucMap.get(p)
+				destructable d = structs[p.getId()]
 				SetDestructableAnimationSpeed(d, animationSpeedHover) 
 				SetDestructableAnimation(d, "morph alternate")
 			

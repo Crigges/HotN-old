@@ -1,21 +1,20 @@
 package Test
-	import LinkedListModule
+import LinkedListModule
+import AbilityObjEditing
+
+public class A
+	use LinkedListModule
 	
-	public class A
-		use LinkedListModule
-		
-		function me()
-			print("Iam A")
-		
-	public class B extends A
-		use LinkedListModule
-		
-		override function me()
-			print("Iam B")
-		
-	function test()
-		new B()
-		A.first.me()
-		B.first.me()
-		
-endpackage
+	function me()
+		print("Iam A")
+	
+public class B extends A
+	use LinkedListModule
+	
+	override function me()
+		print("Iam B")
+	
+function test()
+	new B()
+	A.first.me()
+	B.first.me() 

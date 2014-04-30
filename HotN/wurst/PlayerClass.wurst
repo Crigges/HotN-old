@@ -12,6 +12,13 @@ package PlayerClass
 	constant real camHeightHigh = -200
 	public constant HashMap<player, Player> playerData = new HashMap<player, Player>()
 
+	init
+		SetTerrainFogEx(0, 40000, 40000, 0, 0, 0, 0)
+		SetCameraField(CAMERA_FIELD_FARZ, 100000, 0)
+		FogMaskEnable(false)
+		FogEnable(false)
+		//SetCameraField(CAMERA_FIELD_ANGLE_OF_ATTACK, (5.428).asAngleRadians().degrees(), 10)
+
 	public class Player
 		player p
 		Hero h = null
@@ -22,23 +29,25 @@ package PlayerClass
 		boolean selectionOn = false
 		//Cammera Settings
 		timer camSet = getTimer()
-		real sightfield = 60
+		real sightfield = 40
 		real perspektiv = 295
 		
 		construct(player p)
 			lastp = this
 			this.p = p
-//			if GetLocalPlayer() == p
-//				camSet.startPeriodic(0.03, function setCam)
-//				camSet.setData(this castTo int)
+			camSet.startPeriodic(1., function setCam)
+			camSet.setData(this castTo int)
 			playerData.put(p, this)
 				
 		static function setCam()
 			timer t = GetExpiredTimer()
 			var obj = t.getData() castTo thistype
-			SetCameraFieldForPlayer(obj.p, CAMERA_FIELD_TARGET_DISTANCE, camDistance, 0.05)
-			SetCameraFieldForPlayer(obj.p, CAMERA_FIELD_ANGLE_OF_ATTACK, obj.perspektiv ,0.05)
-			SetCameraFieldForPlayer(obj.p, CAMERA_FIELD_FIELD_OF_VIEW, obj.sightfield, 0.05)
+//			print("target = " + vec3(GetCameraTargetPositionX(), GetCameraTargetPositionY(), GetCameraTargetPositionZ()).toString())
+//			print("eye = " + vec3(GetCameraEyePositionX(), GetCameraEyePositionY(), GetCameraEyePositionZ()).toString())
+//			print("perspektive = " + GetCameraField(CAMERA_FIELD_ANGLE_OF_ATTACK).toString())
+//			SetCameraFieldForPlayer(obj.p, CAMERA_FIELD_TARGET_DISTANCE, camDistance, 0.05)
+//			SetCameraFieldForPlayer(obj.p, CAMERA_FIELD_ANGLE_OF_ATTACK, obj.perspektiv ,0.05)
+//			SetCameraFieldForPlayer(obj.p, CAMERA_FIELD_FIELD_OF_VIEW, obj.sightfield, 0.05)
 			
 		/**
 		* Does not correctly work atm

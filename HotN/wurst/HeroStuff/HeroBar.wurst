@@ -23,7 +23,6 @@ package HeroBar
 		string s = ""
 		for int i = 1 to 250
 			s += "|"
-		print(s)
 
 	public class Bar
 		use LinkedListModule

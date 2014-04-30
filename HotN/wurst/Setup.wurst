@@ -53,9 +53,10 @@ package Setup
 	public constant string team1 = "Wargrin"
 	public constant string team2 = "Everliving"
 	public constant vec2 recycleGraveyard = vec2(0, 0)
-	public constant element menuStart = element(1000, 0)
+	public constant vec2 menuStart = vec2(-2500, -1000)
 	public constant hashtable trackBlacklist = InitHashtable()
 	public tuple element(int x, int y)
+	public constant int tileSize = 64
 	public constant int menuHeight = 22
 	public constant int menuWidth = 44
 	public constant real abilityLoadTime = 0.1
@@ -63,7 +64,7 @@ package Setup
 	public TrackableEx array tracks
 	
 	public function element.toVec() returns vec2
-		return vec2(this.x * 1., this.y * 1.)
+		return vec2(this.x * tileSize * 1., this.y * tileSize * 1.)
 		
 	public function element.op_plus(element other) returns element
 		return element(this.x + other.x, this.y + other.y)

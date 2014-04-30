@@ -4,7 +4,7 @@ package DebugFile
 		PreloadGenClear()
 
 	public class DebugFile
-		static constant string path = "C:\\Users\\Crigges\\Dropbox\\wurst"
+		static constant string path = "C:\\Users\\Crigges\\Dropbox\\HotN\\HotN"
 		static constant string filetype = ".debug"
 		static thistype lastSavedFile = null
 		string filename

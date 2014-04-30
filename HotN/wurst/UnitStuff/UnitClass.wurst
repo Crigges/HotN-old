@@ -1,0 +1,1307 @@
+package UnitClass
+	import Terrain
+	import Helper
+	import initlater Dot
+	import initlater Buff
+	import initlater Filter
+	import Table
+	import initlater FloatingText
+	import public initlater Bonus
+	import initlater Shield
+	import Setup
+	import initlater Stun
+	import initlater HeroClass
+	import LinkedList
+	import InstanceBoard
+	import StandardImports
+	import public initlater UnitEvents
+	import CreationEvent
+	
+	public function callKnockback()
+		for Unit obj in knocklist
+			obj.knockback()
+	
+	LinkedList<Unit> knocklist = new LinkedList<Unit>()
+	public Unit last
+	public item tome
+	unit tempCheck
+
+	public class Unit
+		use ShowInstances
+		use CreationEvent
+		//constants
+		static constant real bounceFactor = 1.
+		static constant real knockbackFactor = 6000
+		static constant real basicAttackspeed = 0.5 
+		unit u
+		//fight system//
+		real attack = 0
+		real bonusAttack = 0
+		real bonusAttackPer = 0
+		real armor = 0
+		real bonusArmor = 0
+		real bonusArmorPer = 0
+		real life = 0
+		real bonusLife = 0
+		real bonusLifePer = 0
+		real mana = 0
+		real bonusMana = 0
+		real bonusManaPer = 0
+		real lifeReg = 0
+		real bonusLifeReg = 0
+		real bonusLifeRegPer = 0
+		real manaReg = 0
+		real bonusManaReg = 0
+		real bonusManaRegPer = 0
+		real bonusAttackspeed = 0
+		real spellpower = 0
+		real spellpowerPer = 0
+		real movespeed = 0
+		real bonusMovespeed = 0
+		real bonusMovespeedPer = 0
+		real magicReduction = 0
+		real normalReduction = 0
+		real resistance = 0
+		real bonusResistance = 0
+		real bonusResistancePer = 0
+		real hitchance = 97
+		real evade = 3
+		real critchance = 5
+		real critdamage = 0
+		real bonusDamage = 0
+		real magicDeflection = 0
+		real normalDeflection = 0
+		real lifesteal = 0
+		real spellVamp = 0
+		real bonusHeal = 0
+		int vunerableCount = 0
+		boolean vunerable = true
+		ShieldList shieldList
+		Unit lastDamager = null
+		Hero lastHeroDamager = null
+		//knockback system//
+		real mass = 0
+		real bonusMass = 0
+		real bonusMassPer = 0
+		vec2 knockSpeed
+		real radius = 0
+		real height = 0
+		Unit lastKnocker = null
+		Unit lastCollision = null
+		vec2 wallLoc
+		boolean hasKnockback = false
+		boolean isHero = false
+		boolean isDead = false
+		integer level = 1
+		integer bounty = 0
+		int ownerId = 0
+		player owner = null
+		Stun stun = null
+		TextTag damageTT = null
+		TextTag healTT = null
+		TextTag dotTT = null
+		// ----
+		real systemDamage = 0
+		real totalDamage = 0
+		Table playerDamage = new Table()
+		// ----
+		LinkedList<Dot> allDots =  new LinkedList<Dot>()
+		LinkedList<Buff> allBuffs =  new LinkedList<Buff>()
+		// CustomEvents	
+		PreDamageEvent causeNormalDamagePre = null
+		OnDamageEvent causeNormalDamageOn = null
+		PreDamageEvent takeNormalDamagePre = null
+		OnDamageEvent takeNormalDamageOn = null
+		PreDamageEvent causeMagicDamagePre = null
+		OnDamageEvent causeMagicDamageOn = null
+		PreDamageEvent takeMagicDamagePre = null
+		OnDamageEvent takeMagicDamageOn = null
+		PreDamageEvent takeHitPre = null
+		OnDamageEvent takeHitOn = null
+		PreDamageEvent causeHitPre = null
+		OnDamageEvent causeHitOn = null
+		OnDamageEvent takeCritHitOn = null	
+		OnDamageEvent causeCritHitOn = null		
+		Unit2Event onDodge = null
+		Unit2Event onMiss = null
+		Unit2Event onDeath = null
+		Unit2Event causeDeath = null
+		SpellEvent takeSpell = null
+		SpellEvent causeSpell = null
+		PreDamageEvent takeHeal = null
+		PreDamageEvent causeHeal = null
+		PreDamageEvent takeManaHeal = null
+		PreDamageEvent causeManaHeal = null
+		// Static Stuf
+		static trigger damageDetect = CreateTrigger()..addAction(function tookDamage)
+		
+		construct(unit u, real attack, real mass, real radius, real height, integer bounty)
+			this.u = u
+			this.mass = mass
+			this.attack = attack
+			this.radius = radius
+			this.height = height
+			this.bounty = bounty
+			this.ownerId = GetPlayerId(u.getOwner())
+			this.life = u.getState(UNIT_STATE_MAX_LIFE)
+			this.mana = u.getState(UNIT_STATE_MAX_MANA)
+			this.movespeed = u.getMoveSpeed()
+			damageDetect.registerUnitEvent(u, EVENT_UNIT_DAMAGED)
+			SetUnitUserData(u, this castTo int)
+			last = this
+			shieldList = new ShieldList()
+			owner = u.getOwner()
+			for int i = 0 to 11
+				playerDamage.saveReal(i, 0.)
+		
+		override static function classname() returns string
+			return "Unit"	
+	
+		function knockback()
+			if knockSpeed.lengthSquared() <= 0.25		
+				knocklist.remove(this)
+				hasKnockback = false
+				knockSpeed = vec2(0,0)			
+			else
+				vec2 pos = u.getPos()
+				if isTerrainWalkable(pos.x, pos.y) == true or IsUnitInRangeXY(u, wallLoc.x, wallLoc.y, 30) == true
+					group g = CreateGroup()
+					filterCheckUnit = u
+					g.enumUnitsInRange(pos, radius, Condition(function notUnit))			
+					if  FirstOfGroup(g) == null		
+						pos += knockSpeed
+						u.setPos(pos)
+						knockSpeed -= knockSpeed * (mass / knockbackFactor)
+					else					
+						Unit u2 = FirstOfGroup(g).getUserData() castTo Unit
+						if not u2 == lastCollision
+							collision(u2)
+							pos += knockSpeed
+							u.setPos(pos)
+							knockSpeed -= knockSpeed * (mass / knockbackFactor)
+							vec2 pos2 = u2.u.getPos()
+							pos2 += knockSpeed
+							u2.u.setPos(pos2)
+							u2.knockSpeed -= u2.knockSpeed * (mass / knockbackFactor)
+						else		
+							pos += knockSpeed
+							u.setPos(pos)
+							knockSpeed -= knockSpeed * (mass / knockbackFactor)				
+					DestroyGroup(g)
+					g = null				
+				else
+						
+					wallLoc = pos
+					real speed = knockSpeed.length()
+					damageAbs(lastKnocker, u.getState(UNIT_STATE_MAX_LIFE) * (speed/200))
+					vec2 nvel = getBounceVec(knockSpeed, getPathingNormal(pos))
+					pos += nvel
+					u.setPos(pos)
+					knockSpeed = nvel - (nvel * (mass/knockbackFactor))
+					lastCollision = null
+
+
+		function collision(Unit otherUnit)
+			lastCollision = otherUnit
+			otherUnit.lastCollision = this
+			if not IsUnitAlly(otherUnit.u, owner)
+				otherUnit.lastKnocker = lastKnocker
+			// abspeichern der Position und der Geschwindigkeit
+			var pos1 = u.getPos()		
+			var pos2 = otherUnit.u.getPos()
+			// Differenzvektor wird gespeichert sowie die Distanz gespeichert
+			let delta = (pos2 - pos1)
+			let deltaLen = delta.length()
+			vec2 deltaNorm
+			// falls die Differenz 0 ist wird um error zu vermeiden senkrechter erstellt
+			if deltaLen == 0
+				deltaNorm = vec2(0,1)
+			else
+				// orthogonale wird erzeugt
+				deltaNorm = delta * (1/deltaLen)
+			// Skalarprodukt zwischen geschwindigkeit und orthogonale
+			real speed1central = knockSpeed.dot(deltaNorm)
+			real speed2central = otherUnit.knockSpeed.dot(deltaNorm)
+			// geprüft, ob sich objekte wirklich treffen
+			let futurePos1 = pos1 + knockSpeed*0.01
+			let futurePos2 = pos2 + otherUnit.knockSpeed*0.01
+			let futureDelta = (futurePos2 - futurePos1)
+			if futureDelta.length() < deltaLen
+				// Skalarprodukt wird mit orthogonale multipliziert
+				let vel1central = deltaNorm*speed1central
+				let vel2central = deltaNorm*speed2central
+				// geschwindigkeit hinzuaddiert
+				knockSpeed += (vel2central - vel1central) * bounceFactor
+				otherUnit.knockSpeed += (vel1central - vel2central) * bounceFactor
+				
+		function kill(Unit source)
+			if not isDead
+				isDead = true
+				u.addAbility('dead')
+				if onDeath != null
+					onDeath.fire(source, this)
+				if causeDeath != null
+					causeDeath.fire(source, this)
+				for int i = 0 to 11
+					if playerDamage.loadReal(i) != 0.
+						int goldAmount = roundReal((playerDamage.loadReal(i) / totalDamage) * bounty)
+						SetPlayerState(Player(i), PLAYER_STATE_RESOURCE_GOLD, GetPlayerState(Player(i), PLAYER_STATE_RESOURCE_GOLD) + goldAmount)
+						goldTT(goldAmount * 1., Player(i))
+				u.kill()
+				
+//			timer t = getTimer()
+//			t.setData(this castTo int)
+//			t.start(10, function timedDestroyThis)
+			
+		static function timedDestroyThis()
+			timer t = GetExpiredTimer()
+			destroy t.getData() castTo thistype
+			t.release()
+			
+		function removeDots()
+			for Dot d in allDots
+				destroy d
+				
+		function removeBuffs()
+			for Buff b in allBuffs
+				destroy b
+				
+		function addKnock(vec2 momentum)
+			addKnock(momentum.x, momentum.y)
+			
+		function addKnock(real x, real y)
+			wallLoc = vec2(0,0)
+			knockSpeed += vec2(x, y)
+			if not hasKnockback
+				hasKnockback = true
+				knocklist.add(this)
+			lastCollision = null
+			
+		function resetKnock()
+			wallLoc = vec2(0,0)
+			knockSpeed = vec2(0,0)
+			if hasKnockback
+				hasKnockback = false
+				knocklist.remove(this)
+			lastCollision = null
+			
+		function setKnock(real x, real y)
+			wallLoc = vec2(0,0)
+			knockSpeed = vec2(x,y)
+			if not hasKnockback
+				hasKnockback = true
+				knocklist.add(this)
+			lastCollision = null
+			
+		function getMiddle() returns vec3
+			return vec3(u.getX(),u.getY(), height / 2)	
+			
+		//----------------------------------------------//
+		//---------------Stat Gets----------------------//
+		//----------------------------------------------//
+		function getSystemDamage() returns real
+			return systemDamage / totalDamage
+		
+		function getAttack(boolean withBonus) returns real
+			if withBonus
+				return (attack + bonusAttack) * (1. + (bonusAttackPer / 100))
+			else
+				return attack
+				
+		function getArmor(boolean withBonus) returns real
+			if withBonus
+				return (armor + bonusArmor) * (1. + (bonusArmorPer / 100))
+			else
+				return armor
+				
+		function getMaxHP(boolean withBonus) returns real
+			if withBonus
+				return (life + bonusLife) * (1. + (bonusLifePer / 100))
+			else
+				return life
+				
+		function getMaxMP(boolean withBonus) returns real
+			if withBonus
+				return (mana + bonusMana) * (1. + (bonusManaPer / 100))
+			else
+				return mana
+				
+		function getAttackspeed() returns real
+			if bonusAttackspeed > -80.
+				return 1 / (1 + (bonusAttackspeed / 100))
+			else
+				return 5.
+				
+		function getMovespeed(boolean withBonus) returns real
+			if withBonus
+				return (movespeed + bonusMovespeed) * (1. + (bonusMovespeedPer / 100))
+			else
+				return movespeed
+				
+		function getLifeReg(boolean withBonus) returns real
+			if withBonus
+				return (lifeReg + bonusLifeReg) * (1. + (bonusLifeRegPer / 100))
+			else
+				return lifeReg
+				
+		function getManaReg(boolean withBonus) returns real
+			if withBonus
+				return (manaReg + bonusManaReg) * (1. + (bonusManaRegPer / 100))
+			else
+				return manaReg
+				
+		function getResistance(boolean withBonus) returns real
+			if withBonus
+				return (resistance + bonusResistance) * (1. + (bonusResistancePer / 100))
+			else
+				return resistance
+				
+		function getMass(boolean withBonus) returns real
+			if withBonus
+				return (mass + bonusMass) * (1. + (bonusMassPer / 100))
+			else
+				return mass
+				
+		function getCritchance() returns real
+			return critchance
+			
+		function getCritdamage() returns real
+			return critdamage
+			
+		function getEvade() returns real
+			return evade
+			
+		function getHitcance() returns real
+			return hitchance
+			
+		function getSpellpower() returns real
+			return spellpower * (1 + (spellpowerPer / 100))
+			
+		function getLifesteal() returns real
+			return lifesteal
+			
+		function getBonusHeal() returns real
+			return bonusHeal
+			
+		function getNormalDeflection() returns real
+			return normalDeflection
+			
+		function getMagicDeflection() returns real
+			return magicDeflection
+				
+		function bonusDamage() returns real
+			return bonusDamage
+			
+		function getMagicReduction() returns real
+			return magicReduction
+			
+		function getNormalReduction() returns real
+			return normalReduction
+		
+		//----------------------------------------------//
+		//--------------Statchange----------------------//
+		//----------------------------------------------//
+		
+		function makeInvunerable()
+			vunerable = false
+			vunerableCount++
+			
+		function makeVunerable()
+			vunerableCount--
+			if vunerableCount <= 0
+				vunerable = true
+				vunerableCount = 0
+				
+		function makeInvunerableTimed(real duration)
+			makeInvunerable()
+			getTimer()..setData(this castTo int).start(duration, function callMakeVunerable)
+			
+		private static function callMakeVunerable()
+			timer t = GetExpiredTimer()
+			t.getData() castTo Unit.makeVunerable()
+			t.release()
+			t = null
+			
+		function addShield(real amount, real duration) returns Shield
+			Shield s = new Shield(this, amount, duration, shieldList)
+			shieldList.add(s)
+			return s
+		
+		function addAttack(real amount)
+			attack += amount
+			int bonus = 256
+			int statHelper = roundReal(amount)
+			u.addAbility('Aihn')
+			if statHelper >= 0
+				for int i = 8 downto 0
+					if statHelper >= bonus
+						UnitAddItem(u, permAttackTome[i])
+						permAttackTome[i].setPos(recycleGraveyard)
+						statHelper -= bonus
+					bonus = bonus div 2
+			else
+				bonus = -256
+				for int i = 8 downto 0
+					if statHelper >= bonus
+						UnitAddItem(u, permAttackTome[i])
+						permAttackTome[i].setPos(recycleGraveyard)
+					else
+						statHelper -= bonus
+					bonus = bonus div 2
+				UnitAddItem(u, permAttackNegTome)
+			u.removeAbility('Aihn')
+		
+		function bonusAttack(real amount) returns Bonus
+			bonusAttack += amount
+			updateAttack()
+			return () -> begin
+				bonusAttack -= amount
+				updateAttack()
+			end
+			
+		function bonusAttackTimed(real amount, real duration)
+			if duration >= 180
+				printError("Timed Bonis has to be shorter than 180 sec")
+				return
+			bonusAttack += amount
+			updateAttack()
+			doAfter(duration, () -> begin
+				bonusAttack -= amount
+				updateAttack()
+			end)
+				
+		function bonusAttackPer(real amount) returns Bonus
+			bonusAttackPer += amount
+			updateAttack()
+			return () -> begin
+				bonusAttackPer -= amount
+				updateAttack()
+			end
+			
+		function bonusAttackPerTimed(real amount, real duration)
+			if duration >= 180
+				printError("Timed Bonis has to be shorter than 180 sec")
+				return
+			bonusAttackPer += amount
+			updateAttack()
+			doAfter(duration, () -> begin
+				bonusAttackPer -= amount
+				updateAttack()
+			end)
+			
+		function updateAttack()
+			updateState(roundReal(((attack + bonusAttack) * (1. + (bonusAttackPer / 100)) - attack)), attackRaw)
+			
+		function bonusSpellpower(real amount) returns Bonus
+			spellpower += amount
+			return () -> begin
+				spellpower -= amount
+			end
+			
+		function bonusSpellpowerTimed(real amount, real duration)
+			if duration >= 180
+				printError("Timed Bonis has to be shorter than 180 sec")
+				return
+			spellpower += amount
+			doAfter(duration, () -> begin
+				spellpower -= amount
+			end)
+				
+		function bonusSpellpowerPer(real amount) returns Bonus
+			spellpowerPer += amount
+			return () -> begin
+				spellpowerPer -= amount
+			end
+			
+		function bonusSpellpowerPerTimed(real amount, real duration)
+			if duration >= 180
+				printError("Timed Bonis has to be shorter than 180 sec")
+				return
+			spellpowerPer += amount
+			doAfter(duration, () -> begin
+				spellpowerPer -= amount
+			end)
+				
+		function bonusArmor(real amount) returns Bonus
+			bonusArmor += amount
+			updateArmor()
+			return () -> begin
+				bonusArmor -= amount
+				updateArmor()
+			end
+			
+		function bonusArmorTimed(real amount, real duration)
+			if duration >= 180
+				printError("Timed Bonis has to be shorter than 180 sec")
+				return
+			bonusArmor += amount
+			updateArmor()
+			doAfter(duration, () -> begin
+				bonusArmor -= amount
+				updateArmor()
+			end)
+			
+		function bonusArmorPer(real amount) returns Bonus
+			bonusArmorPer += amount
+			updateArmor()
+			return () -> begin
+				bonusArmorPer -= amount
+				updateArmor()
+			end
+			
+		function bonusArmorPerTimed(real amount, real duration)
+			if duration >= 180
+				printError("Timed Bonis has to be shorter than 180 sec")
+				return
+			bonusArmorPer += amount
+			updateArmor()
+			doAfter(duration, () -> begin
+				bonusArmorPer -= amount
+				updateArmor()
+			end)
+			
+		function updateArmor()
+			updateState(roundReal(((armor + bonusArmor) * (1. + (bonusArmorPer / 100)) - armor)), armorRaw)
+			
+		function bonusResistance(real amount) returns Bonus
+			bonusResistance += amount
+			return () -> begin
+				bonusResistance -= amount
+			end
+			
+		function bonusResistanceTimed(real amount, real duration)
+			if duration >= 180
+				printError("Timed Bonis has to be shorter than 180 sec")
+				return
+			bonusResistance += amount
+			doAfter(duration, () -> begin
+				bonusResistance -= amount
+			end)
+			
+		function bonusResistancePer(real amount) returns Bonus
+			bonusResistancePer += amount
+			return () -> begin
+				bonusResistancePer -= amount
+			end
+			
+		function bonusResistancePerTimed(real amount, real duration)
+			if duration >= 180
+				printError("Timed Bonis has to be shorter than 180 sec")
+				return
+			bonusResistancePer += amount
+			doAfter(duration, () -> begin
+				bonusResistancePer -= amount
+			end)
+			
+		function bonusAttackspeed(real amount) returns Bonus
+			bonusAttackspeed += amount
+			updateAttackspeed()
+			return () -> begin
+				bonusAttackspeed -= amount
+				updateAttackspeed()
+			end
+			
+		function bonusAttackspeedTimed(real amount, real duration)
+			if duration >= 180
+				printError("Timed Bonis has to be shorter than 180 sec")
+				return
+			bonusAttackspeed += amount
+			updateAttackspeed()
+			doAfter(duration, () -> begin
+				bonusAttackspeed -= amount
+				updateAttackspeed()
+			end)
+			
+		function updateAttackspeed()
+			updateState(roundReal(bonusAttackspeed), attackSpeedRaw)
+			
+		function bonusMovespeed(real amount) returns Bonus
+			bonusMovespeed += amount
+			updateMovespeed()
+			return () -> begin
+				bonusMovespeed -= amount
+				updateMovespeed()
+			end
+			
+		function bonusMovespeedTimed(real amount, real duration)
+			if duration >= 180
+				printError("Timed Bonis has to be shorter than 180 sec")
+				return
+			bonusMovespeed += amount
+			updateMovespeed()
+			doAfter(duration, () -> begin
+				bonusMovespeed -= amount
+				updateMovespeed()
+			end)
+			
+		function bonusMovespeedPer(real amount) returns Bonus
+			bonusMovespeedPer += amount
+			updateMovespeed()
+			return () -> begin
+				bonusMovespeedPer -= amount
+				updateMovespeed()
+			end
+			
+		function bonusMovespeedPerTimed(real amount, real duration)
+			if duration >= 180
+				printError("Timed Bonis has to be shorter than 180 sec")
+				return
+			bonusMovespeedPer += amount
+			updateMovespeed()
+			doAfter(duration, () -> begin
+				bonusMovespeedPer -= amount
+				updateMovespeed()
+			end)
+			
+		function updateMovespeed()
+			SetUnitMoveSpeed(u, ((movespeed + bonusMovespeed) * (1. + (bonusMovespeedPer / 100))))
+			
+		function bonusLife(real amount) returns Bonus
+			bonusLife += amount
+			updateLife()
+			return () -> begin
+				bonusLife -= amount
+				updateLife()
+			end
+			
+		function bonusLifeTimed(real amount, real duration)
+			if duration >= 180
+				printError("Timed Bonis has to be shorter than 180 sec")
+				return
+			bonusLife += amount
+			updateLife()
+			doAfter(duration, () -> begin
+				bonusLife -= amount
+				updateLife()
+			end)
+				
+		function bonusLifePer(real amount) returns Bonus
+			bonusLifePer += amount
+			updateLife()
+			return () -> begin
+				bonusLifePer -= amount
+				updateLife()
+			end
+			
+		function bonusLifePerTimed(real amount, real duration)
+			if duration >= 180
+				printError("Timed Bonis has to be shorter than 180 sec")
+				return
+			bonusLifePer += amount
+			updateLife()
+			doAfter(duration, () -> begin
+				bonusLifePer -= amount
+				updateLife()
+			end)
+			
+		function updateLife()
+			updateState(roundReal(((life + bonusLife) * (1. + (bonusLifePer / 100)) - life)), lifeRaw)
+			
+		function bonusLifeReg(real amount) returns Bonus
+			bonusLifeReg += amount
+			updateLifeReg()
+			return () -> begin
+				bonusLifeReg -= amount
+				updateLifeReg()
+			end
+			
+		function bonusLifeRegTimed(real amount, real duration)
+			if duration >= 180
+				printError("Timed Bonis has to be shorter than 180 sec")
+				return
+			bonusLifeReg += amount
+			updateLifeReg()
+			doAfter(duration, () -> begin
+				bonusLifeReg -= amount
+				updateLifeReg()
+			end)
+			
+		function bonusLifeRegPer(real amount) returns Bonus
+			bonusLifeRegPer += amount
+			updateLifeReg()
+			return () -> begin
+				bonusLifeRegPer -= amount
+				updateLifeReg()
+			end
+			
+		function bonusLifeRegPerTimed(real amount, real duration)
+			if duration >= 180
+				printError("Timed Bonis has to be shorter than 180 sec")
+				return
+			bonusLifeRegPer += amount
+			updateLifeReg()
+			doAfter(duration, () -> begin
+				bonusLifeRegPer -= amount
+				updateLifeReg()
+			end)
+			
+		function updateLifeReg()
+			updateState(roundReal(((lifeReg + bonusLifeReg) * (1. + (bonusLifeRegPer / 100)) - lifeReg)), lifeRegRaw)
+			
+		function bonusMana(real amount) returns Bonus
+			bonusMana += amount
+			updateMana()
+			return () -> begin
+				bonusMana -= amount
+				updateMana()
+			end
+			
+		function bonusManaTimed(real amount, real duration)
+			if duration >= 180
+				printError("Timed Bonis has to be shorter than 180 sec")
+				return
+			bonusMana += amount
+			updateMana()
+			doAfter(duration, () -> begin
+				bonusMana -= amount
+				updateMana()
+			end)
+				
+		function bonusManaPer(real amount) returns Bonus
+			bonusManaPer += amount
+			updateMana()
+			return () -> begin
+				bonusManaPer -= amount
+				updateMana()
+			end
+			
+		function bonusManaPerTimed(real amount, real duration)
+			if duration >= 180
+				printError("Timed Bonis has to be shorter than 180 sec")
+				return
+			bonusMana += amount
+			updateMana()
+			doAfter(duration, () -> begin
+				bonusMana -= amount
+				updateMana()
+			end)
+			
+		function updateMana()
+			updateState(roundReal(((mana + bonusMana) * (1. + (bonusManaPer / 100)) - mana)), manaRaw)
+		
+		function bonusManaReg(real amount) returns Bonus
+			bonusManaReg += amount
+			updateManaReg()
+			return () -> begin
+				bonusManaReg -= amount
+				updateManaReg()
+			end
+			
+		function bonusManaRegTimed(real amount, real duration)
+			if duration >= 180
+				printError("Timed Bonis has to be shorter than 180 sec")
+				return
+			bonusManaReg += amount
+			updateManaReg()
+			doAfter(duration, () -> begin
+				bonusManaReg -= amount
+				updateManaReg()
+			end)
+			
+		function bonusManaRegPer(real amount) returns Bonus
+			bonusManaRegPer += amount
+			updateManaReg()
+			return () -> begin
+				bonusManaRegPer -= amount
+				updateManaReg()
+			end
+			
+		function bonusManaRegPerTimed(real amount, real duration)
+			if duration >= 180
+				printError("Timed Bonis has to be shorter than 180 sec")
+				return
+			bonusManaRegPer += amount
+			updateManaReg()
+			doAfter(duration, () -> begin
+				bonusManaRegPer -= amount
+				updateManaReg()
+			end)
+			
+		function updateManaReg()
+			updateState(roundReal(((manaReg + bonusManaReg) * (1. + (bonusManaRegPer / 100)) - manaReg)), manaRegRaw)
+			
+		function bonusAgi(real _amount) returns Bonus
+			return null
+			
+		function bonusAgiTimed(real  _amount, real  _duration)
+			
+		function bonusAgiPer(real _amount) returns Bonus
+			return null
+			
+		function bonusAgiPerTimed(real  _amount, real  _duration)
+			
+		function bonusStr(real _amount) returns Bonus
+			return null
+			
+		function bonusStrTimed(real  _amount, real  _duration)
+			
+		function bonusStrPer(real _amount) returns Bonus
+			return null
+			
+		function bonusStrPerTimed(real  _amount, real  _duration)
+			
+		function bonusInt(real _amount) returns Bonus
+			return null
+			
+		function bonusIntTimed(real  _amount, real  _duration)
+			
+		function bonusIntPer(real _amount) returns Bonus
+			return null
+			
+		function bonusIntPerTimed(real _amount, real _duration)
+				
+		function updateState(int amount, int raw)
+			u.removeAbility(raw + '-')
+			for int i = raw + 'a' to raw + 'a' + (maxBonSize - 1)
+				u.removeAbility(i)
+			int statHelper = amount
+			if statHelper >= 0
+				for int i = raw + 'a' to raw + 'a' + (maxBonSize - 1)
+					if statHelper mod 2 == 1
+						u.addAbility(i)
+					statHelper = statHelper div 2
+					if statHelper == 0
+						return
+			else
+				statHelper += 1
+				for int i = raw + 'a' to raw + 'a' + (maxBonSize - 1)
+					if statHelper mod 2 == 0
+						u.addAbility(i)
+					statHelper = statHelper div 2
+				u.addAbility(raw + '-')
+					
+		//----------------------------------------------//
+		//--------------Stun System---------------------//
+		//----------------------------------------------//	
+			
+		function addStun(real duration) returns Stun
+			if duration > 0
+				if stun == null
+					stun = new Stun(this, duration)
+					return stun
+				else
+					return stun.updateStun(duration)
+			else
+				printError("Eine negative Stundauer ist nicht zulässig")
+				return null
+		
+		//----------------------------------------------//
+		//---------------Dot System---------------------//
+		//----------------------------------------------//		
+		
+		function addDot(Unit source, real damage, real duration) returns Dot
+			return new Dot(this, source, damage, duration)
+			
+		//----------------------------------------------//
+		//--------------FloatingText--------------------//
+		//----------------------------------------------//
+		
+		function critTT(real dmg)
+//			if IsVisibleToPlayer(u.getX(), u.getY(), GetLocalPlayer())
+//				if damageTT == null
+//					new TextTag(dmg, this, 255, 20, 20, 10., TextType.DAMAGE)
+//				else
+//					real tempAmount = damageTT.amount
+//					destroy damageTT
+//					new TextTag(dmg + tempAmount, this, 255, 20, 20, 10., TextType.DAMAGE)
+					
+		function normalTT(real dmg)
+//			if IsVisibleToPlayer(u.getX(), u.getY(), GetLocalPlayer())
+//				if damageTT == null
+//					new TextTag(dmg, this, 255, 50, 50, 10., TextType.DAMAGE)
+//				else
+//					real tempAmount = damageTT.amount
+//					destroy damageTT
+//					new TextTag(dmg + tempAmount, this, 255, 50, 50, 9., TextType.DAMAGE)
+					
+		function magicTT(real dmg)
+//			if IsVisibleToPlayer(u.getX(), u.getY(), GetLocalPlayer())
+//				if damageTT == null
+//					new TextTag(dmg, this, 10, 255, 10, 9., TextType.DAMAGE)
+//				else
+//					real tempAmount = damageTT.amount
+//					destroy damageTT
+//					new TextTag(dmg + tempAmount, this, 10, 255, 10, 9., TextType.DAMAGE)
+					
+		function absoluteTT(real dmg)
+//			if IsVisibleToPlayer(u.getX(), u.getY(), GetLocalPlayer())
+//				if damageTT == null
+//					new TextTag(dmg, this, 0, 0, 0, 9., TextType.DAMAGE)
+//				else
+//					real tempAmount = damageTT.amount
+//					destroy damageTT
+//					new TextTag(dmg + tempAmount, this, 0, 0, 0, 9., TextType.DAMAGE)
+					
+		function healTT(real dmg)
+//			if IsVisibleToPlayer(u.getX(), u.getY(), GetLocalPlayer())
+//				if healTT == null
+//					new TextTag(dmg, this, 35, 35, 255, 9., TextType.HEAL)
+//				else
+//					real tempAmount = healTT.amount
+//					destroy healTT
+//					new TextTag(dmg + tempAmount, this, 35, 35, 255, 9., TextType.HEAL)
+					
+		function manaTT(real dmg)
+//			if IsVisibleToPlayer(u.getX(), u.getY(), GetLocalPlayer())
+//				if healTT == null
+//					new TextTag(dmg, this, 80, 255, 80, 9., TextType.HEAL)
+//				else
+//					real tempAmount = healTT.amount
+//					destroy healTT
+//					new TextTag(dmg + tempAmount, this, 80, 255, 80, 9., TextType.HEAL)
+			
+		function dotTT(real dmg)
+//			if IsVisibleToPlayer(u.getX(), u.getY(), GetLocalPlayer())
+//				if dotTT == null
+//					new TextTag(dmg, this, 255, 0, 255, 7., TextType.DOT)
+//				else
+//					real tempAmount = dotTT.amount
+//					destroy dotTT
+//					new TextTag(dmg + tempAmount, this, 255, 0, 255, 7., TextType.DOT)
+					
+		function missTT()
+//			if IsVisibleToPlayer(u.getX(), u.getY(), GetLocalPlayer())
+//				new TextTag(0., this, 0, 255, 255, 8., TextType.MISS)
+
+		function dodgeTT()
+//			if IsVisibleToPlayer(u.getX(), u.getY(), GetLocalPlayer())
+//				new TextTag(0., this, 0, 255, 128, 8., TextType.DODGE)
+				
+		function invuTT()
+//			if IsVisibleToPlayer(u.getX(), u.getY(), GetLocalPlayer())
+				
+
+		function goldTT(real dmg, player p)
+//			if IsVisibleToPlayer(u.getX(), u.getY(), GetLocalPlayer()) and GetLocalPlayer() == p
+//				new TextTag(dmg, this, 255, 255, 0, 11., TextType.GOLD)
+				
+		function goldHeroTT(real dmg, player p)
+//			if IsVisibleToPlayer(u.getX(), u.getY(), GetLocalPlayer()) and GetLocalPlayer() == p
+//				new TextTag(dmg, this, 255, 255, 0, 16., TextType.GOLD)
+		
+		//----------------------------------------------//
+		//--------------Damage--------------------------//
+		//----------------------------------------------//
+		
+		static function tookDamage()
+			if GetEventDamage() == 1
+				GetTriggerUnit().getUserData() castTo Unit.damageAtk(GetEventDamageSource().getUserData() castTo Unit)
+				
+		function dealDamage(real amount, Unit source, boolean reward) returns boolean
+			lastDamager = source
+			if source.isHero
+				lastHeroDamager = source castTo Hero
+			if vunerable
+				real tHP = u.getHP()
+				real currentAmount = shieldList.damage(amount, source)
+				totalDamage += amount
+				if not reward
+					systemDamage += amount
+				if tHP - 0.405 <= currentAmount
+					if reward
+						playerDamage.saveReal(ownerId, playerDamage.loadReal(ownerId) + tHP)
+					kill(source)
+				else
+					if reward
+						playerDamage.saveReal(ownerId, playerDamage.loadReal(ownerId) + amount)
+				u.setHP(tHP - currentAmount)
+				if isHero or source.isHero
+					return true
+				else
+					return false
+			else
+				if isHero or source.isHero
+					invuTT()
+				return false
+
+		function damageAbs(Unit source, real amount)
+			if dealDamage(amount, source, true)
+				absoluteTT(amount)
+
+		function damageSystem(real amount)
+			dealDamage(amount, lastHeroDamager, false)
+				
+		function damageDot(Unit source, real amount)
+			if dealDamage(amount, source, true)
+				dotTT(amount)
+				
+		function damageAtk(Unit source)
+			real rand = GetRandomReal(0., 100.)
+			if takeHitPre != null
+				takeHitPre.fire(source)
+			if source.causeHitPre != null
+				source.causeHitPre.fire(this)
+			if rand <= source.hitchance
+				rand = GetRandomReal(0., 100.)
+				if rand > evade
+					//Unit got hit
+					//Dice damage
+					rand = GetRandomReal(0., 100.)
+					real amount = source.getAttack(true) + GetRandomReal(-source.getAttack(true) / 10, source.getAttack(true) / 10)
+					//Dice crit
+					boolean crit = false
+					rand = GetRandomReal(0., 100.)
+					if rand <= source.critchance
+						amount = amount * (2. + (source.critdamage / 100))
+						crit = true
+					//Add bonus damage
+					amount = amount * (1. + (source.bonusDamage))
+					//Calculate armor reduction
+					real tempArmor = getArmor(true)
+					if tempArmor < 0.
+						amount = amount * (1. + (2 - Pow(0.94, -tempArmor)))
+					else
+						amount = amount * (1. - (tempArmor * 0.04 )/(1 + 0.04 * tempArmor))
+					amount = amount * (1 - (normalReduction / 100))
+					//Fire Events
+					if takeHitOn != null
+						amount = takeHitOn.fire(source, amount)
+					if source.causeHitOn != null
+						amount = source.causeHitOn.fire(this, amount)
+					if crit
+						if takeCritHitOn != null
+							amount = takeCritHitOn.fire(source, amount)
+						if source.causeCritHitOn != null
+							amount = source.causeCritHitOn.fire(this, amount)
+					//Try to deal damage
+					if dealDamage(amount, source, true)
+						//Create texttags
+						if isHero or source.isHero
+							if crit
+								critTT(amount)
+							else
+								normalTT(amount)
+					//LifeSteal
+					if amount > 0. and lifesteal > 0.
+						source.healSystem(lifesteal / 100 * amount)
+					//Damage reflection
+					if amount > 0. and normalDeflection > 0.
+						source.damageAbs(this, amount * (normalDeflection / 100))
+				else
+					//Dodge texttag
+					if isHero or source.isHero
+						dodgeTT()
+					//Dodge event
+					if onDodge != null
+						onDodge.fire(source, this)
+			else
+				//Miss texttax
+				if isHero or source.isHero
+					source.missTT()
+				//Miss event
+				if source.onMiss != null
+					source.onMiss.fire(source, this)
+			
+				
+		function damageMagic(Unit source, real takenAmount)
+			if takeMagicDamagePre != null
+				takeMagicDamagePre.fire(source)
+			if source.causeMagicDamagePre != null
+				source.causeMagicDamagePre.fire(this)
+			real amount = takenAmount
+			amount = amount * (1. + (source.bonusDamage / 100))
+			real tempResistance = getResistance(true)
+			if tempResistance < 0.
+				amount = amount * (1. + (2 - Pow(0.94, -tempResistance)))
+			else
+				amount = amount * (1. - (tempResistance * 0.04) / (1 + 0.04 * tempResistance))
+			//Events
+			if takeMagicDamageOn != null
+				amount = takeMagicDamageOn.fire(source, amount)
+			if source.causeMagicDamageOn != null
+				amount = source.causeMagicDamageOn.fire(this, amount)
+			//Try to deal damage
+			if dealDamage(amount, source, true)
+			//Texttag creation
+				magicTT(amount)
+			if amount > 0. and spellVamp > 0.
+				source.healSystem(spellVamp / 100 * amount)
+			//Damage reflection
+			if magicDeflection > 0. and amount > 0
+				source.damageAbs(this, amount * (magicDeflection / 100))
+				
+		function damageNormal(Unit source, real takenAmount)
+			if takeNormalDamagePre != null
+				takeNormalDamagePre.fire(source)
+			if source.causeNormalDamagePre != null
+				source.causeNormalDamagePre.fire(this)
+			real amount = takenAmount
+			amount = amount * (1. + (source.bonusDamage / 100))
+			real tempArmor = getArmor(true)
+			if tempArmor < 0.
+				amount = amount * (1. + (2 - Pow(0.94, -tempArmor)))
+			else
+				amount = amount * (1. - (tempArmor * 0.04) / (1 + 0.04 * tempArmor))
+			//Events
+			if takeNormalDamageOn != null
+				amount = takeNormalDamageOn.fire(source, amount)
+			if source.causeNormalDamageOn != null
+				amount = source.causeNormalDamageOn.fire(this, amount)
+			//Try to deal damage
+			if dealDamage(amount, source, true)
+				normalTT(amount)
+			if amount > 0. and lifesteal > 0.
+				source.healSystem(lifesteal / 100 * amount)
+			if normalDeflection > 0. and amount > 0
+				source.damageAbs(this, amount * (normalDeflection / 100))
+				
+		protected function causeHeal(real amount) returns real
+			real tHP = u.getHP()
+			real currentAmount = amount
+			if getMaxHP(true) - tHP < amount
+				currentAmount = getMaxHP(true) - tHP
+			u.setHP(tHP + amount)
+			return currentAmount
+				
+		function heal(Unit source, real takenAmount)
+			if takeHeal != null
+				takeHeal.fire(source)
+			if source.causeHeal != null
+				source.causeHeal.fire(this)
+			real amount = takenAmount
+			amount *= 1 + ((bonusHeal + source.bonusHeal) / 100)
+			healTT(causeHeal(amount))
+				
+		private function causeManaHeal(real amount) returns real
+			real tMP = u.getState(UNIT_STATE_MANA)
+			real currentAmount = amount
+			if getMaxMP(true) - tMP < amount
+				currentAmount = getMaxHP(true) - tMP
+			u.setHP(tMP + amount)
+			return currentAmount
+				
+		function manaHeal(Unit source, real takenAmount)
+			if takeManaHeal != null
+				takeManaHeal.fire(source)
+			if source.causeManaHeal != null
+				source.causeManaHeal.fire(this)
+			real amount = takenAmount
+			amount *= 1 + ((bonusHeal + source.bonusHeal) / 100)
+			manaTT(causeManaHeal(amount))
+				
+		function healSystem(real takenAmount)
+			causeHeal(takenAmount)
+			
+		function manaHealSystem(real takenAmount)
+			causeManaHeal(takenAmount)
+
+		//----------------------------------------------//
+		//--------------CustomEvents--------------------//
+		//----------------------------------------------//		
+		
+		function onSpell(Unit source) returns boolean
+			boolean sucess = true
+			if takeSpell != null
+				sucess = takeSpell.fire(source)
+			if source.causeSpell != null and sucess
+				sucess = sucess and source.causeSpell.fire(this)
+			return sucess
+			
+		//PreEvents
+		function registerCauseHitPre(Action<PreDamageData> action) returns Action<PreDamageData>
+			if causeHitPre == null
+				causeHitPre = new PreDamageEvent(this)
+			return causeHitPre.addAction(action)
+			
+		function registerTakeHitPre(Action<PreDamageData> action) returns Action<PreDamageData>
+			if takeHitPre == null
+				takeHitPre = new PreDamageEvent(this)
+			return takeHitPre.addAction(action)
+			
+		function registerCauseNormalDamagePre(Action<PreDamageData> action) returns Action<PreDamageData>
+			if causeNormalDamagePre == null
+				causeNormalDamagePre = new PreDamageEvent(this)
+			return causeNormalDamagePre.addAction(action)
+			
+		function registerTakeNormalDamagePre(Action<PreDamageData> action) returns Action<PreDamageData>
+			if takeNormalDamagePre == null
+				takeNormalDamagePre = new PreDamageEvent(this)
+			return takeNormalDamagePre.addAction(action)
+			
+		function registerCauseMagicDamagePre(Action<PreDamageData> action) returns Action<PreDamageData>
+			if causeMagicDamagePre == null
+				causeMagicDamagePre = new PreDamageEvent(this)
+			return causeMagicDamagePre.addAction(action)
+			
+		function registerTakeMagicDamagePre(Action<PreDamageData> action) returns Action<PreDamageData>
+			if takeMagicDamagePre == null
+				takeMagicDamagePre = new PreDamageEvent(this)
+			return takeMagicDamagePre.addAction(action)
+			
+		function registerCauseHeal(Action<PreDamageData> action) returns Action<PreDamageData>
+			if causeHeal == null
+				causeHeal = new PreDamageEvent(this)
+			return causeHeal.addAction(action)
+			
+		function registerTakeHeal(Action<PreDamageData> action) returns Action<PreDamageData>
+			if takeHeal == null
+				takeHeal = new PreDamageEvent(this)
+			return takeHeal.addAction(action)
+			
+		function registerCauseManaHeal(Action<PreDamageData> action) returns Action<PreDamageData>
+			if causeManaHeal == null
+				causeManaHeal = new PreDamageEvent(this)
+			return causeManaHeal.addAction(action)
+			
+		function registerTakeManaHeal(Action<PreDamageData> action) returns Action<PreDamageData>
+			if takeManaHeal == null
+				takeManaHeal = new PreDamageEvent(this)
+			return takeManaHeal.addAction(action)
+			
+		function registerCauseSpell(Action<SpellData> action) returns Action<SpellData>
+			if causeSpell == null
+				causeSpell = new SpellEvent(this)
+			return causeSpell.addAction(action)
+			
+		function registerTakeSpell(Action<SpellData> action) returns Action<SpellData>
+			if takeSpell == null
+				takeSpell = new SpellEvent(this)
+			return takeSpell.addAction(action)
+			
+		//On Events
+		function registerCauseHitOn(Action<OnDamageData> action) returns Action<OnDamageData>
+			if causeHitOn == null
+				causeHitOn = new OnDamageEvent(this)
+			return causeHitOn.addAction(action)
+			
+		function registerTakeHitOn(Action<OnDamageData> action) returns Action<OnDamageData>
+			if takeHitOn == null
+				takeHitOn = new OnDamageEvent(this)
+			return takeHitOn.addAction(action)
+			
+		function registerCauseCritHitOn(Action<OnDamageData> action) returns Action<OnDamageData>
+			if causeCritHitOn == null
+				causeCritHitOn = new OnDamageEvent(this)
+			return causeCritHitOn.addAction(action)
+			
+		function registerTakeCritHitOn(Action<OnDamageData> action) returns Action<OnDamageData>
+			if takeCritHitOn == null
+				takeCritHitOn = new OnDamageEvent(this)
+			return takeCritHitOn.addAction(action)
+			
+		function registerDodge(Action<Units> action) returns Action<Units>
+			if onDodge == null
+				onDodge = new Unit2Event()
+			return onDodge.addAction(action)
+			
+		function registerMiss(Action<Units> action) returns Action<Units>
+			if onMiss == null
+				onMiss = new Unit2Event()
+			return onMiss.addAction(action)
+			
+		function registerDeath(Action<Units> action) returns Action<Units>
+			if onDeath == null
+				onDeath = new Unit2Event()
+			return onDeath.addAction(action)
+				
+		function registerCauseDeath(Action<Units> action) returns Action<Units>
+			if causeDeath == null
+				causeDeath = new Unit2Event()
+			return causeDeath.addAction(action)	
+			
+		ondestroy
+			destroy allDots
+			destroy allBuffs
+			destroy playerDamage
+
+endpackage

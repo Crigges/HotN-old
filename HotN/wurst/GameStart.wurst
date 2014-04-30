@@ -1,5 +1,6 @@
 package GameStart
 //Do NOT import this into any package!!!
+	import Pane
 	import Buff
 	import Char
 	import Dot
@@ -41,6 +42,9 @@ package GameStart
 	import IconType
 	import PreloadSystem
 	import ClosureTimers
+	import ClassInit
+	import TextSplat
+	import TextBox
 	
 	trigger testt = CreateTrigger()..addAction(function setCallLimit)
 	Bonus lastBon = null
@@ -52,7 +56,6 @@ package GameStart
 	string tests = null
 	Spell testSpell = null
 	string testChar = ""
-	texttag testTag = createTTEx(vec3(0, 0, 0), "||||||||||||||||||||", 10, colorA(255, 255, 255, 255))
 	unit testu // = CreateUnit(Player(0), 'hpea', 0, 0, 0)
 	group testg = CreateGroup()
 	int progress = 0
@@ -76,6 +79,12 @@ package GameStart
 		//UnitClass
 		getTimer().startPeriodic(0.03, function callKnockback)
 		//Test Zeug
+		doAfter(5, () -> begin
+			new Pane(element(5, 5), element(16, 16), Layer.L1)..showDirect(Player(0)).add(new TextBox(element(5, 5), element(16, 16), 50, Layer.L1)..setText("Hallo frotty du bist ein spasti, dieser text sollte einen automatischen zeilenumbruch haben, frotty ist trotzdem ein ochse!!!", Player(0))..showDirect(Player(0)))
+			new Icon("RingDesCrigges", element(16, 16), 1).showDirect(Player(0))
+			new Pane(element(22, 4), element(8, 8), Layer.L1)
+			new Pane(element(35, 4), element(12, 12), Layer.L1)
+		end)
 		//for int i = 1 to 10
 		//	getTimer().startPeriodic(0.1, function tTTest)
 		//getTimer().startPeriodic(1., function printRegen)
@@ -89,7 +98,6 @@ package GameStart
 //		h.addDot(last, 10000, 10)
 //		last.addDot(h, 10000, 10)
 		//last.u.addAbility('ZA01')
-		getTimer().startPeriodic(0.1, function forceKey)
 //		last castTo Hero.animationIndex = 2
 //		last castTo Hero.animationIntervall = 1
 //		last castTo Hero.hasPeriodicAnimation = true
@@ -100,15 +108,16 @@ package GameStart
 		//lastp.h = last castTo Hero
 //		createImage("war3mapImported\\background.blp", vec2(0, 0), 100, 100, Layer.L1).show()
 //		testImg = new Image("war3mapImported\\SorvButton.blp", element(20, 10), vec2(8, 2), OpenTo.TOP_RIGHT, Layer.L1)
-		for int i = 1 to 1
-			Hero h = new Hero(CreateUnit(Player(0), 'H001', 0, 0, 0), 20, 100, 50, 150, 'ARHE', 100)
+		for int i = 1 to 20
+			Hero h = new Hero(CreateUnit(Player(0), 'H001', 0, 0, 0), 1, 100, 50, 150, 'ARHE', 100)
 			h.animationIndex = 7
 			h.captureOffsetDistance = 35
 			h.captureOffsetZ = 20
 			h.captureEffectAttachmentPoint = "weapton"
 			h.captureEffect = "Abilities\\Weapons\\FarseerMissile\\FarseerMissile.mdl"
+			h.bonusAttackspeed(1000)
 			testSpell = new TestSpell1Setup(h, SpellType.Q)
-			new Buff(h, "slow", 30)..attachBonus(h.bonusMovespeedPer(-50)).addEffect("Abilities\\Spells\\Human\\slow\\slowtarget.mdl", "origin")
+			//new Buff(h, "slow", 30)..attachBonus(h.bonusMovespeedPer(-50)).addEffect("Abilities\\Spells\\Human\\slow\\slowtarget.mdl", "origin")
 			
 			//h.addStun(20)
 //			new Unit(CreateUnit(Player(0), 'hrif', -2000, 0, 0), 20, 100, 50, 200, 100)
@@ -168,6 +177,7 @@ package GameStart
 	//========================================================================================================================================================================================//
 		
 	class Preload
+		use ClassInit
 		static constant real maxProgress = 10.015
 		static string array initOrder
 		static real progress = 0
@@ -176,7 +186,7 @@ package GameStart
 		static boolean showProgress = true
 		static int loopCounter = 0
 		
-		static function initOrder()
+		override static function classInit()
 			initOrder[1] = "Abilitys"
 			initOrder[2] = "Units"
 			initOrder[3] = "Items"
@@ -185,7 +195,6 @@ package GameStart
 			initOrder[6] = "Trackables"
 		
 		static function startPreload()
-			initOrder()
 			getTimer().start(1.0, function Preload.preload)
 			getTimer().start(1.0, function createBackground)
 		
@@ -211,32 +220,14 @@ package GameStart
 			if showProgress
 				ClearTextMessages()
 				print("Loading " + initOrder[preloadStatus] + ": " + (100 * (progress / maxProgress)).toString() + "%")
-			
-					
-//		static function createTrackables() returns real
-//			for int i1 = 1 to 10
-//					trackCounter++
-//					if trackCounter <= 968
-//						if not trackBlacklist.hasBoolean(trackPos.x, trackPos.y)
-//							vec2 trackVec = vec2(menuStart.x + trackPos.x * 1., menuStart.y + trackPos.y * 1.)
-//							setTrackableAt(trackPos, new TrackableEx(trackVec, "track1.mdl")
-//								..onClick((TrackableEx tr, player p) -> WindowManager.trackableHit(tr, p))
-//								..onDoubleClick((TrackableEx tr, player p) -> WindowManager.trackableDoubleHit(tr, p))
-//								..onTrack((TrackableEx tr, player p) -> WindowManager.trackableTrack(tr, p)))
-//						if trackPos.y >= menuHeight
-//							trackPos.y = 1
-//							trackPos.x++
-//						else
-//							trackPos.y++
-//					else
-//						return 0.
-//			return 0.01
-				
 				
 		static function createBackground()
-			for int i1 = 0 to 4
-				for int i2 = 0 to 2
-					createImage("war3mapImported\\background.blp", vec2(menuStart.x + 2.5 + i1 * 9.9, menuStart.y + 2.5 + i2 * 9.9), 10, 10, Layer.L3).show()
+			for int i1 = 0 to 5
+				for int i2 = 0 to 3
+					createImage(Widget.backgroundTexture[GetRandomInt(1, 8)], 
+						vec2(menuStart.x + i1 * 637, menuStart.y + i2 * 637), 
+						643, 643, Layer.L3)
+						.show()
 					
 					
 	init
@@ -245,33 +236,6 @@ package GameStart
 	//========================================================================================================================================================================================//
 	//========================================================================================================================================================================================//
 	//========================================================================================================================================================================================//
-	
-	function forceKey()
-		//ForceUIKey("I")
-		//ForceUIKey("L")
-		
-	function charMessung()
-		skip//print(vec2(GetOrderPointX(), GetOrderPointY()).toString())
-//		if testr != 0
-//			print(SquareRoot((testr - GetOrderPointX()).squared()).toString())
-//			testr = 0
-//		else
-//			testr = GetOrderPointX()
-		
-	function trackRaster()
-		trackable t = GetTriggeringTrackable()
-	
-//	public function trackHit()
-//		print("Der Buttom wurde von " + GetPlayerName(getEvent().triggerPlayer.p) + " angeklickt")
-//		
-//	public function trackDoubleHit()
-//		print("Der Buttom wurde von " + GetPlayerName(getEvent().triggerPlayer.p) + " doppelgeklickt")
-//		
-//	public function trackTrack()
-//		print("Der Buttom wurde von " + GetPlayerName(getEvent().triggerPlayer.p) + " observiert")
-//		
-//	public function trackUnTrack()
-//		print("Der Buttom wird nichtmehr von " + GetPlayerName(getEvent().triggerPlayer.p) + " observiert")
 		
 	function afterPreload()
 		
@@ -309,20 +273,15 @@ package GameStart
 				//w.add(new Icon("RingDesCrigges", element(1, 1), 1)..showDirect(Player(0)))
 				w.add(new Observable(new Icon("RingDesCrigges", element(44, 22), 1)..showDirect(Player(0))))
 				w.add(new Observable(new Icon("RingDesCrigges", element(44, 21), 1)..showDirect(Player(0))))
-				w.add(new Observable(new Icon("RingDesCrigges", element(44, 20), 1)..showDirect(Player(0))))
+				w.add(new Observable(new Icon("RingDesCrigges", element(44, 20), 1)))
+				w.add(new Observable(new Icon("RingDesCrigges", element(1, 1), 1)..showDirect(Player(0))))
 				w.add(new Observable(new Icon("RingDesCrigges", element(43, 22), 1)..showDirect(Player(0))))
 				w.add(new Observable(new Icon("RingDesCrigges", element(43, 21), 1)..showDirect(Player(0))))
 				w.add(new Observable(new Icon("RingDesCrigges", element(43, 20), 1)..showDirect(Player(0))))
 				//w.add(new Icon("RingDesCrigges", element(20, 44), 1)..showDirect(Player(0)))
-				WindowManager.openWindow(
-					w..add(
-					new Observable(
-					new Icon("RingDesCrigges", element(1, 1), 1)
-						..showDirect(Player(0)))), Player(0))
+				WindowManager.openWindow(w, Player(0))
 				
-				for element e in new ElementLoop(element(5, 5), element(9, 9))
-					w.add(new Observable(new Icon("RingDesCrigges", e, 1)
-						..showDirect(Player(0)))..setDoubleClickAction((player p) -> print("Das Observable wurde von spieler " + p.getName() + " angeklickt")))
+				
 				WindowManager.openWindow(w, Player(1))
 				//ic.showDirect(Player(0))
 				//testImg.showDirect(Player(0))
@@ -443,25 +402,12 @@ package GameStart
 		
 	function onEsc()
 		print("onEsc")
-//		print(GetUnitCurrentOrder(last.u).toString())
+		createImage("ecke.blp", vec2(1010, 10), 10, 10).show()
 		
 	function stopAnimation()
 		SetUnitTimeScalePercent(last.u, 0)
 		
 	function setCallLimit1()
 		callLimit = S2I(GetEventPlayerChatString())
-		
-	function tTTest()
-		for int i = 1 to callLimit
-			for Unit u in tList
-		print(callLimit.toString())
-		//last.bonusAttack(1.)
-		//last.bonusArmor(-1.)
-		//last.bonusAttackspeed(-1.)
-		//last.bonusLifeReg(0.5)
-		//last.addAttack(10)
-		//last.bonusLife(-10)
-		//testc += 1
-		//print(testc.toString())
 		
 endpackage
