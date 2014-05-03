@@ -526,6 +526,8 @@ import PreloadSystem
 	addIconType("Inn", "ReplaceableTextures\\CommandButtons\\BTNInn.blp")
 	addIconType("InnerFire", "ReplaceableTextures\\CommandButtons\\BTNInnerFire.blp")
 	addIconType("InnerFireOff", "ReplaceableTextures\\CommandButtons\\BTNInnerFireOff.blp")
+	//okay ich pull mal hat gefunzt jetzt pushe ich mal wieder was perfekt der angle war voher 90 jetzt 10 :D okay dann mach du mal weiter will
+	//dich nicht weiter stören hauptsache es geht jetzt also wie gesagt commit pull push ist immer am besten ach ja ich zeige dir nochmal kurz nen konflikt
 	
 	
 //======================================================================================================//
