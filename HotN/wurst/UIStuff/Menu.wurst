@@ -203,6 +203,9 @@ package Menu
 				if w.hasNext()
 					e = w.next()
 				else
+					Window win = new Window()
+					for int i2 = 0 to 11
+						WindowManager.openWindow(win, Player(i2))
 					ret = -1
 					break
 				var tr = new TrackableEx(e.toVec() + menuStart, "track2.mdx")

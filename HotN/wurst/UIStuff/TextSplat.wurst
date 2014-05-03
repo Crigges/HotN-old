@@ -5,6 +5,45 @@ import FontArial
 
 constant int DISABLE_COLOR_ALPHA = -1
 constant real DISABLE_MAX_WIDTH = 1.*'Peng'+'uins'
+
+constant int spaceWidth = getFontWidth(char(' '))
+
+public function string.wrap(int width) returns string
+	string currWord = ""
+	string res = ""
+	string currChar
+	int charWidth
+	int wordWidth = 0
+	int lineWidth = 0
+	int length = this.length() - 1
+	
+	for int i = 0 to length
+		currChar = this.substring(i, i + 1)
+		charWidth = getFontWidth(currChar.toChar())
+		if currChar == "|" // colorcodes have no width.
+			if this.substring(i + 1, i + 2) == "c" // color code starts
+				currWord += this.substring(i, i + 10)
+				i += 9
+			else if this.substring(i + 1, i + 2) == "r" // color code ends
+				currWord += "|r"
+				i++
+			else // no color code, normal char
+				currWord += currChar
+				wordWidth += charWidth
+		else if currChar.isWhitespace() or i == length // word ends or string ends
+			if lineWidth + wordWidth > width and lineWidth != 0 // line is full, line break needed
+				res += "\n"
+				lineWidth = 0
+			lineWidth += wordWidth + charWidth
+			res += currWord + currChar
+			wordWidth = 0
+			currWord = ""
+			if currChar == "\n" // a manual line break
+				lineWidth = 0
+		else // word isn't complete yet
+			currWord += currChar
+			wordWidth += charWidth	
+	return res
 	
 public class TextSplat
 	private vec2 pos // absolute world coordinates

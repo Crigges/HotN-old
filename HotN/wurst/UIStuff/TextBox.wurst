@@ -43,6 +43,9 @@ public class TextBox extends Widget
 	override function disable(player p)
 		splat.clear(p)
 		splat.append(content, col.withAlpha(255), p)
+		
+	ondestroy
+		destroy splat
 	
 	
 	

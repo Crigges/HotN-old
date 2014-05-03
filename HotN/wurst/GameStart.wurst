@@ -45,6 +45,7 @@ package GameStart
 	import ClassInit
 	import TextSplat
 	import TextBox
+	import Button
 	
 	trigger testt = CreateTrigger()..addAction(function setCallLimit)
 	Bonus lastBon = null
@@ -87,6 +88,10 @@ package GameStart
 		blub.registerPlayerChatEvent(Player(0), "", false)
 //		new ControlPoint(vec2(2000, 0), Player(1))
 //		new ControlPoint(vec2(-2000, 0), Player(0))
+		doAfter(5., () -> begin
+			new Button(element(5, 5), 1, Layer.L3, "Click me!").showDirect(Player(0))
+			new Button(element(5, 10), 2, Layer.L3, "Click me!").showDirect(Player(0))
+		end)
 		EnablePreSelect(false, false)
 		//new Hero(CreateUnit(Player(0), 'H001', 0, 0, 0), 20, 100, 50, 200, 'ARHE', 100)
 //		h.addDot(last, 10000, 10)
@@ -190,7 +195,7 @@ package GameStart
 		
 		static function startPreload()
 			getTimer().start(1.0, function Preload.preload)
-			getTimer().start(1.0, function createBackground)
+			//getTimer().start(1.0, function createBackground)
 		
 		static function preload()
 			if initOrder[preloadStatus] == null
@@ -215,13 +220,13 @@ package GameStart
 				ClearTextMessages()
 				print("Loading " + initOrder[preloadStatus] + ": " + (100 * (progress / maxProgress)).toString() + "%")
 				
-		static function createBackground()
-			for int i1 = 0 to 5
-				for int i2 = 0 to 3
-					createImage(Widget.backgroundTexture[GetRandomInt(1, 8)], 
-						vec2(menuStart.x + i1 * 637, menuStart.y + i2 * 637), 
-						643, 643, Layer.L3)
-						.show()
+//		static function createBackground()
+//			for int i1 = 0 to 5
+//				for int i2 = 0 to 3
+//					createImage(Widget.backgroundTexture[GetRandomInt(1, 8)], 
+//						vec2(menuStart.x + i1 * 637, menuStart.y + i2 * 637), 
+//						643, 643, Layer.L3)
+//						.show()
 					
 					
 	init
@@ -263,7 +268,7 @@ package GameStart
 		switch chatString
 			case "w1"
 				var w = new Window()
-				Pane pane = new Pane(element(2, 2), element(40, 20), Layer.L3)
+				Pane pane = new Pane(element(2, 2), element(40, 20), Layer.L3, 4)
 				w.add(pane)
 				TextBox tb = new TextBox(element(5, 5), element(10, 5), 200, Layer.L2)
 				tb.setText("Hallo Bhusta", Player(0))

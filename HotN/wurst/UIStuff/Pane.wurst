@@ -10,7 +10,6 @@ import LinkedList
 public class Pane extends Widget
 	static int tileSize = 2
 	static element tileDimensions = element(tileSize, tileSize)
-	static string array backgroundTextures
 	static string horizontalSide = "Seite1.blp" 
 	static string verticalSide = "Seite2.blp"
 	static string leftBotCorner = "Steinecke1.blp"
@@ -38,6 +37,27 @@ public class Pane extends Widget
 		for int i = pos.y + tileSize to pos.y + size.y - tileSize step tileSize
 			list.add(createImage(verticalSide, element(pos.x, i), posFixLeft,tileDimensions, sizeFix, l))
 			list.add(createImage(verticalSide, element(pos.x + size.x, i), posFixRight,tileDimensions, sizeFix, l))
+			
+	construct(element pos, element size, Layer l, int backgroundScale)
+		super(pos, size)
+		vec2 backgroundOffset = element(backgroundScale, backgroundScale).toVec()
+		backgroundOffset.x /= 2
+		backgroundOffset.y /= 2
+		vec2 backgroundSizeFix = element(backgroundScale, backgroundScale).toVec() * 0.01
+		for int i = pos.x to pos.x + size.x - backgroundScale step backgroundScale
+			for int i2 = pos.y to pos.y + size.y - backgroundScale step backgroundScale
+				list.add(createImage(backgroundTexture[GetRandomInt(1, 8)], element(i, i2), backgroundOffset, element(backgroundScale, backgroundScale), backgroundSizeFix,l))
+		list.add(createImage(leftBotCorner, pos, tileDimensions, sizeFix, l))
+		list.add(createImage(leftTopCorner, pos + element(0, size.y), tileDimensions, sizeFix, l))
+		list.add(createImage(rightBotCorner, pos + element(size.x, 0), tileDimensions, sizeFix, l))
+		list.add(createImage(rightTopCorner, pos + element(size.x, size.y), tileDimensions, sizeFix, l))
+		for int i = pos.x + tileSize to pos.x + size.x - tileSize step tileSize
+			list.add(createImage(horizontalSide, element(i, pos.y), posFixBot,tileDimensions, sizeFix, l))
+			list.add(createImage(horizontalSide, element(i, pos.y + size.y), posFixTop,tileDimensions, sizeFix, l))
+		for int i = pos.y + tileSize to pos.y + size.y - tileSize step tileSize
+			list.add(createImage(verticalSide, element(pos.x, i), posFixLeft,tileDimensions, sizeFix, l))
+			list.add(createImage(verticalSide, element(pos.x + size.x, i), posFixRight,tileDimensions, sizeFix, l))
+		
 			
 	function add(Widget toAdd)
 		content.add(toAdd)
@@ -69,6 +89,11 @@ public class Pane extends Widget
 		if GetLocalPlayer() == p
 			for Widget wi in content
 				wi.disable(p)
+				
+	ondestroy
+		destroy list
+		for Widget w in content
+			destroy w
 
 
 

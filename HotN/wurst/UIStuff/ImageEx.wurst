@@ -5,6 +5,42 @@ package ImageEx
 	import Image
 	import Colors
 	import HashMap
+	
+	public class ImageEx extends Widget
+		image content
+		
+		construct(element pos, element size, string filePath, Layer layer)
+			super(pos, size)
+			content = createImage(filePath, pos.toVec() + menuStart, size.x * tileSize * 1., size.y * tileSize * 1., layer)
+			
+		construct(element pos, vec2 posOffset, element size, string filePath,  Layer layer)
+			super(pos, size)
+			content = createImage(filePath, pos.toVec() + menuStart + posOffset, size.x * tileSize * 1., size.y * tileSize * 1., layer)
+			
+		construct(element pos, element size, vec2 sizeFix, string filePath, Layer layer)
+			super(pos, size)
+			content = createImage(filePath, pos.toVec() + menuStart, size.x * tileSize + sizeFix.x, size.y * tileSize + sizeFix.y, layer)
+			
+		construct(element pos, vec2 posOffset, element size, vec2 sizeFix, string filePath, Layer layer)
+			super(pos, size)
+			content = createImage(filePath, pos.toVec() + menuStart + posOffset, size.x * tileSize + sizeFix.x, size.y * tileSize + sizeFix.y, layer)
+			
+		override function showDirect(player p)
+			content.show(p)
+		
+		override function hideDirect(player p)
+			content.hide(p)
+		
+		override function enable(player p)
+			content.setColor(color(255, 255, 255))
+		
+		override function disable(player p)
+			content.setColor(color(90, 90, 90))
+			
+		ondestroy
+			content.remove()
+			
+		
 
 	public function createImage(string filePath, element pos, element size, Layer layer) returns image
 		return createImage(filePath, pos.toVec() + menuStart, size.x * tileSize * 1., size.y * tileSize * 1., layer)
