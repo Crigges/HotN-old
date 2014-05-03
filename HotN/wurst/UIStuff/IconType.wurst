@@ -7,7 +7,6 @@ import PreloadSystem
 
 //add buffs here
 @compiletime function types()
-	addIconType("SchwertDesBhusta", "ReplaceableTextures\\CommandButtons\\BTNSlow.blp")
 	addIconType("RingDesCrigges", "ReplaceableTextures\\CommandButtons\\BTNSlow.blp")
 	addIconType("3M1", "ReplaceableTextures\\CommandButtons\\BTN3M1.blp")
 	addIconType("3M2", "ReplaceableTextures\\CommandButtons\\BTN3M2.blp")
