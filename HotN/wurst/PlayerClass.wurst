@@ -6,7 +6,7 @@ package PlayerClass
 	
 	public Player lastp = null
 	constant real camDistance = 3000.
-	constant real camAngle = 90.
+	constant real camAngle = 10.
 	constant real camWidth = 1000.
 	constant real camHeightLow = 2000
 	constant real camHeightHigh = -200
