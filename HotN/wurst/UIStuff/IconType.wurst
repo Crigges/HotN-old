@@ -534,7 +534,7 @@ int iconCount = '%000'
 boolean compiletime = true
 constant real restColor = 0.3
 	
-function 	addIconType(string name, string iconPath)
+function addIconType(string name, string iconPath)
 	if not compiletime
 		iconMap.put(StringHash(name), iconCount)
 		addDestructableToPreload(iconCount)
