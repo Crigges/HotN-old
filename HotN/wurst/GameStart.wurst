@@ -24,7 +24,7 @@ package GameStart
 	import HandleCounter
 	import LinkedList
 	import ObjectIds
-	import Colors
+	import Colors// sehr komisch sekunde 
 	import PlayerClass
 	import Terrain
 	import Texttag
@@ -208,7 +208,7 @@ package GameStart
 				preloadStatus++
 				GetExpiredTimer().start(0.05, function preload)
 				progress += 0.05
-			else
+			else // nur einmal geöffnet ^^ ja das sist alles keine problem halt nur sachen ohne compiletime stuff sind schlimm 
 				GetExpiredTimer().start(check, function preload)
 				progress += check
 			if showProgress
