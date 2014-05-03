@@ -200,4 +200,3 @@ function config takes nothing returns nothing
     call InitGenericPlayerSlots(  )
     call InitAllyPriorities(  )
 endfunction
-
