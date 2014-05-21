@@ -49,6 +49,7 @@ package GameStart
 	
 	trigger testt = CreateTrigger()..addAction(function setCallLimit)
 	Bonus lastBon = null
+	vec2 tvec = vec2(0, 0)
 	real hp = 0
 	int testc = 0
 	int testi = 0
@@ -107,8 +108,14 @@ package GameStart
 		//lastp.h = last castTo Hero
 //		createImage("war3mapImported\\background.blp", vec2(0, 0), 100, 100, Layer.L1).show()
 //		testImg = new Image("war3mapImported\\SorvButton.blp", element(20, 10), vec2(8, 2), OpenTo.TOP_RIGHT, Layer.L1)
-		for int i = 1 to 20
+		getTimer().startPeriodic(1, () -> begin
+			vec2 temp = tvec
+			tvec = last.u.getPos()
+			print((last.u.getPos() - temp).length().toString())
+		end)
+		for int i = 1 to 2
 			Hero h = new Hero(CreateUnit(Player(0), 'H001', 0, 0, 0), 1, 100, 50, 150, 'ARHE', 100)
+			//h.bonusMovespeed(522)
 			h.animationIndex = 7
 			h.captureOffsetDistance = 35
 			h.captureOffsetZ = 20
@@ -186,12 +193,13 @@ package GameStart
 		static int loopCounter = 0
 		
 		override static function classInit()
-			initOrder[1] = "Abilitys"
-			initOrder[2] = "Units"
-			initOrder[3] = "Items"
-			initOrder[4] = "Destructables"
-			initOrder[5] = "Buffs"
-			initOrder[6] = "Trackables"
+			initOrder[1] = "IconTypes"
+			initOrder[2] = "Abilitys"
+			initOrder[3] = "Units"
+			initOrder[4] = "Items"
+			initOrder[5] = "Destructables"
+			initOrder[6] = "Buffs"
+			initOrder[7] = "Trackables"
 		
 		static function startPreload()
 			getTimer().start(1.0, function Preload.preload)

@@ -1058,7 +1058,6 @@ import PreloadSystem
 	
 	
 //======================================================================================================//
-	
 HashMap<int, int> iconMap = new HashMap<int, int>()
 int iconCount = '%000'
 boolean compiletime = true
@@ -1113,4 +1112,7 @@ public tuple iconType(int normalId, int diableId)
 	
 init
 	compiletime = false
-	types()
+	onPreload("IconTypes", (int i) -> begin
+		types()
+		return -1.
+	end)

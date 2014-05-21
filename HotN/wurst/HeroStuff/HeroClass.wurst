@@ -2,13 +2,13 @@ package HeroClass
 	import StandardImports
 	import UnitClass
 	import initlater Bonus
-	import Setup
 	import initlater HeroBar
 	import Queue
 	import initlater OrderHandling
 	import HashMap
 	import initlater Spell
 	import LinkedListModule
+	import LinkedList
 	
 	public int heroCount = 0
 	
@@ -18,6 +18,11 @@ package HeroClass
 		static constant trigger castDetect = CreateTrigger()..addAction(function handleCasts)
 		static constant HashMap<int, Spell> abiIdToSpell = new HashMap<int, Spell>()
 		static constant timer checkOrders  = getTimer()//..startPeriodic(0.01, function checkOrders)
+		static constant LinkedList<Hero> toMove = new LinkedList<Hero>()
+		static constant timer movespeedX= getTimer()..startPeriodic(0.01, () -> begin
+			for Hero h in toMove
+				h.u.setXY(h.u.getPos().polarOffset(h.u.getFacingAngle(), 0.5))
+		end)
 		real agi
 		real bonusAgi
 		real bonusAgiPer
@@ -134,42 +139,6 @@ package HeroClass
 			attackBuffer += roundReal(5)
 			super.addAttack(amount)
 			
-//		override function bonusAgi(real amount) returns Bonus
-//			return new Bonus(this, amount, 0., BonType.AGI)
-//			
-//		override function bonusAgiTimed(real amount, real duration) returns Bonus
-//			return new Bonus(this, amount, duration, BonType.AGI)
-//				
-//		override function bonusAgiPer(real amount) returns Bonus
-//			return new Bonus(this, amount, 0., BonType.AGI_PER)
-//			
-//		override function bonusAgiPerTimed(real amount, real duration) returns Bonus
-//			return new Bonus(this, amount, duration, BonType.AGI_PER)
-//
-//		override function bonusStr(real amount) returns Bonus
-//			return new Bonus(this, amount, 0., BonType.STR)
-//			
-//		override function bonusStrTimed(real amount, real duration) returns Bonus
-//			return new Bonus(this, amount, duration, BonType.STR)
-//				
-//		override function bonusStrPer(real amount) returns Bonus
-//			return new Bonus(this, amount, 0., BonType.STR_PER)
-//			
-//		override function bonusStrPerTimed(real amount, real duration) returns Bonus
-//			return new Bonus(this, amount, duration, BonType.STR_PER)
-//
-//		override function bonusInt(real amount) returns Bonus
-//			return new Bonus(this, amount, 0., BonType.INT)
-//			
-//		override function bonusIntTimed(real amount, real duration) returns Bonus
-//			return new Bonus(this, amount, duration, BonType.INT)
-//				
-//		override function bonusIntPer(real amount) returns Bonus
-//			return new Bonus(this, amount, 0., BonType.INT_PER)
-//			
-//		override function bonusIntPerTimed(real amount, real duration) returns Bonus
-//			return new Bonus(this, amount, duration, BonType.INT_PER)
-			
 		function getAgi(boolean withBonus) returns real
 			if withBonus
 				return (agi + bonusAgi) * (1. + (bonusAgiPer / 100))
@@ -192,13 +161,20 @@ package HeroClass
 			hb.update()
 			return super.dealDamage(amount, source, bonus)
 
-		override function	updateLife()
+		override function updateLife()
 			hb.updateEx()
 			super.updateLife()
 			
-		override function	updateMana()
+		override function updateMana()
 			hb.updateEx()
 			super.updateMana()
+			
+		override function updateMovespeed()
+			super.updateMovespeed()
+			if getMovespeed(true) > 522
+				toMove.add(this)
+			else
+				toMove.remove(this)
 				
 		override function causeHeal(real amount) returns real
 			hb.update()
