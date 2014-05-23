@@ -15,6 +15,18 @@ package Setup
 	//------BonusMod------//
 	//--------------------//
 	
+	public function colorToIndex(color c) returns int
+		return c.red + (c.green * 256) + (c.blue * 65536)
+	
+	public function colorFromIndex(int i) returns color
+		return color(i mod 256, (i mod 65536) div 256, (i mod 16777216) div 65536)
+		
+	public function colorAToIndex(colorA c) returns int
+		return c.red + (c.green * 256) + (c.blue * 65536) + (c.alpha div 2 * 16777216)
+	
+	public function colorAFromIndex(int i) returns colorA
+		return colorA(i mod 256, (i mod 65536) div 256, (i mod 16777216) div 65536, (i div 16777216) * 2)
+	
 	public tuple bonData(int raw, int size)
 	
 	public function cBonData(int raw, int size) returns bonData
@@ -74,6 +86,12 @@ package Setup
 		
 	public function element.op_div(int i) returns element
 		return element(this.x div i, this.y div i)
+		
+	public function elementFromIndex(int index) returns element
+		return element(index mod 32768, index div 32768)
+		
+	public function elementToIndex(element e) returns int
+		return e.x + e.y * 32768
 		
 	public function vec2.toElement() returns element
 		return element(roundReal(this.x), roundReal(this.y))

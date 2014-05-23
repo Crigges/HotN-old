@@ -4,6 +4,7 @@ package GameStart
 	import Buff
 	import Char
 	import Dot
+	import Model
 	import Filter
 	import HashList
 	import FloatingText
@@ -278,6 +279,7 @@ package GameStart
 				var w = new Window()
 				Pane pane = new Pane(element(2, 2), element(40, 20), Layer.L3, 4)
 				w.add(pane)
+				pane.add(new Model(element(10, 10), "units\\demon\\Warlock\\Warlock.mdl", 2))
 				TextBox tb = new TextBox(element(5, 5), element(10, 5), 200, Layer.L2)
 				tb.setText("Hallo Bhusta", Player(0))
 				tb.setColor(color(255, 0, 0))

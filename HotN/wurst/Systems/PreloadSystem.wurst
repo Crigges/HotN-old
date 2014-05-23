@@ -19,6 +19,7 @@ constant real abilityLoadTimeLvlBonus = 0.025
 constant real unitLoadTime= 0.05
 constant real buffLoadTime= 0.025
 constant real itemLoadTime= 0.04
+constant real destructableLoadTime = 0.01
 
 public abstract class PreloadAction
 	
@@ -121,10 +122,11 @@ init
 			int id = destructablesToPreload.get(i)
 			destructable d = CreateDestructable(id, 0, 0, 0, 0, 0)
 			if GetDestructableName(d) == null or GetDestructableName(d) == ""
+				printError("Following destructable is missing or invaild and could not be loaded: " + idInteger2IdString(id))
 				ret = -2
 			else
 				doAfter(1, () -> RemoveDestructable(d))
-				ret = itemLoadTime
+				ret = destructableLoadTime
 		return ret
 	end)
 	
