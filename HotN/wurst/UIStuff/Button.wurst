@@ -18,7 +18,7 @@ public class Button extends Observable
 		this.name = name
 		real textsize = 32. + scale * 20
 		vec2 vecSize = size.toVec()
-		splat = new TextSplat(pos.toVec() + vec2((vecSize.x / 2) - (name.length() * (textsize / 2)), vecSize.y / 2) + menuStart, textsize)
+		splat = new TextSplat(pos.toVec() + vec2((vecSize.x / 4) -(name.length() * (textsize / 2)), vecSize.y / 2) + menuStart, textsize, l)..setMaxWidth(1000)
 		
 		
 	override function showDirect(player p)

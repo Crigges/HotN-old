@@ -73,6 +73,9 @@ public class TextSplat
 		maxWidth = DISABLE_MAX_WIDTH
 		cursor = vec2(pos.x, pos.y - fontSize)
 		dimensions = pos
+		
+	function getCurrentLength() returns real
+		return cursor.x - pos.x
    
 	/** Defines a maximum width after which a line break will be inserted. */
 	function setMaxWidth(real maxWidth)

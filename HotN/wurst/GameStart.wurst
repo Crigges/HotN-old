@@ -25,7 +25,7 @@ package GameStart
 	import HandleCounter
 	import LinkedList
 	import ObjectIds
-	import Colors// sehr komisch sekunde 
+	import Colors
 	import PlayerClass
 	import Terrain
 	import Texttag
@@ -68,6 +68,10 @@ package GameStart
 	HashList<Unit> tList = new HashList<Unit>()
 	LinkedList<Unit> lList = new LinkedList<Unit>()
 	
+	Window shopWindow = new Window()
+	Window scoreWindow = new Window()
+	Window guideWindow = new Window()
+	
 	
 	init
 		for int i = 0 to 11
@@ -90,10 +94,10 @@ package GameStart
 		blub.registerPlayerChatEvent(Player(0), "", false)
 //		new ControlPoint(vec2(2000, 0), Player(1))
 //		new ControlPoint(vec2(-2000, 0), Player(0))
-		doAfter(5., () -> begin
-			new Button(element(5, 5), 1, Layer.L3, "Click me!").showDirect(Player(0))
-			new Button(element(5, 10), 2, Layer.L3, "Click me!").showDirect(Player(0))
-		end)
+//		doAfter(5., () -> begin
+//			new Button(element(5, 5), 1, Layer.L3, "Click me!").showDirect(Player(0))
+//			new Button(element(5, 10), 2, Layer.L3, "Click me!").showDirect(Player(0))
+//		end)
 		EnablePreSelect(false, false)
 		//new Hero(CreateUnit(Player(0), 'H001', 0, 0, 0), 20, 100, 50, 200, 'ARHE', 100)
 //		h.addDot(last, 10000, 10)
@@ -210,6 +214,7 @@ package GameStart
 			if initOrder[preloadStatus] == null
 				ClearTextMessages()
 				print("Preload done in " + progress.toString() + " sec!")
+				preloadEnd.callActions(0)
 				GetExpiredTimer().release()
 				return
 			real check = preloadAction(initOrder[preloadStatus], loopCounter)
@@ -246,7 +251,57 @@ package GameStart
 	//========================================================================================================================================================================================//
 		
 	function afterPreload()
+		Button shopB = new Button(element(10, 22), 1, Layer.L3, "Shoppenhier")
+		Icon shopButton = new Icon("RingDesCrigges", element(2, 22), 2)
+		Button scoreB = new Button(element(10, 20), 1, Layer.L3, "Score")
+		Icon scoreButton = new Icon("RingDesCrigges", element(2, 20), 2)
+		Button guideB = new Button(element(10, 18), 1, Layer.L3, "Guide")
+		Icon guideButton = new Icon("RingDesCrigges", element(2, 18), 2)
+		Button exitB = new Button(element(10, 16), 1, Layer.L3, "Exit")
+		Icon exitButton = new Icon("RingDesCrigges", element(2, 16), 2)
 		
+		Observable shopOb = new Observable(shopButton)
+		shopOb.setClickAction((player p) -> begin
+			print("Spieler " + p.getName() + " geht in den Shop")
+			WindowManager.closeTopWindow(p)
+			WindowManager.openWindow(shopWindow, p)
+		end)
+		Observable scoreOb = new Observable(scoreButton)
+		scoreOb.setClickAction((player p) -> begin
+			print("Spieler " + p.getName() + " geht in den Score")
+			WindowManager.closeTopWindow(p)
+			WindowManager.openWindow(scoreWindow, p)
+		end)
+		Observable guideOb = new Observable(guideButton)
+		guideOb.setClickAction((player p) -> begin
+			print("Spieler " + p.getName() + " geht in den Guide")
+			WindowManager.closeTopWindow(p)
+			WindowManager.openWindow(guideWindow, p)
+		end)
+		Observable exitOb = new Observable(exitButton)
+		exitOb.setClickAction((player p) -> begin
+			print("Spieler " + p.getName() + " geht raus")
+			WindowManager.closeTopWindow(p)
+		end)
+		
+		shopWindow.add(shopOb)
+		shopWindow.add(scoreOb)
+		shopWindow.add(guideOb)
+		shopWindow.add(exitOb)
+		shopWindow.add(shopB)
+		
+		scoreWindow.add(shopOb)
+		scoreWindow.add(scoreOb)
+		scoreWindow.add(guideOb)
+		scoreWindow.add(exitOb)
+		scoreWindow.add(scoreB)
+		
+		guideWindow.add(shopOb)
+		guideWindow.add(scoreOb)
+		guideWindow.add(guideOb)
+		guideWindow.add(exitOb)
+		guideWindow.add(guideB)
+		new TextBox(element(10, 10), element(5, 5), 30, Layer.L1)..setText("Hallo Ihr seid kacka", Player(0))..setColor(color(255, 0, 0))..showDirect(Player(0))
 		
 		
 	function camTest()
@@ -276,24 +331,24 @@ package GameStart
 			SetUnitAnimationByIndex(last.u, S2I(cuttet))
 		switch chatString
 			case "w1"
-				var w = new Window()
-				Pane pane = new Pane(element(2, 2), element(40, 20), Layer.L3, 4)
-				w.add(pane)
-				pane.add(new Model(element(10, 10), "units\\demon\\Warlock\\Warlock.mdl", 2))
-				TextBox tb = new TextBox(element(5, 5), element(10, 5), 200, Layer.L2)
-				tb.setText("Hallo Bhusta", Player(0))
-				tb.setColor(color(255, 0, 0))
-				w.add(tb)
-				Icon ic = new Icon("RingDesCrigges", element(22, 11), 2)
-				Observable ob = new Observable(ic)
-				ob.setClickAction((player p) -> begin
-					print("Spieler " + p.getName() + " hat auf den Ring Des crigges geklickt")
-				end)
-				w.onVoidClick((player p) -> begin
-					WindowManager.closeTopWindow(p)
-				end)
-				w.add(ob)
-				WindowManager.openWindow(w, Player(0))
+//				var w = new Window()
+//				Pane pane = new Pane(element(2, 2), element(40, 20), Layer.L3, 4)
+//				w.add(pane)
+//				pane.add(new Model(element(10, 10), "units\\demon\\Warlock\\Warlock.mdl", 2))
+//				TextBox tb = new TextBox(element(5, 5), element(10, 5), 200, Layer.L2)
+//				tb.setText("Hallo Bhusta", Player(0))
+//				tb.setColor(color(255, 0, 0))
+//				w.add(tb)
+//				Icon ic = new Icon("RingDesCrigges", element(22, 11), 2)
+//				Observable ob = new Observable(ic)
+//				ob.setClickAction((player p) -> begin
+//					print("Spieler " + p.getName() + " hat auf den Ring Des crigges geklickt")
+//				end)
+//				w.onVoidClick((player p) -> begin
+//					WindowManager.closeTopWindow(p)
+//				end)
+//				w.add(ob)
+				WindowManager.openWindow(shopWindow, Player(0))
 			case "w2"
 				var w = new Window()
 				WindowManager.openWindow(
