@@ -4,7 +4,7 @@ import Char
 import FontArial
 
 constant int DISABLE_COLOR_ALPHA = -1
-constant real DISABLE_MAX_WIDTH = 1.*'Peng'+'uins'
+constant real DISABLE_MAX_WIDTH = 100000000.
 
 constant int spaceWidth = getFontWidth(char(' '))
 
