@@ -209,7 +209,7 @@ public function initFont(string path)
 	widths['}'] = 16
 	widths['~'] = 29
 	// Space:
-	widths[' '] = 29
+	widths[' '] = 20
 
 init
 	initFont("Chars\\")
