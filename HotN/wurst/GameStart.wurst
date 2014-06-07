@@ -85,78 +85,21 @@ package GameStart
 		getTimer().startPeriodic(0.5, function Dot.loopList)
 		//UnitClass
 		getTimer().startPeriodic(0.03, function callKnockback)
-		//Test Zeug
-		//for int i = 1 to 10
-		//	getTimer().startPeriodic(0.1, function tTTest)
-		//getTimer().startPeriodic(1., function printRegen)
+		
 		trigger blub = CreateTrigger()
 		blub.addAction(function camTest)
-		blub.registerPlayerChatEvent(Player(0), "", false)
-//		new ControlPoint(vec2(2000, 0), Player(1))
-//		new ControlPoint(vec2(-2000, 0), Player(0))
-//		doAfter(5., () -> begin
-//			new Button(element(5, 5), 1, Layer.L3, "Click me!").showDirect(Player(0))
-//			new Button(element(5, 10), 2, Layer.L3, "Click me!").showDirect(Player(0))
-//		end)
+		
 		EnablePreSelect(false, false)
-		//new Hero(CreateUnit(Player(0), 'H001', 0, 0, 0), 20, 100, 50, 200, 'ARHE', 100)
-//		h.addDot(last, 10000, 10)
-//		last.addDot(h, 10000, 10)
-		//last.u.addAbility('ZA01')
-//		last castTo Hero.animationIndex = 2
-//		last castTo Hero.animationIntervall = 1
-//		last castTo Hero.hasPeriodicAnimation = true
-//		last castTo Hero.animationSpeed = 70
-//		last castTo Hero.captureOffsetDistance = 90
+		
+
 		for player p in allPlayers
 			new Player(p)
-		//lastp.h = last castTo Hero
-//		createImage("war3mapImported\\background.blp", vec2(0, 0), 100, 100, Layer.L1).show()
-//		testImg = new Image("war3mapImported\\SorvButton.blp", element(20, 10), vec2(8, 2), OpenTo.TOP_RIGHT, Layer.L1)
-//		getTimer().startPeriodic(1, () -> begin
-//			vec2 temp = tvec
-//			tvec = last.u.getPos()
-//			print((last.u.getPos() - temp).length().toString())
-//		end)
-//		for int i = 1 to 2
-//			Hero h = new Hero(CreateUnit(Player(0), 'H001', 0, 0, 0), 1, 100, 50, 150, 'ARHE', 100)
-//			//h.bonusMovespeed(522)
-//			h.animationIndex = 7
-//			h.captureOffsetDistance = 35
-//			h.captureOffsetZ = 20
-//			h.captureEffectAttachmentPoint = "weapton"
-//			h.captureEffect = "Abilities\\Weapons\\FarseerMissile\\FarseerMissile.mdl"
-//			h.bonusAttackspeed(1000)
-//			testSpell = new TestSpell1Setup(h, SpellType.Q)
-			//new Buff(h, "slow", 30)..attachBonus(h.bonusMovespeedPer(-50)).addEffect("Abilities\\Spells\\Human\\slow\\slowtarget.mdl", "origin")
-			
-			//h.addStun(20)
-//			new Unit(CreateUnit(Player(0), 'hrif', -2000, 0, 0), 20, 100, 50, 200, 100)
-			//IssuePointOrder(last.u, "attack", 2000, 0)
-			//last.u.addAbility('tttt')
-			//SetHeroLevel(last.u, 10, true)
-			//last.bonusAgi(10)
-			//last.bonusAttack(10)
-			//last.bonusManaTimed(100, 5)
-			//last.bonusManaPerTimed-(50, 10)
-			//new Unit(CreateUnit(Player(1), 'hfoo', 0, 0, 0), 6, 100, 50, 70, 100)
-			//new Dot(last, last, 300, 60.)
-			//var b1 = new Buff(last.u, 'Bslo', 'A000', 15.)
-			//b1.addEffectTimed("Abilities\\Spells\\Items\\TomeOfRetraining\\TomeOfRetrainingCaster.mdl" , "origin", 1.5)
-		//new Unit(CreateUnit(Player(0), 'hsor', 0, 0, 0), 20, 100, 50, 70, 100)
-		//last.u.addAbility('AU_1')
-		//testi = GetHandleId(testu)
+		
+
 		testt.registerPlayerChatEvent(Player(0), "", false)
 		TriggerRegisterPlayerEventEndCinematic(CreateTrigger()..addAction(function onEsc), Player(0))
-		//for int i = 1 to 500
-		//	Aura a = new Aura(last, 500, 'B000', null, 0.1)
-		//a.registerEnterEvent(function enter)
-		//a.registerLeaveEvent(function leave)
-		//trackable tr = CreateTrackable("320x320Track.mdl", 0, 0, 0)
-		//trigger t = CreateTrigger()
-		//t.addAction(function track)
-		//t.registerTrackableTrackEvent(tr)
-		//CreateUnit(Player(0), 'hpea', 500, 0, 0)
+
+
 		
 		//---------------------------------------------//
 		//-------------Preload Stuff-------------------//
@@ -164,18 +107,13 @@ package GameStart
 		
 		Preload.startPreload()
 		
-		//getTimer().startPeriodic(0.1, function textTag)
-		
-		//getTimer().startPeriodic(0.05, function noOpLimit)
 		
 		//---------------Attack Bons-------------------//
 		
 		
 	function textTag()
 		skip
-//		ttSize -= 0.0001
-//		SetTextTagText(testTag, "||||||||||||||||||||||||||||||||", ttSize)
-//		print(ttSize.toString())
+
 		
 	function noOpLimit()
 		Preload.preloadStatus++
@@ -205,6 +143,7 @@ package GameStart
 			initOrder[5] = "Destructables"
 			initOrder[6] = "Buffs"
 			initOrder[7] = "Trackables"
+			initOrder[8] = "Menu"
 		
 		static function startPreload()
 			getTimer().start(1.0, function Preload.preload)
@@ -236,216 +175,309 @@ package GameStart
 					
 	init
 		Preload.preloadEnd.addAction((int i) -> afterPreload())
+		
+		Button shopB
+		Button scoreB
+		Button guideB
+		Button exitB
+		Button buyB
+		
+		TextBox shopT1 
+		TextBox shopT2
+		TextBox shopT3
+		
+		Observable shopOb
+		Observable scoreOb 
+		Observable guideOb 
+		Observable exitOb 
+			
+		
+		Pane shopPleft	
+		Pane shopPmiddle
+		Pane shopPright
+		Pane shopPleftBot
+		Pane shopPleftBot2
+		
+		Icon shop1
+		Icon shop2
+		Icon shop3
+		Icon shop4
+		Icon shop5
+		Icon shop6
+		Icon shop7
+		Icon shop8
+		Icon shop9
+		Icon shop10
+		Icon shop11
+		Icon shop12
+		Icon shop13
+		Icon shop14
+		Icon shop15
+		Icon shop16
+		Icon shop17
+		Icon shop18
+		Icon shop19
+		Icon shop20
+		Icon shop21
+		Icon shop22
+		Icon shop23
+		Icon shop24
+		Icon shop25
+		Icon shop26
+		Icon shop27
+		Icon shop28
+		Icon shop29
+		Icon shop30
+		Icon shop31
+		Icon shop32
+		Icon shop25a
+		Icon shop26a
+		Icon shop27a
+		Icon shop28a
+		Icon shop29a
+		Icon shop30a
+		Icon shop31a
+		Icon shop32a
+		Icon shop33
+		Icon shop34
+		Icon shop35
+		Icon shop36
+		Icon shop37
+		Icon shop38
+		Icon shop39
+		Icon shop40
+		Icon shop41
+		Icon shop42
+		Icon shop43
+		Icon shop44
+		Icon shop45
+		Icon shop46
+		Icon shop47
+		
+		onPreload("Menu", (int i) -> begin
+			switch i
+				case 1
+					shopB = new Button(element(2, 22), 1, Layer.L1, "Shop")
+					scoreB = new Button(element(2, 20), 1, Layer.L1, "Score")
+					guideB = new Button(element(2, 18), 1, Layer.L1, "Guide")
+					exitB = new Button(element(2, 16), 1, Layer.L1, "Exit")
+					buyB = new Button(element(34,4), 1, Layer.L1, "Buy")
+				case 2
+					shopPleft = new Pane(element(6, 6), element(12, 16), Layer.L3, 4)		
+					shopPmiddle = new Pane(element(20, 6), element(8, 12), Layer.L3, 4)	
+					shopPright = new Pane(element(30, 6), element(8, 8), Layer.L3, 4)
+					shopPleftBot = new Pane(element(11, 1), element(12, 2), Layer.L3, 2)
+					shopPleftBot2 = new Pane(element(6, 1), element(4, 2), Layer.L3, 2)
+				case 3
+					shopT1 = new TextBox(element(5, 3), element(4, 2), 55, Layer.L3)
+					shopT1.setColor(color(255,255,0))
+					shopT1.setText("Inventory", Player(0))
+		
+					shopT2 = new TextBox(element(19, 19), element(13, 2), 80, Layer.L3)
+					shopT2.setColor(color(255,255,255))
+					shopT2.setText("Ogre Glove", Player(0))
+		
+					shopT3 = new TextBox(element(20, 6), element(8, 12), 40, Layer.L3)
+					shopT3.setColor(color(255,255,100))
+					shopT3.setText("Harry Potter ist eine populaere Romanreihe der englischen Schriftstellerin Joanne K. Rowling. Erzählt wird die Geschichte des Titelhelden Harry James Potter, eines Schülers des britischen Zaubererinternats Hogwarts, und seiner Konfrontationen mit dem bösen Magier Lord Voldemort und dessen Gefolgsleuten, den so genannten Todessern. Jeder der sieben Bände beschreibt ein Schul- und Lebensjahr von Harry Potter, beginnend kurz vor seinem elften Geburtstag. Band 1 erschien 1997 (deutsch 1998), Band 7 erschien am 21. Juli 2007 auf Englisch und am 27. Oktober 2007 auf Deutsch. Die Reihe kann verschiedenen literarischen Genres zugeordnet werden. Neben der Einordnung als Fantasy-Literatur weist die Harry-Potter-Heptalogie Eigenschaften eines Entwicklungsromans oder Bildungsromans auf und wird in der Regel als Jugendliteratur eingeordnet, obgleich die Leserschaft auch viele Erwachsene umfasst.Zwischen 2001 und 2011 entstand eine achtteilige Verfilmung der Romane.", Player(0))
+				case 4
+					shop1 = new Icon("Glove", element(7, 7), 2)
+					shop2 = new Icon("Impale", element(7, 9), 2)
+					shop3 = new Icon("Glove", element(7, 11), 2)
+					shop4 = new Icon("Glove", element(7, 13), 2)
+					shop5 = new Icon("HealingSpray", element(7, 15), 2)	
+					shop6 = new Icon("Glove", element(7, 17), 2)
+					shop7 = new Icon("Impale", element(7, 19), 2)
+					shop8 = new Icon("Glove", element(7, 21), 2)
+					shop9 = new Icon("Glove", element(9, 21), 2)
+					shop10 = new Icon("Glove", element(9, 7), 2)
+					shop11 = new Icon("Glove", element(9, 9), 2)
+					shop12 = new Icon("HealingSpray", element(9, 11), 2)
+					shop13 = new Icon("Glove", element(9, 13), 2)	
+					shop14 = new Icon("Glove", element(9, 15), 2)
+					shop15 = new Icon("Glove", element(9, 17), 2)
+					shop16 = new Icon("Glove", element(9, 19), 2)
+					shop17 = new Icon("Glove", element(11, 21), 2)
+					shop18 = new Icon("Impale", element(11, 7), 2)
+					shop19 = new Icon("Glove", element(11, 9), 2)
+					shop20 = new Icon("Glove", element(11, 11), 2)	
+					shop21 = new Icon("Glove", element(11, 13), 2)
+					shop22 = new Icon("Glove", element(11, 15), 2)
+					shop23 = new Icon("Glove", element(11, 17), 2)
+					shop24 = new Icon("Glove", element(11, 19), 2)
+					shop25 = new Icon("Glove", element(13, 21), 2)
+					shop26 = new Icon("Glove", element(13, 7), 2)
+					shop27 = new Icon("Impale", element(13, 9), 2)
+					shop28 = new Icon("Glove", element(13, 11), 2)	
+					shop29 = new Icon("Glove", element(13, 13), 2)
+					shop30 = new Icon("HealingSpray", element(13, 15), 2)
+					shop31 = new Icon("Glove", element(13, 17), 2)
+					shop32 = new Icon("Glove", element(13, 19), 2)
+					shop25a = new Icon("Glove", element(15, 21), 2)
+					shop26a = new Icon("Glove", element(15, 7), 2)
+					shop27a = new Icon("Impale", element(15, 9), 2)
+					shop28a = new Icon("Glove", element(15, 11), 2)	
+					shop29a = new Icon("Glove", element(15, 13), 2)
+					shop30a = new Icon("Glove", element(15, 15), 2)
+					shop31a = new Icon("Glove", element(15, 17), 2)
+					shop32a = new Icon("HealingSpray", element(15, 19), 2)
+					
+					shop33 = new Icon("Glove", element(12, 2), 2)
+					shop34 = new Icon("Glove", element(14, 2), 2)
+					shop35 = new Icon("Glove", element(16, 2), 2)
+					shop36 = new Icon("Glove", element(18, 2), 2)
+					shop37 = new Icon("Glove", element(20, 2), 2)
+					shop38 = new Icon("Glove", element(22, 2), 2)
+					
+					shop39 = new Icon("Glove", element(7, 2), 2)
+					shop40 = new Icon("Glove", element(9, 2), 2)
+					
+					shop41 = new Icon("Glove", element(33, 10), 3)
+					shop42 = new Icon("Glove", element(31, 13), 1)
+					shop43 = new Icon("Glove", element(33, 13), 1)
+					shop44 = new Icon("Glove", element(35, 13), 1)
+					shop45 = new Icon("Glove", element(31, 7), 1)
+					shop46 = new Icon("Glove", element(33, 7), 1)
+					shop47 = new Icon("HealingSpray", element(35, 7), 1)
+				case 5
+					shopOb = new Observable(shopB)
+					shopOb.setClickAction((player p) -> begin
+						print("Spieler " + p.getName() + " geht in den Shop")
+						WindowManager.closeTopWindow(p)
+						WindowManager.openWindow(shopWindow, p)
+					end)
+					scoreOb = new Observable(scoreB)
+					scoreOb.setClickAction((player p) -> begin
+						print("Spieler " + p.getName() + " geht in den Score")
+						WindowManager.closeTopWindow(p)
+						WindowManager.openWindow(scoreWindow, p)
+					end)
+					guideOb = new Observable(guideB)
+					guideOb.setClickAction((player p) -> begin
+						print("Spieler " + p.getName() + " geht in den Guide")
+						WindowManager.closeTopWindow(p)
+						WindowManager.openWindow(guideWindow, p)
+					end)
+					exitOb = new Observable(exitB)
+					exitOb.setClickAction((player p) -> begin
+						print("Spieler " + p.getName() + " geht raus")
+						WindowManager.closeTopWindow(p)
+					end)
+				case 6
+					shopWindow.add(shopOb)
+					shopWindow.add(scoreOb)
+					shopWindow.add(guideOb)
+					shopWindow.add(exitOb)
+					
+					shopWindow.add(buyB)
+					
+					shopWindow.add(shopPright)
+					shopWindow.add(shopPmiddle)
+					shopWindow.add(shopPleft)
+					shopWindow.add(shopPleftBot)
+					shopWindow.add(shopPleftBot2)
+					
+					shopWindow.add(shop1)
+					shopWindow.add(shop2)
+					shopWindow.add(shop3)
+					shopWindow.add(shop4)
+					shopWindow.add(shop5)
+					shopWindow.add(shop6)
+					shopWindow.add(shop7)
+					shopWindow.add(shop8)
+					shopWindow.add(shop9)
+					shopWindow.add(shop10)
+					shopWindow.add(shop11)
+					shopWindow.add(shop12)
+					shopWindow.add(shop13)
+					shopWindow.add(shop14)
+					shopWindow.add(shop15)
+					shopWindow.add(shop16)
+					shopWindow.add(shop17)
+					shopWindow.add(shop18)
+					shopWindow.add(shop19)
+					shopWindow.add(shop20)
+					shopWindow.add(shop21)
+					shopWindow.add(shop22)
+					shopWindow.add(shop23)
+					shopWindow.add(shop24)
+					shopWindow.add(shop25)
+					shopWindow.add(shop26)
+					shopWindow.add(shop27)
+					shopWindow.add(shop28)
+					shopWindow.add(shop29)
+					shopWindow.add(shop30)
+					shopWindow.add(shop31)
+					shopWindow.add(shop32)
+					shopWindow.add(shop25a)
+					shopWindow.add(shop26a)
+					shopWindow.add(shop27a)
+					shopWindow.add(shop28a)
+					shopWindow.add(shop29a)
+					shopWindow.add(shop30a)
+					shopWindow.add(shop31a)
+					shopWindow.add(shop32a)
+					
+					shopWindow.add(shop33)
+					shopWindow.add(shop34)
+					shopWindow.add(shop35)
+					shopWindow.add(shop36)
+					shopWindow.add(shop37)
+					shopWindow.add(shop38)
+					shopWindow.add(shop39)
+					shopWindow.add(shop40)
+					
+					shopWindow.add(shop41)
+					shopWindow.add(shop42)
+					shopWindow.add(shop43)
+					shopWindow.add(shop44)
+					shopWindow.add(shop45)
+					shopWindow.add(shop46)
+					shopWindow.add(shop47)
+					
+					shopWindow.add(shopT1)
+					shopWindow.add(shopT2)
+					shopWindow.add(shopT3)
+			//		shopWindow.add(shopT4)
+					
+					scoreWindow.add(shopOb)
+					scoreWindow.add(scoreOb)
+					scoreWindow.add(guideOb)
+					scoreWindow.add(exitOb)
+					
+					guideWindow.add(shopOb)
+					guideWindow.add(scoreOb)
+					guideWindow.add(guideOb)
+					guideWindow.add(exitOb)
+		
+			return 0.01
+		end)
 					
 	//========================================================================================================================================================================================//
 	//========================================================================================================================================================================================//
 	//========================================================================================================================================================================================//
 		
 	function afterPreload()
-		Button shopB = new Button(element(2, 22), 1, Layer.L1, "Shop")
-		Button scoreB = new Button(element(2, 20), 1, Layer.L1, "Score")
-		Button guideB = new Button(element(2, 18), 1, Layer.L1, "Guide")
-		Button exitB = new Button(element(2, 16), 1, Layer.L1, "Exit")
-		
-		Button buyB = new Button(element(34,4), 1, Layer.L1, "Buy")
-		
-		Pane shopPleft = new Pane(element(6, 6), element(12, 16), Layer.L3, 4)		
-		Pane shopPmiddle = new Pane(element(20, 6), element(8, 12), Layer.L3, 4)	
-		Pane shopPright = new Pane(element(30, 6), element(6, 8), Layer.L3, 2)
-		
-		Pane shopPleftBot = new Pane(element(11, 1), element(12, 2), Layer.L3, 2)
-		Pane shopPleftBot2 = new Pane(element(6, 1), element(4, 2), Layer.L3, 2)
-		
-		TextBox shopT1 = new TextBox(element(5, 3), element(4, 2), 55, Layer.L3)
-		shopT1.setColor(color(255,255,0))
-		shopT1.setText("Inventory", Player(0))
-		
-		TextBox shopT2 = new TextBox(element(19, 19), element(13, 2), 80, Layer.L3)
-		shopT2.setColor(color(255,255,255))
-		shopT2.setText("Ogre Glove", Player(0))
-		
-//		TextBox shopT3 = new TextBox(element(24, 13), element(10, 1), 40, Layer.L3)
-//		shopT3.setColor(color(255,255,100))
-//		shopT3.setText("Can be build into:", Player(0))
-		
-//		TextBox shopT4 = new TextBox(element(24, 7), element(12, 3), 40, Layer.L3)
-//		shopT4.setColor(color(255,255,100))
-//		shopT4.setText("Required items:", Player(0))
-		
-		
-		Icon shop1 = new Icon("Glove", element(7, 7), 2)
-		Icon shop2 = new Icon("Impale", element(7, 9), 2)
-		Icon shop3 = new Icon("Glove", element(7, 11), 2)
-		Icon shop4 = new Icon("Glove", element(7, 13), 2)
-		Icon shop5 = new Icon("HealingSpray", element(7, 15), 2)	
-		Icon shop6 = new Icon("Glove", element(7, 17), 2)
-		Icon shop7 = new Icon("Impale", element(7, 19), 2)
-		Icon shop8 = new Icon("Glove", element(7, 21), 2)
-		Icon shop9 = new Icon("Glove", element(9, 21), 2)
-		Icon shop10 = new Icon("Glove", element(9, 7), 2)
-		Icon shop11 = new Icon("Glove", element(9, 9), 2)
-		Icon shop12 = new Icon("HealingSpray", element(9, 11), 2)
-		Icon shop13 = new Icon("Glove", element(9, 13), 2)	
-		Icon shop14 = new Icon("Glove", element(9, 15), 2)
-		Icon shop15 = new Icon("Glove", element(9, 17), 2)
-		Icon shop16 = new Icon("Glove", element(9, 19), 2)
-		Icon shop17 = new Icon("Glove", element(11, 21), 2)
-		Icon shop18 = new Icon("Impale", element(11, 7), 2)
-		Icon shop19 = new Icon("Glove", element(11, 9), 2)
-		Icon shop20 = new Icon("Glove", element(11, 11), 2)	
-		Icon shop21 = new Icon("Glove", element(11, 13), 2)
-		Icon shop22 = new Icon("Glove", element(11, 15), 2)
-		Icon shop23 = new Icon("Glove", element(11, 17), 2)
-		Icon shop24 = new Icon("Glove", element(11, 19), 2)
-		Icon shop25 = new Icon("Glove", element(13, 21), 2)
-		Icon shop26 = new Icon("Glove", element(13, 7), 2)
-		Icon shop27 = new Icon("Impale", element(13, 9), 2)
-		Icon shop28 = new Icon("Glove", element(13, 11), 2)	
-		Icon shop29 = new Icon("Glove", element(13, 13), 2)
-		Icon shop30 = new Icon("HealingSpray", element(13, 15), 2)
-		Icon shop31 = new Icon("Glove", element(13, 17), 2)
-		Icon shop32 = new Icon("Glove", element(13, 19), 2)
-		Icon shop25a = new Icon("Glove", element(15, 21), 2)
-		Icon shop26a = new Icon("Glove", element(15, 7), 2)
-		Icon shop27a = new Icon("Impale", element(15, 9), 2)
-		Icon shop28a = new Icon("Glove", element(15, 11), 2)	
-		Icon shop29a = new Icon("Glove", element(15, 13), 2)
-		Icon shop30a = new Icon("Glove", element(15, 15), 2)
-		Icon shop31a = new Icon("Glove", element(15, 17), 2)
-		Icon shop32a = new Icon("HealingSpray", element(15, 19), 2)
-		
-		Icon shop33 = new Icon("Glove", element(12, 2), 2)
-		Icon shop34 = new Icon("Glove", element(14, 2), 2)
-		Icon shop35 = new Icon("Glove", element(16, 2), 2)
-		Icon shop36 = new Icon("Glove", element(18, 2), 2)
-		Icon shop37 = new Icon("Glove", element(20, 2), 2)
-		Icon shop38 = new Icon("Glove", element(22, 2), 2)
-		
-		Icon shop39 = new Icon("Glove", element(7, 2), 2)
-		Icon shop40 = new Icon("Glove", element(9, 2), 2)
-		
-		Icon shop41 = new Icon("Glove", element(33, 10), 3)
-		Icon shop42 = new Icon("Glove", element(31, 13), 1)
-		Icon shop43 = new Icon("Glove", element(33, 13), 1)
-		Icon shop44 = new Icon("Glove", element(35, 13), 1)
-		Icon shop45 = new Icon("Glove", element(31, 7), 1)
-		Icon shop46 = new Icon("Glove", element(33, 7), 1)
-		Icon shop47 = new Icon("HealingSpray", element(35, 7), 1)
-		
-		
-		Observable shopOb = new Observable(shopB)
-		shopOb.setClickAction((player p) -> begin
-			print("Spieler " + p.getName() + " geht in den Shop")
-			WindowManager.closeTopWindow(p)
-			WindowManager.openWindow(shopWindow, p)
-		end)
-		Observable scoreOb = new Observable(scoreB)
-		scoreOb.setClickAction((player p) -> begin
-			print("Spieler " + p.getName() + " geht in den Score")
-			WindowManager.closeTopWindow(p)
-			WindowManager.openWindow(scoreWindow, p)
-		end)
-		Observable guideOb = new Observable(guideB)
-		guideOb.setClickAction((player p) -> begin
-			print("Spieler " + p.getName() + " geht in den Guide")
-			WindowManager.closeTopWindow(p)
-			WindowManager.openWindow(guideWindow, p)
-		end)
-		Observable exitOb = new Observable(exitB)
-		exitOb.setClickAction((player p) -> begin
-			print("Spieler " + p.getName() + " geht raus")
-			WindowManager.closeTopWindow(p)
-		end)
-		
-
-		
-		shopWindow.add(shopOb)
-		shopWindow.add(scoreOb)
-		shopWindow.add(guideOb)
-		shopWindow.add(exitOb)
-		
-		shopWindow.add(buyB)
-		
-		shopWindow.add(shopPright)
-		shopWindow.add(shopPmiddle)
-		shopWindow.add(shopPleft)
-		shopWindow.add(shopPleftBot)
-		shopWindow.add(shopPleftBot2)
-		
-		shopWindow.add(shop1)
-		shopWindow.add(shop2)
-		shopWindow.add(shop3)
-		shopWindow.add(shop4)
-		shopWindow.add(shop5)
-		shopWindow.add(shop6)
-		shopWindow.add(shop7)
-		shopWindow.add(shop8)
-		shopWindow.add(shop9)
-		shopWindow.add(shop10)
-		shopWindow.add(shop11)
-		shopWindow.add(shop12)
-		shopWindow.add(shop13)
-		shopWindow.add(shop14)
-		shopWindow.add(shop15)
-		shopWindow.add(shop16)
-		shopWindow.add(shop17)
-		shopWindow.add(shop18)
-		shopWindow.add(shop19)
-		shopWindow.add(shop20)
-		shopWindow.add(shop21)
-		shopWindow.add(shop22)
-		shopWindow.add(shop23)
-		shopWindow.add(shop24)
-		shopWindow.add(shop25)
-		shopWindow.add(shop26)
-		shopWindow.add(shop27)
-		shopWindow.add(shop28)
-		shopWindow.add(shop29)
-		shopWindow.add(shop30)
-		shopWindow.add(shop31)
-		shopWindow.add(shop32)
-		shopWindow.add(shop25a)
-		shopWindow.add(shop26a)
-		shopWindow.add(shop27a)
-		shopWindow.add(shop28a)
-		shopWindow.add(shop29a)
-		shopWindow.add(shop30a)
-		shopWindow.add(shop31a)
-		shopWindow.add(shop32a)
-		
-		shopWindow.add(shop33)
-		shopWindow.add(shop34)
-		shopWindow.add(shop35)
-		shopWindow.add(shop36)
-		shopWindow.add(shop37)
-		shopWindow.add(shop38)
-		shopWindow.add(shop39)
-		shopWindow.add(shop40)
-		
-		shopWindow.add(shop41)
-		shopWindow.add(shop42)
-		shopWindow.add(shop43)
-		shopWindow.add(shop44)
-		shopWindow.add(shop45)
-		shopWindow.add(shop46)
-		shopWindow.add(shop47)
-		
-		shopWindow.add(shopT1)
-		shopWindow.add(shopT2)
-//		shopWindow.add(shopT3)
-//		shopWindow.add(shopT4)
-		
-		scoreWindow.add(shopOb)
-		scoreWindow.add(scoreOb)
-		scoreWindow.add(guideOb)
-		scoreWindow.add(exitOb)
-		
-		guideWindow.add(shopOb)
-		guideWindow.add(scoreOb)
-		guideWindow.add(guideOb)
-		guideWindow.add(exitOb)
-
 		WindowManager.openWindow(shopWindow, Player(0))
+		
+
+		
+
+		
+
+
+		
+		
+		
+		
+		
+		
+		
+
+		
+
+
+		
 		
 	function camTest()
 		last.manaTT(1)

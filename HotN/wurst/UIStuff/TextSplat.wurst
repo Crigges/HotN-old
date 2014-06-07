@@ -151,7 +151,7 @@ public class TextSplat
 	function clear(player p)
 		if GetLocalPlayer() == p
 			images.eraseAll()
-			cursor = vec2(pos.y, pos.y - fontSize)
+			cursor = vec2(pos.x, pos.y - fontSize)
 			dimensions = pos
 
 	private function updateDimX()

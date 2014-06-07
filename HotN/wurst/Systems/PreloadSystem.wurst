@@ -13,13 +13,15 @@ HashList<int> itemsToPreload = new HashList<int>()
 HashList<int> destructablesToPreload = new HashList<int>()
 real totalTime = 0
 
+
+
 constant unit preloadDummy = CreateUnit(DUMMY_PLAYER, DUMMY_UNIT_ID, 0, 0, 0)
-constant real abilityLoadTime= 0.0
-constant real abilityLoadTimeLvlBonus = 0.0 
-constant real unitLoadTime= 0.0
-constant real buffLoadTime= 0.0
-constant real itemLoadTime= 0.0
-constant real destructableLoadTime = 0.0
+constant real abilityLoadTime= 0.003
+constant real abilityLoadTimeLvlBonus = 0.003 
+constant real unitLoadTime= 0.003
+constant real buffLoadTime= 0.003
+constant real itemLoadTime= 0.003
+constant real destructableLoadTime = 0.003
 
 public abstract class PreloadAction
 	
@@ -129,7 +131,7 @@ init
 				ret = destructableLoadTime
 		return ret
 	end)
-	
+
 	
 	
 
