@@ -174,86 +174,84 @@ package GameStart
 					
 	init
 		Preload.preloadEnd.addAction((int i) -> afterPreload())
+		Button shopB = null
+		Button scoreB = null
+		Button guideB = null
+		Button exitB = null
+		Button buyB = null
 		
+		TextBox shopT1 = null
+		TextBox shopT2 = null
+		TextBox shopT3 = null
+		
+		Observable shopOb = null
+		Observable scoreOb  = null
+		Observable guideOb  = null
+		Observable exitOb = null
+			
+		
+		Pane shopPleft = null
+		Pane shopPmiddle = null
+		Pane shopPright = null
+		Pane shopPleftBot = null
+		Pane shopPleftBot2 = null
+		Icon shop1 = null
+		Icon shop2 = null
+		Icon shop3 = null
+		Icon shop4 = null
+		Icon shop5 = null
+		Icon shop6 = null
+		Icon shop7 = null
+		Icon shop8 = null
+		Icon shop9 = null
+		Icon shop10 = null
+		Icon shop11 = null
+		Icon shop12 = null
+		Icon shop13 = null
+		Icon shop14 = null
+		Icon shop15 = null
+		Icon shop16 = null
+		Icon shop17 = null
+		Icon shop18 = null
+		Icon shop19 = null
+		Icon shop20 = null
+		Icon shop21 = null
+		Icon shop22 = null
+		Icon shop23 = null
+		Icon shop24 = null
+		Icon shop25 = null
+		Icon shop26 = null
+		Icon shop27 = null
+		Icon shop28 = null
+		Icon shop29 = null
+		Icon shop30 = null
+		Icon shop31 = null
+		Icon shop32 = null
+		Icon shop25a = null
+		Icon shop26a = null
+		Icon shop27a = null
+		Icon shop28a = null
+		Icon shop29a = null
+		Icon shop30a = null
+		Icon shop31a = null
+		Icon shop32a = null
+		Icon shop33 = null
+		Icon shop34 = null
+		Icon shop35 = null
+		Icon shop36 = null
+		Icon shop37 = null
+		Icon shop38 = null
+		Icon shop39 = null
+		Icon shop40 = null
+		Icon shop41 = null
+		Icon shop42 = null
+		Icon shop43 = null
+		Icon shop44 = null
+		Icon shop45 = null
+		Icon shop46 = null
+		Icon shop47 = null
 		onPreload("Menu", (int i) -> begin
 			real ret = 0.01
-			Button shopB
-			Button scoreB
-			Button guideB
-			Button exitB
-			Button buyB
-			
-			TextBox shopT1 
-			TextBox shopT2
-			TextBox shopT3
-			
-			Observable shopOb
-			Observable scoreOb 
-			Observable guideOb 
-			Observable exitOb 
-				
-			
-			Pane shopPleft	
-			Pane shopPmiddle
-			Pane shopPright
-			Pane shopPleftBot
-			Pane shopPleftBot2
-			
-			Icon shop1
-			Icon shop2
-			Icon shop3
-			Icon shop4
-			Icon shop5
-			Icon shop6
-			Icon shop7
-			Icon shop8
-			Icon shop9
-			Icon shop10
-			Icon shop11
-			Icon shop12
-			Icon shop13
-			Icon shop14
-			Icon shop15
-			Icon shop16
-			Icon shop17
-			Icon shop18
-			Icon shop19
-			Icon shop20
-			Icon shop21
-			Icon shop22
-			Icon shop23
-			Icon shop24
-			Icon shop25
-			Icon shop26
-			Icon shop27
-			Icon shop28
-			Icon shop29
-			Icon shop30
-			Icon shop31
-			Icon shop32
-			Icon shop25a
-			Icon shop26a
-			Icon shop27a
-			Icon shop28a
-			Icon shop29a
-			Icon shop30a
-			Icon shop31a
-			Icon shop32a
-			Icon shop33
-			Icon shop34
-			Icon shop35
-			Icon shop36
-			Icon shop37
-			Icon shop38
-			Icon shop39
-			Icon shop40
-			Icon shop41
-			Icon shop42
-			Icon shop43
-			Icon shop44
-			Icon shop45
-			Icon shop46
-			Icon shop47
 			switch i
 				case 0
 					shopB = new Button(element(2, 22), 1, Layer.L1, "Shop")
@@ -339,115 +337,115 @@ package GameStart
 					shop46 = new Icon("Glove", element(33, 7), 1)
 					shop47 = new Icon("HealingSpray", element(35, 7), 1)
 				case 4
-//					shopOb = new Observable(shopB)
-//					shopOb.setClickAction((player p) -> begin
-//						print("Spieler " + p.getName() + " geht in den Shop")
-//						WindowManager.closeTopWindow(p)
-//						WindowManager.openWindow(shopWindow, p)
-//					end)
-//					scoreOb = new Observable(scoreB)
-//					scoreOb.setClickAction((player p) -> begin
-//						print("Spieler " + p.getName() + " geht in den Score")
-//						WindowManager.closeTopWindow(p)
-//						WindowManager.openWindow(scoreWindow, p)
-//					end)
-//					guideOb = new Observable(guideB)
-//					guideOb.setClickAction((player p) -> begin
-//						print("Spieler " + p.getName() + " geht in den Guide")
-//						WindowManager.closeTopWindow(p)
-//						WindowManager.openWindow(guideWindow, p)
-//					end)
-//					exitOb = new Observable(exitB)
-//					exitOb.setClickAction((player p) -> begin
-//						print("Spieler " + p.getName() + " geht raus")
-//						WindowManager.closeTopWindow(p)
-//					end)
+					shopOb = new Observable(shopB)
+					shopOb.setClickAction((player p) -> begin
+						print("Spieler " + p.getName() + " geht in den Shop")
+						WindowManager.closeTopWindow(p)
+						WindowManager.openWindow(shopWindow, p)
+					end)
+					scoreOb = new Observable(scoreB)
+					scoreOb.setClickAction((player p) -> begin
+						print("Spieler " + p.getName() + " geht in den Score")
+						WindowManager.closeTopWindow(p)
+						WindowManager.openWindow(scoreWindow, p)
+					end)
+					guideOb = new Observable(guideB)
+					guideOb.setClickAction((player p) -> begin
+						print("Spieler " + p.getName() + " geht in den Guide")
+						WindowManager.closeTopWindow(p)
+						WindowManager.openWindow(guideWindow, p)
+					end)
+					exitOb = new Observable(exitB)
+					exitOb.setClickAction((player p) -> begin
+						print("Spieler " + p.getName() + " geht raus")
+						WindowManager.closeTopWindow(p)
+					end)
 				case 5
-//					shopWindow.add(shopOb)
-//					shopWindow.add(scoreOb)
-//					shopWindow.add(guideOb)
-//					shopWindow.add(exitOb)
-//					
-//					shopWindow.add(buyB)
-//					
-//					shopWindow.add(shopPright)
-//					shopWindow.add(shopPmiddle)
-//					shopWindow.add(shopPleft)
-//					shopWindow.add(shopPleftBot)
-//					shopWindow.add(shopPleftBot2)
-//					
-//					shopWindow.add(shop1)
-//					shopWindow.add(shop2)
-//					shopWindow.add(shop3)
-//					shopWindow.add(shop4)
-//					shopWindow.add(shop5)
-//					shopWindow.add(shop6)
-//					shopWindow.add(shop7)
-//					shopWindow.add(shop8)
-//					shopWindow.add(shop9)
-//					shopWindow.add(shop10)
-//					shopWindow.add(shop11)
-//					shopWindow.add(shop12)
-//					shopWindow.add(shop13)
-//					shopWindow.add(shop14)
-//					shopWindow.add(shop15)
-//					shopWindow.add(shop16)
-//					shopWindow.add(shop17)
-//					shopWindow.add(shop18)
-//					shopWindow.add(shop19)
-//					shopWindow.add(shop20)
-//					shopWindow.add(shop21)
-//					shopWindow.add(shop22)
-//					shopWindow.add(shop23)
-//					shopWindow.add(shop24)
-//					shopWindow.add(shop25)
-//					shopWindow.add(shop26)
-//					shopWindow.add(shop27)
-//					shopWindow.add(shop28)
-//					shopWindow.add(shop29)
-//					shopWindow.add(shop30)
-//					shopWindow.add(shop31)
-//					shopWindow.add(shop32)
-//					shopWindow.add(shop25a)
-//					shopWindow.add(shop26a)
-//					shopWindow.add(shop27a)
-//					shopWindow.add(shop28a)
-//					shopWindow.add(shop29a)
-//					shopWindow.add(shop30a)
-//					shopWindow.add(shop31a)
-//					shopWindow.add(shop32a)
-//					
-//					shopWindow.add(shop33)
-//					shopWindow.add(shop34)
-//					shopWindow.add(shop35)
-//					shopWindow.add(shop36)
-//					shopWindow.add(shop37)
-//					shopWindow.add(shop38)
-//					shopWindow.add(shop39)
-//					shopWindow.add(shop40)
-//					
-//					shopWindow.add(shop41)
-//					shopWindow.add(shop42)
-//					shopWindow.add(shop43)
-//					shopWindow.add(shop44)
-//					shopWindow.add(shop45)
-//					shopWindow.add(shop46)
-//					shopWindow.add(shop47)
-//					
-//					shopWindow.add(shopT1)
-//					shopWindow.add(shopT2)
-//					shopWindow.add(shopT3)
-//			//		shopWindow.add(shopT4)
-//					
-//					scoreWindow.add(shopOb)
-//					scoreWindow.add(scoreOb)
-//					scoreWindow.add(guideOb)
-//					scoreWindow.add(exitOb)
-//					
-//					guideWindow.add(shopOb)
-//					guideWindow.add(scoreOb)
-//					guideWindow.add(guideOb)
-//					guideWindow.add(exitOb)
+					shopWindow.add(shopOb)
+					shopWindow.add(scoreOb)
+					shopWindow.add(guideOb)
+					shopWindow.add(exitOb)
+					
+					shopWindow.add(buyB)
+					
+					shopWindow.add(shopPright)
+					shopWindow.add(shopPmiddle)
+					shopWindow.add(shopPleft)
+					shopWindow.add(shopPleftBot)
+					shopWindow.add(shopPleftBot2)
+					
+					shopWindow.add(shop1)
+					shopWindow.add(shop2)
+					shopWindow.add(shop3)
+					shopWindow.add(shop4)
+					shopWindow.add(shop5)
+					shopWindow.add(shop6)
+					shopWindow.add(shop7)
+					shopWindow.add(shop8)
+					shopWindow.add(shop9)
+					shopWindow.add(shop10)
+					shopWindow.add(shop11)
+					shopWindow.add(shop12)
+					shopWindow.add(shop13)
+					shopWindow.add(shop14)
+					shopWindow.add(shop15)
+					shopWindow.add(shop16)
+					shopWindow.add(shop17)
+					shopWindow.add(shop18)
+					shopWindow.add(shop19)
+					shopWindow.add(shop20)
+					shopWindow.add(shop21)
+					shopWindow.add(shop22)
+					shopWindow.add(shop23)
+					shopWindow.add(shop24)
+					shopWindow.add(shop25)
+					shopWindow.add(shop26)
+					shopWindow.add(shop27)
+					shopWindow.add(shop28)
+					shopWindow.add(shop29)
+					shopWindow.add(shop30)
+					shopWindow.add(shop31)
+					shopWindow.add(shop32)
+					shopWindow.add(shop25a)
+					shopWindow.add(shop26a)
+					shopWindow.add(shop27a)
+					shopWindow.add(shop28a)
+					shopWindow.add(shop29a)
+					shopWindow.add(shop30a)
+					shopWindow.add(shop31a)
+					shopWindow.add(shop32a)
+					
+					shopWindow.add(shop33)
+					shopWindow.add(shop34)
+					shopWindow.add(shop35)
+					shopWindow.add(shop36)
+					shopWindow.add(shop37)
+					shopWindow.add(shop38)
+					shopWindow.add(shop39)
+					shopWindow.add(shop40)
+					
+					shopWindow.add(shop41)
+					shopWindow.add(shop42)
+					shopWindow.add(shop43)
+					shopWindow.add(shop44)
+					shopWindow.add(shop45)
+					shopWindow.add(shop46)
+					shopWindow.add(shop47)
+					
+					shopWindow.add(shopT1)
+					shopWindow.add(shopT2)
+					shopWindow.add(shopT3)
+			//		shopWindow.add(shopT4)
+					
+					scoreWindow.add(shopOb)
+					scoreWindow.add(scoreOb)
+					scoreWindow.add(guideOb)
+					scoreWindow.add(exitOb)
+					
+					guideWindow.add(shopOb)
+					guideWindow.add(scoreOb)
+					guideWindow.add(guideOb)
+					guideWindow.add(exitOb)
 				default
 					ret = -1.
 		
