@@ -148,18 +148,23 @@ package GameStart
 			getTimer().start(1.0, function Preload.preload)
 		
 		static function preload()
+			print("1")
 			if initOrder[preloadStatus] == null
 				ClearTextMessages()
 				print("Preload done in " + progress.toString() + " sec!")
 				preloadEnd.callActions(0)
 				GetExpiredTimer().release()
 				return
+			print("2")
 			real check = preloadAction(initOrder[preloadStatus], loopCounter)
+			print("3")
 			loopCounter++
+			print("4")
 			if check == -2
 				printError("An error while Preloading has ocurred")
 				return
 			else if check == -1
+				print("5")
 				loopCounter = 0
 				preloadStatus++
 				GetExpiredTimer().start(0.05, function preload)

@@ -397,6 +397,8 @@ import PreloadSystem
 	addIconType("GolemThunderClap", "ReplaceableTextures\\CommandButtons\\BTNGolemThunderClap.blp")
 	addIconType("GrabTree", "ReplaceableTextures\\CommandButtons\\BTNGrabTree.blp")
 	addIconType("GraveYard", "ReplaceableTextures\\CommandButtons\\BTNGraveYard.blp")
+	
+@compiletime function types2()
 	addIconType("GreaterInvisibility", "ReplaceableTextures\\CommandButtons\\BTNGreaterInvisibility.blp")
 	addIconType("GreaterInvulneralbility", "ReplaceableTextures\\CommandButtons\\BTNGreaterInvulneralbility.blp")
 	addIconType("GreaterRejuvPotion", "ReplaceableTextures\\CommandButtons\\BTNGreaterRejuvPotion.blp")
@@ -1119,6 +1121,13 @@ public tuple iconType(int normalId, int diableId)
 init
 	compiletime = false
 	onPreload("IconTypes", (int i) -> begin
-		types()
-		return -1.
+		real ret = 0.2
+		switch i
+			case 0
+				types()
+			case 1
+				types2()
+			default
+				ret = -1
+		return ret
 	end)
