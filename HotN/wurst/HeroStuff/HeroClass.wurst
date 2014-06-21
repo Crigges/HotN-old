@@ -216,7 +216,7 @@ package HeroClass
 						setMainOrder(null)
 			else
 				Spellcast sc = castQueue.dequeue()
-				sc.force()
+				sc.forceC()
 				destroy sc
 				
 				

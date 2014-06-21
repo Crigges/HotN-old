@@ -113,7 +113,7 @@ package Spell
 		vec2 pos
 		Spell spell
 		
-		function force()
+		function forceC()
 			spell.forceCast(this)
 		
 	public abstract class Spell
