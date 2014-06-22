@@ -22,10 +22,11 @@ public class Pane extends Widget
 	static vec2 posFixRight = vec2(32 / (4 / tileSize), 0 / (4 / tileSize))
 	static vec2 posFixLeft = vec2(-32 / (4 / tileSize), 0)
 	
+	PlayerAction onExit = null
 	ImageList list = new ImageList()
 	LinkedList<Widget> content = new LinkedList<Widget>()
 	
-	construct(element pos, element size, Layer l)
+	construct(element pos, element size, Layer l, boolean exitable)
 		super(pos, size)
 		list.add(createImage(leftBotCorner, pos, tileDimensions, sizeFix, l))
 		list.add(createImage(leftTopCorner, pos + element(0, size.y), tileDimensions, sizeFix, l))
@@ -37,8 +38,14 @@ public class Pane extends Widget
 		for int i = pos.y + tileSize to pos.y + size.y - tileSize step tileSize
 			list.add(createImage(verticalSide, element(pos.x, i), posFixLeft,tileDimensions, sizeFix, l))
 			list.add(createImage(verticalSide, element(pos.x + size.x, i), posFixRight,tileDimensions, sizeFix, l))
+		if exitable
+			content.add(new Observable(new ImageEx(pos + size - element(1, 1), element(1, 1), "menuExit.blp",l))..setClickAction((player p) -> begin
+				this.hideDirect(p)
+				if onExit != null
+					onExit.run(p)
+			end))
 			
-	construct(element pos, element size, Layer l, int backgroundScale)
+	construct(element pos, element size, Layer l, int backgroundScale, boolean exitable)
 		super(pos, size)
 		vec2 backgroundOffset = element(backgroundScale, backgroundScale).toVec()
 		backgroundOffset.x /= 2
@@ -54,13 +61,23 @@ public class Pane extends Widget
 		for int i = pos.x + tileSize to pos.x + size.x - tileSize step tileSize
 			list.add(createImage(horizontalSide, element(i, pos.y), posFixBot,tileDimensions, sizeFix, l))
 			list.add(createImage(horizontalSide, element(i, pos.y + size.y), posFixTop,tileDimensions, sizeFix, l))
+			print(element(i, pos.y).toVec().toString())
 		for int i = pos.y + tileSize to pos.y + size.y - tileSize step tileSize
 			list.add(createImage(verticalSide, element(pos.x, i), posFixLeft,tileDimensions, sizeFix, l))
 			list.add(createImage(verticalSide, element(pos.x + size.x, i), posFixRight,tileDimensions, sizeFix, l))
+		if exitable
+			content.add(new Observable(new ImageEx(pos + size - element(1, 1), element(1, 1), "menuExit.blp",l))..setClickAction((player p) -> begin
+				this.hideDirect(p)
+				if onExit != null
+					onExit.run(p)
+			end))
 		
 			
 	function add(Widget toAdd)
 		content.add(toAdd)
+		
+	function setExitAction(PlayerAction action)
+			onExit = action
 			
 	override function onAdd(Window w)
 		for Widget wi in content 

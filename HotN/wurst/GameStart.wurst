@@ -74,6 +74,7 @@ package GameStart
 	
 	
 	init
+		
 		for int i = 0 to 11
 			if GetPlayerSlotState(Player(i)) == PLAYER_SLOT_STATE_PLAYING and GetPlayerController(Player(i)) == MAP_CONTROL_USER
 				allPlayers.add(Player(i))	
@@ -272,11 +273,11 @@ package GameStart
 					exitB = new Button(element(2, 16), 1, Layer.L1, "Exit")
 					buyB = new Button(element(34,4), 1, Layer.L1, "Buy")
 				case 1
-					shopPleft = new Pane(element(6, 6), element(12, 16), Layer.L3, 4)		
-					shopPmiddle = new Pane(element(20, 6), element(8, 12), Layer.L3, 4)	
-					shopPright = new Pane(element(30, 6), element(8, 8), Layer.L3, 4)
-					shopPleftBot = new Pane(element(11, 1), element(12, 2), Layer.L3, 2)
-					shopPleftBot2 = new Pane(element(6, 1), element(4, 2), Layer.L3, 2)
+					shopPleft = new Pane(element(6, 6), element(12, 16), Layer.L2, 4, true)		
+					shopPmiddle = new Pane(element(20, 6), element(8, 12), Layer.L3, 4, true)	
+					shopPright = new Pane(element(30, 6), element(8, 8), Layer.L3, 4, true)
+					shopPleftBot = new Pane(element(11, 1), element(12, 2), Layer.L3, 2, true)
+					shopPleftBot2 = new Pane(element(6, 1), element(4, 2), Layer.L3, 2, true)
 				case 2
 					shopT1 = new TextBox(element(5, 3), element(4, 2), 55, Layer.L3)
 					shopT1.setColor(color(255,255,0))

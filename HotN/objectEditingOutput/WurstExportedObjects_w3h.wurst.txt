@@ -1,0 +1,25 @@
+package WurstExportedObjects_w3h
+import ObjEditingNatives
+
+//modifiedTable: 
+
+@compiletime function create_w3h_B000()
+	let u = createObjectDefinition("w3h", 'B000', 'BNsl')
+	u.setString("ftip", "k?se")
+	u.setString("fnam", "blubber")
+
+
+@compiletime function create_w3h_B001()
+	let u = createObjectDefinition("w3h", 'B001', 'BNso')
+	u.setString("ftip", "KREBS")
+	u.setString("fube", "")
+
+
+@compiletime function create_w3h_!000()
+	let u = createObjectDefinition("w3h", '!000', 'BNso')
+	u.setInt("wurs", 42)
+	u.setString("fart", "ReplaceableTextures\\CommandButtons\\BTNSlow.blp")
+	u.setString("ftip", "Slow")
+	u.setString("fube", "This unit moves slower than normal")
+
+

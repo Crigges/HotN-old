@@ -1,0 +1,105 @@
+package WurstExportedObjects_w3t
+import ObjEditingNatives
+
+//modifiedTable: 
+
+@compiletime function create_w3t_(Z)j()
+	let u = createObjectDefinition("w3t", '(Z)j', 'tint')
+	u.setString("iabi", "(Z)a")
+	u.setString("ifil", "none.mdl")
+	u.setInt("ihtp", 100)
+	u.setString("iico", "ReplaceableTextures\\CommandButtons\\BTNArcaniteMelee.blp")
+	u.setString("unam", "Attack Tome (+001)")
+	u.setInt("iicd", 1)
+
+
+@compiletime function create_w3t_(Z)k()
+	let u = createObjectDefinition("w3t", '(Z)k', 'tint')
+	u.setString("iabi", "(Z)b")
+	u.setString("ifil", "none.mdl")
+	u.setInt("ihtp", 100)
+	u.setString("iico", "ReplaceableTextures\\CommandButtons\\BTNArcaniteMelee.blp")
+	u.setString("unam", "Attack Tome (+002)")
+	u.setInt("iicd", 1)
+
+
+@compiletime function create_w3t_(Z)m()
+	let u = createObjectDefinition("w3t", '(Z)m', 'tint')
+	u.setString("iabi", "(Z)d")
+	u.setString("ifil", "none.mdl")
+	u.setInt("ihtp", 100)
+	u.setString("iico", "ReplaceableTextures\\CommandButtons\\BTNArcaniteMelee.blp")
+	u.setString("unam", "Attack Tome (+008)")
+	u.setInt("iicd", 1)
+
+
+@compiletime function create_w3t_(Z)n()
+	let u = createObjectDefinition("w3t", '(Z)n', 'tint')
+	u.setString("iabi", "(Z)e")
+	u.setString("ifil", "none.mdl")
+	u.setInt("ihtp", 100)
+	u.setString("iico", "ReplaceableTextures\\CommandButtons\\BTNArcaniteMelee.blp")
+	u.setString("unam", "Attack Tome (+016)")
+	u.setInt("iicd", 1)
+
+
+@compiletime function create_w3t_(Z)o()
+	let u = createObjectDefinition("w3t", '(Z)o', 'tint')
+	u.setString("iabi", "(Z)f")
+	u.setString("ifil", "none.mdl")
+	u.setInt("ihtp", 100)
+	u.setString("iico", "ReplaceableTextures\\CommandButtons\\BTNArcaniteMelee.blp")
+	u.setString("unam", "Attack Tome (+032)")
+	u.setInt("iicd", 1)
+
+
+@compiletime function create_w3t_(Z)p()
+	let u = createObjectDefinition("w3t", '(Z)p', 'tint')
+	u.setString("iabi", "(Z)g")
+	u.setString("ifil", "none.mdl")
+	u.setInt("ihtp", 100)
+	u.setString("iico", "ReplaceableTextures\\CommandButtons\\BTNArcaniteMelee.blp")
+	u.setString("unam", "Attack Tome (+064)")
+	u.setInt("iicd", 1)
+
+
+@compiletime function create_w3t_(Z)q()
+	let u = createObjectDefinition("w3t", '(Z)q', 'tint')
+	u.setString("iabi", "(Z)h")
+	u.setString("ifil", "none.mdl")
+	u.setInt("ihtp", 100)
+	u.setString("iico", "ReplaceableTextures\\CommandButtons\\BTNArcaniteMelee.blp")
+	u.setString("unam", "Attack Tome (+128)")
+	u.setInt("iicd", 1)
+
+
+@compiletime function create_w3t_(Z)l()
+	let u = createObjectDefinition("w3t", '(Z)l', 'tint')
+	u.setString("iabi", "(Z)c")
+	u.setString("ifil", "none.mdl")
+	u.setInt("ihtp", 100)
+	u.setString("iico", "ReplaceableTextures\\CommandButtons\\BTNArcaniteMelee.blp")
+	u.setString("unam", "Attack Tome (+004)")
+	u.setInt("iicd", 1)
+
+
+@compiletime function create_w3t_(Z)r()
+	let u = createObjectDefinition("w3t", '(Z)r', 'tint')
+	u.setString("iabi", "(Z)i")
+	u.setInt("ihtp", 100)
+	u.setString("iico", "ReplaceableTextures\\CommandButtons\\BTNArcaniteMelee.blp")
+	u.setString("unam", "Attack Tome (+256)")
+	u.setInt("iicd", 1)
+	u.setString("ifil", "none.mdl")
+
+
+@compiletime function create_w3t_(Z)s()
+	let u = createObjectDefinition("w3t", '(Z)s', 'tint')
+	u.setString("iabi", "(Z)t")
+	u.setInt("ihtp", 100)
+	u.setString("iico", "ReplaceableTextures\\CommandButtons\\BTNArcaniteMelee.blp")
+	u.setString("unam", "Attack Tome (-512)")
+	u.setInt("iicd", 1)
+	u.setString("ifil", "none.mdl")
+
+
