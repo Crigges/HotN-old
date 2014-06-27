@@ -1,0 +1,55 @@
+package StringList
+
+
+public class StringList
+	String first
+	String last
+	
+	construct()
+		first = null
+		last = null
+		
+	function add(string s)
+		String news = new String(s)
+		if first == null
+			first = news
+			last = news
+			news.next = null
+			news.prev = null
+		else
+			first.prev = news
+			news.next = first
+			first = news
+			
+	function remove(string s)
+		String curr = first
+		while curr != null
+			if curr.content == s
+				if curr == last
+					last = curr.prev
+				if curr == first
+					first = curr.next
+				destroy curr
+				break
+			curr = curr.next
+			
+	ondestroy
+		String curr = first
+		while curr != null
+			destroy curr
+			curr = curr.next
+		
+	
+class String
+	string content
+	String next
+	String prev
+	
+	construct(string s)
+		content = s
+		
+	ondestroy
+		if next != null
+			next.prev = prev
+		if prev != null
+			prev.next = next
