@@ -59,7 +59,6 @@ import ObjEditingNatives
 	u.setUnreal("umpr", 2.0)
 	u.setString("uhab", "")
 	u.setInt("uwu2", 0)
-	u.setString("umvt", "")
 	u.setInt("ufle", 0)
 	u.setInt("umvs", 200)
 	u.setString("ua1g", "ground,structure,item,debris,invulnerable,vulnerable,ward")
@@ -199,6 +198,18 @@ import ObjEditingNatives
 	u.setString("uspa", "")
 	u.setString("uico", "ReplaceableTextures\\WorldEditUI\\Editor-Random-Unit.blp")
 	u.setUnreal("udtm", 1.0)
+
+
+@compiletime function create_w3u_ASIC()
+	let u = createObjectDefinition("w3u", 'ASIC', 'Hpal')
+	u.setString("unam", "BasicHeroDef")
+
+
+@compiletime function create_w3u_h004()
+	let u = createObjectDefinition("w3u", 'h004', 'hgry')
+	u.setUnreal("ua1c", 1.0)
+	u.setUnreal("ubs1", 0.0)
+	u.setUnreal("udp1", 0.0)
 
 
 @compiletime function create_w3u_xdum()

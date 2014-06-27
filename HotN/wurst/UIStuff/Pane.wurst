@@ -39,7 +39,7 @@ public class Pane extends Widget
 			list.add(createImage(verticalSide, element(pos.x, i), posFixLeft,tileDimensions, sizeFix, l))
 			list.add(createImage(verticalSide, element(pos.x + size.x, i), posFixRight,tileDimensions, sizeFix, l))
 		if exitable
-			content.add(new Observable(new ImageEx(pos + size - element(1, 1), element(1, 1), "menuExit.blp",l))..setClickAction((player p) -> begin
+			content.add(new Observable(new ImageEx(pos + size - element(1, 1), element(1, 1), vec2(20, 20), "menuExit.blp",l))..setClickAction((player p) -> begin
 				this.hideDirect(p)
 				if onExit != null
 					onExit.run(p)
@@ -66,7 +66,7 @@ public class Pane extends Widget
 			list.add(createImage(verticalSide, element(pos.x, i), posFixLeft,tileDimensions, sizeFix, l))
 			list.add(createImage(verticalSide, element(pos.x + size.x, i), posFixRight,tileDimensions, sizeFix, l))
 		if exitable
-			content.add(new Observable(new ImageEx(pos + size - element(1, 1), element(1, 1), "menuExit.blp",l))..setClickAction((player p) -> begin
+			content.add(new Observable(new ImageEx(pos + size - element(1, 1), element(1, 1), vec2(20, 20), "menuExit.blp",l))..setClickAction((player p) -> begin
 				this.hideDirect(p)
 				if onExit != null
 					onExit.run(p)
