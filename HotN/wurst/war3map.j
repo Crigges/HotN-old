@@ -40,6 +40,7 @@ globals
     // Generated
     camerasetup             gg_cam_Camera_001          = null
     trigger                 gg_trg_Unbezeichneter_Ausl__ser_003 = null
+    unit                    gg_unit_Obla_0003          = null
 endglobals
 
 function InitGlobals takes nothing returns nothing
@@ -72,7 +73,7 @@ function CreateUnitsForPlayer0 takes nothing returns nothing
     local trigger t
     local real life
 
-    set u = CreateUnit( p, 'Obla', 3083.8, -3295.0, 240.553 )
+    set gg_unit_Obla_0003 = CreateUnit( p, 'Obla', 3083.8, -3295.0, 240.553 )
     set u = CreateUnit( p, 'hgry', 2842.1, -3328.5, 260.428 )
     set u = CreateUnit( p, 'h004', 2655.4, -3350.4, 253.243 )
 endfunction
@@ -144,6 +145,8 @@ endfunction
 function Trig_Unbezeichneter_Ausl__ser_003_Actions takes nothing returns nothing
     call CameraSetupApplyForPlayer( true, gg_cam_Camera_001, Player(0), 0 )
     call CameraSetupApplyForPlayer( true, gg_cam_Camera_001, Player(1), 0 )
+    call TriggerSleepAction( 6.00 )
+    call SelectUnitSingle( gg_unit_Obla_0003 )
 endfunction
 
 //===========================================================================
