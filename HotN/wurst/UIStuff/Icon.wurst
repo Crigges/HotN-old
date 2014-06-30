@@ -20,7 +20,7 @@ package Icon
 		construct(string name, element pos, int scale)
 			super(pos, element(scale, scale))
 			realPos = pos.toVec() + menuStart
-			realPos += vec2((scale - 1) * 0.5, (scale - 1) * 0.5)
+			realPos += vec2((scale - 1) * tileSize * 0.5, (scale - 1) * tileSize * 0.5)
 			typ = getIconType(name)
 			this.scale = scale
 				
