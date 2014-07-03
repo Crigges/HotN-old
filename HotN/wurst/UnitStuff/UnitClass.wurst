@@ -14,6 +14,7 @@ package UnitClass
 	import LinkedList
 	import InstanceBoard
 	import StandardImports
+	import UnitTypes
 	import public initlater UnitEvents
 	import CreationEvent
 	
@@ -33,6 +34,7 @@ package UnitClass
 		static constant real bounceFactor = 1.
 		static constant real knockbackFactor = 6000
 		static constant real basicAttackspeed = 0.5 
+		UnitType typ
 		unit u
 		//fight system//
 		real attack = 0
@@ -135,22 +137,24 @@ package UnitClass
 		// Static Stuf
 		static trigger damageDetect = CreateTrigger()..addAction(function tookDamage)
 		
-		construct(unit u, real attack, real mass, real radius, real height, integer bounty)
-			this.u = u
-			this.mass = mass
-			this.attack = attack
-			this.radius = radius
-			this.height = height
-			this.bounty = bounty
-			this.ownerId = GetPlayerId(u.getOwner())
+		construct(string typName, vec2 pos, player owner)
+			this.typ = getUnitType(typName)
+			this.u = CreateUnit(owner, typ.id, pos.x, pos.y, 0)
+			this.mass = typ.getMass()
+			this.attack = typ.getAttack() * 1.
+			this.radius = typ.getRadius()
+			this.height = typ.getHeight()
+			this.bounty = typ.getBounty()
+			this.ownerId = owner.getId()
+			this.owner = owner
 			this.life = u.getState(UNIT_STATE_MAX_LIFE)
 			this.mana = u.getState(UNIT_STATE_MAX_MANA)
 			this.movespeed = u.getMoveSpeed()
+			this.armor = typ.getArmor() * 1.
 			damageDetect.registerUnitEvent(u, EVENT_UNIT_DAMAGED)
 			SetUnitUserData(u, this castTo int)
 			last = this
 			shieldList = new ShieldList()
-			owner = u.getOwner()
 			for int i = 0 to 11
 				playerDamage.saveReal(i, 0.)
 		

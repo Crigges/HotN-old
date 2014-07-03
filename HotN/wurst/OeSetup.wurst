@@ -4,7 +4,6 @@ package OeSetup
 	import BuffObjEditing
 	import UnitObjEditing
 	import SpellDesignConfig
-	import ChannelSpellPreset
 	import ObjEditingNatives
 
 	import Setup
