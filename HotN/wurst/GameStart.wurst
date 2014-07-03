@@ -1,52 +1,53 @@
 package GameStart
 //Do NOT import this into any package!!!
-	import Pane
-	import Buff
-	import Char
-	import Dot
-	import Model
-	import Filter
-	import HashList
-	import FloatingText
-	import HeroClass
-	import ItemClass
-	import Helper
-	import UnitClass
-	import PreloadHandler
-	import Image
-	import Trackable
-	import Setup
-	import Bonus
-	import TimedEffect
 	import AuraHelper
-	import Missle
-	import Fx
-	import ControlPoint
-	import HandleCounter
-	import LinkedList
-	import ObjectIds
+	import Bonus
+	import Buff
+	import Button
+	import Char
+	import ClassInit
+	import ClosureTimers
 	import Colors
-	import PlayerClass
-	import Terrain
-	import Texttag
+	import ControlPoint
 	import CustomBar
-	import Stack
-	import Menu
-	import ImageEx
-	import HeroBar
-	import OrderHandling
 	import DebugFile
-	import ObjectId
-	import Spell
-	import SampleSpells
+	import Dot
+	import Filter
+	import FloatingText
+	import Fx
+	import HandleCounter
+	import HashList
+	import Helper
+	import HeroBar
+	import HeroClass
 	import Icon
 	import IconType
+	import Image
+	import ImageEx
+	import ItemClass
+	import LinkedList
+	import Menu
+	import Missle
+	import Model
+	import ObjectId
+	import ObjectIds
+	import OrderHandling
+	import Pane
+	import PlayerClass
+	import PreloadHandler
 	import PreloadSystem
-	import ClosureTimers
-	import ClassInit
-	import TextSplat
+	import SampleSpells
+	import Setup
+	import Spell
+	import Stack
+	import Terrain
 	import TextBox
-	import Button
+	import TextSplat
+	import Texttag
+	import TimedEffect
+	import Trackable
+	import UnitClass
+
 	
 	trigger testt = CreateTrigger()..addAction(function setCallLimit)
 	Bonus lastBon = null
@@ -273,6 +274,9 @@ package GameStart
 //		Icon shop45 = null
 //		Icon shop46 = null
 //		Icon shop47 = null
+
+		ImageEx buttonLayer = null
+		
 		onPreload("Menu", (int i) -> begin
 			real ret = 0.01
 			switch i
@@ -390,7 +394,10 @@ package GameStart
 					shop39 = new Icon("Glove", element(32, 19), 2)
 					shop40 = new Icon("Glove", element(34, 19), 2)
 					
-					shop41 = new Icon("Glove", element(38, 18), 3)
+					shop41 = new Icon("Glove", element(38, 18), 4)
+					buttonLayer = new ImageEx(element(38, 18), element(4,4),"64x64LayerShopIcon.blp", Layer.L1)
+//					buttonLayer.content
+					
 //					shop42 = new Icon("Glove", element(31, 13), 1)
 //					shop43 = new Icon("Glove", element(34, 13), 1)
 //					shop44 = new Icon("Glove", element(37, 13), 1)
@@ -495,6 +502,7 @@ package GameStart
 					shopWindow.add(shop40)
 					
 					shopWindow.add(shop41)
+					shopWindow.add(buttonLayer)
 //					shopWindow.add(shop42)
 //					shopWindow.add(shop43)
 //					shopWindow.add(shop44)
