@@ -67,7 +67,7 @@ package HeroClass
 		Spell spellF = null
 		
 		construct(unit hero, real attack, real mass, real radius, real height, int morphAbi, int bounty)
-			super(hero, attack, mass, radius, height, bounty)
+			super("fail", vec2(0,0), Player(0))
 			this.agi = GetHeroAgi(hero, false).toReal()
 			this.str = GetHeroStr(hero, false).toReal()
 			this.inte = GetHeroInt(hero, false).toReal()
@@ -82,7 +82,7 @@ package HeroClass
 			hero.addAbility('ZAsc')
 			hero.addAbility('exit')
 			castDetect.registerUnitEvent(hero, EVENT_UNIT_SPELL_CAST)
-			addOrderDetection(hero)
+//			addOrderDetection(hero)
 			
 		override function kill(Unit source)
 			hb.disable()

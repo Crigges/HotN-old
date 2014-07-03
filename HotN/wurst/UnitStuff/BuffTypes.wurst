@@ -9,6 +9,7 @@ import PreloadSystem
 //add buffs here
 function types()
 	addBuffType("slow", "ReplaceableTextures\\CommandButtons\\BTNSlow.blp", "Slow", "This unit moves slower than normal")
+	addBuffType("meep", "ReplaceableTextures\\CommandButtons\\someotherpath.blp", "Stunned", "This unit is braindead")
 	
 //======================================================================================================//
 	

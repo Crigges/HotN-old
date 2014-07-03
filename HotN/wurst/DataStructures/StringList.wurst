@@ -33,6 +33,9 @@ public class StringList
 				break
 			curr = curr.next
 			
+	function iterator() returns StringIterator
+		return new StringIterator(first)
+			
 	ondestroy
 		String curr = first
 		while curr != null
@@ -53,3 +56,19 @@ class String
 			next.prev = prev
 		if prev != null
 			prev.next = next
+			
+public class StringIterator
+	String pos
+	
+	construct(String first)
+		pos = first
+	
+	function hasNext() returns boolean
+		return pos != null
+		
+	function next() returns string
+		String buf = pos
+		pos = pos.next
+		return buf.content
+		
+	function close()

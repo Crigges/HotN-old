@@ -20,5 +20,7 @@ function test()
 	A.first.me()
 	B.first.me() 
 	
+function unit.bla() returns int
+	
 function foo()
 	print("Огненный столб")
