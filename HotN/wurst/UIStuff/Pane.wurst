@@ -17,10 +17,10 @@ public class Pane extends Widget
 	static string rightTopCorner = "Steinecke3.blp"
 	static string leftTopCorner = "Steinecke2.blp"
 	static vec2 sizeFix = vec2(2., 2)
-	static vec2 posFixBot = vec2(-0.5 / (4 / tileSize) + 32, -26 / (4 / tileSize) + 32)
-	static vec2 posFixTop = vec2(-0.5 / (4 / tileSize) + 32, 40 / (4 / tileSize) + 32)
-	static vec2 posFixRight = vec2(32 / (4 / tileSize) + 32, 0 / (4 / tileSize) + 32)
-	static vec2 posFixLeft = vec2(-32 / (4 / tileSize) + 32, 32)
+	static vec2 posFixBot = vec2(-0.5 / (4 / tileSize), -26 / (4 / tileSize))
+	static vec2 posFixTop = vec2(-0.5 / (4 / tileSize), 40 / (4 / tileSize))
+	static vec2 posFixRight = vec2(32 / (4 / tileSize), 0 / (4 / tileSize))
+	static vec2 posFixLeft = vec2(-32 / (4 / tileSize), 0)
 	
 	PlayerAction onExit = null
 	ImageList list = new ImageList()
@@ -28,10 +28,10 @@ public class Pane extends Widget
 	
 	construct(element pos, element size, Layer l, boolean exitable)
 		super(pos, size)
-		list.add(createImage(leftBotCorner, pos, vec2(32, 32), tileDimensions, sizeFix, l))
-		list.add(createImage(leftTopCorner, pos + element(0, size.y), vec2(32, 32), tileDimensions, sizeFix, l))
-		list.add(createImage(rightBotCorner, pos + element(size.x, 0), vec2(32, 32), tileDimensions, sizeFix, l))
-		list.add(createImage(rightTopCorner, pos + element(size.x, size.y), vec2(32, 32), tileDimensions, sizeFix, l))
+		list.add(createImage(leftBotCorner, pos, tileDimensions, sizeFix, l))
+		list.add(createImage(leftTopCorner, pos + element(0, size.y), tileDimensions, sizeFix, l))
+		list.add(createImage(rightBotCorner, pos + element(size.x, 0), tileDimensions, sizeFix, l))
+		list.add(createImage(rightTopCorner, pos + element(size.x, size.y), tileDimensions, sizeFix, l))
 		for int i = pos.x + tileSize to pos.x + size.x - tileSize step tileSize
 			list.add(createImage(horizontalSide, element(i, pos.y), posFixBot,tileDimensions, sizeFix, l))
 			list.add(createImage(horizontalSide, element(i, pos.y + size.y), posFixTop,tileDimensions, sizeFix, l))
@@ -50,15 +50,15 @@ public class Pane extends Widget
 		vec2 backgroundOffset = element(backgroundScale, backgroundScale).toVec()
 		backgroundOffset.x /= 2
 		backgroundOffset.y /= 2
-		backgroundOffset += vec2(32, 32)
+		backgroundOffset -= vec2(64, 64)
 		vec2 backgroundSizeFix = element(backgroundScale, backgroundScale).toVec() * 0.01
 		for int i = pos.x to pos.x + size.x - backgroundScale step backgroundScale
 			for int i2 = pos.y to pos.y + size.y - backgroundScale step backgroundScale
 				list.add(createImage(backgroundTexture[GetRandomInt(1, 8)], element(i, i2), backgroundOffset, element(backgroundScale, backgroundScale), backgroundSizeFix,l))
-		list.add(createImage(leftBotCorner, pos, vec2(32, 32),tileDimensions, sizeFix, l))
-		list.add(createImage(leftTopCorner, pos + element(0, size.y), vec2(32, 32), tileDimensions, sizeFix, l))
-		list.add(createImage(rightBotCorner, pos + element(size.x, 0), vec2(32, 32), tileDimensions, sizeFix, l))
-		list.add(createImage(rightTopCorner, pos + element(size.x, size.y), vec2(32, 32), tileDimensions, sizeFix, l))
+		list.add(createImage(leftBotCorner, pos, tileDimensions, sizeFix, l))
+		list.add(createImage(leftTopCorner, pos + element(0, size.y), tileDimensions, sizeFix, l))
+		list.add(createImage(rightBotCorner, pos + element(size.x, 0), tileDimensions, sizeFix, l))
+		list.add(createImage(rightTopCorner, pos + element(size.x, size.y), tileDimensions, sizeFix, l))
 		for int i = pos.x + tileSize to pos.x + size.x - tileSize step tileSize
 			list.add(createImage(horizontalSide, element(i, pos.y), posFixBot,tileDimensions, sizeFix, l))
 			list.add(createImage(horizontalSide, element(i, pos.y + size.y), posFixTop,tileDimensions, sizeFix, l))
