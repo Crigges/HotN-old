@@ -23,3 +23,11 @@ import ObjEditingNatives
 	u.setString("fube", "This unit moves slower than normal")
 
 
+@compiletime function create_w3h_!002()
+	let u = createObjectDefinition("w3h", '!002', 'BNso')
+	u.setInt("wurs", 42)
+	u.setString("fart", "ReplaceableTextures\\CommandButtons\\someotherpath.blp")
+	u.setString("ftip", "Stunned")
+	u.setString("fube", "This unit is braindead")
+
+

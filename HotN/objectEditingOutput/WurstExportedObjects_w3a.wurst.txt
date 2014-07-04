@@ -1306,6 +1306,26 @@ import ObjEditingNatives
 	u.setLvlDataInt("atac", 0, 0, 1)
 
 
+@compiletime function create_w3a_!001()
+	let u = createObjectDefinition("w3a", '!001', 'Aasl')
+	u.setLvlDataInt("wurs", 0, 0, 42)
+	u.setLvlDataString("anam", 0, 0, "slow")
+	u.setLvlDataUnreal("Slo1", 1, 1, 0.0)
+	u.setLvlDataUnreal("Slo2", 1, 2, 0.0)
+	u.setLvlDataString("atar", 1, 0, "invulnerable,self,vulnerable")
+	u.setLvlDataString("abuf", 1, 0, "!000")
+
+
+@compiletime function create_w3a_!003()
+	let u = createObjectDefinition("w3a", '!003', 'Aasl')
+	u.setLvlDataInt("wurs", 0, 0, 42)
+	u.setLvlDataString("anam", 0, 0, "meep")
+	u.setLvlDataUnreal("Slo1", 1, 1, 0.0)
+	u.setLvlDataUnreal("Slo2", 1, 2, 0.0)
+	u.setLvlDataString("atar", 1, 0, "invulnerable,self,vulnerable")
+	u.setLvlDataString("abuf", 1, 0, "!002")
+
+
 @compiletime function create_w3a_(D)a()
 	let u = createObjectDefinition("w3a", '(D)a', 'AIl1')
 	u.setLvlDataInt("wurs", 0, 0, 42)
@@ -2775,15 +2795,5 @@ import ObjEditingNatives
 	u.setLvlDataInt("aite", 0, 0, 0)
 	u.setLvlDataString("anam", 0, 0, "Bonus manaReg -")
 	u.setLvlDataString("ansf", 0, 0, "16384")
-
-
-@compiletime function create_w3a_!001()
-	let u = createObjectDefinition("w3a", '!001', 'Aasl')
-	u.setLvlDataInt("wurs", 0, 0, 42)
-	u.setLvlDataString("anam", 0, 0, "slow")
-	u.setLvlDataUnreal("Slo1", 1, 1, 0.0)
-	u.setLvlDataUnreal("Slo2", 1, 2, 0.0)
-	u.setLvlDataString("atar", 1, 0, "invulnerable,self,vulnerable")
-	u.setLvlDataString("abuf", 1, 0, "!000")
 
 

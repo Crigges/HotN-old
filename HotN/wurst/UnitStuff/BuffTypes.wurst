@@ -16,6 +16,8 @@ function types()
 HashMap<int, int> buffMap = new HashMap<int, int>()
 int buffCount = '!000'
 boolean compiletime = true
+tuple bla(blo o)
+tuple blo(bla a)
 	
 function addBuffType(string buffName, string iconPath, string tooltip, string tooltipEx)
 	if not compiletime
