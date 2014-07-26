@@ -1,0 +1,16 @@
+package CompiletimeInit
+
+boolean compiletime = true
+
+function doubleInit()
+	if compiletime
+		//some new objectdefinition here
+	else
+		//save some object refernce here
+
+@compiletime function compiletimeInit()
+	doubleInit()
+
+init
+	compiletime = false
+	doubleInit()

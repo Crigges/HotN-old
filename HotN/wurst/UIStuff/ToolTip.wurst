@@ -1,0 +1,38 @@
+package ToolTip
+
+import StandardImports
+import Menu
+import ToolTipTypes
+	
+public class Tooltip extends Widget
+	static constant int dummyTip = 'Icon'
+	static constant vec2 cleanPos = menuStart + element(20, 30).toVec()
+	destructable d
+	vec2 realPos
+	int id
+	
+	construct(element pos, string tiptype)
+		super(pos, element(10, 10))
+		id = getTipType(tiptype)
+		realPos = pos.toVec() + menuStart
+		
+	override function showDirect(player p)
+		int temp = dummyTip
+		if GetLocalPlayer() == p
+			temp = id
+		d = CreateDestructable(temp, realPos.x, realPos.y, 0, 8, 0)
+		doAfter(0.15, () -> RemoveDestructable(d))
+		
+	override function hideDirect(player p)
+		if GetLocalPlayer() == p
+			EnablePreSelect(false, false)
+		doAfter(0.15, () -> begin
+			if GetLocalPlayer() == p
+				EnablePreSelect(true, true)
+		end)
+		
+	override function enable(player p)
+		
+	
+	override function disable(player p)
+	

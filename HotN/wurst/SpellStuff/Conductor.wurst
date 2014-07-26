@@ -1,0 +1,133 @@
+package Conductor
+
+import UnitClass
+import Fx
+import ChannelAbilityPreset
+import ClosureEvents
+
+@compiletime function createSpell()
+	var def = new ChannelAbilityPreset('rami', 10)
+	def.setOption(Option.VISIBLE, true)
+	def.setLevels(10)
+	def.removeChannelProperties(true)
+	def.setHotkeyNormal("Q")
+	def.setTargetType(Targettype.PTARGET)
+	def.setFollowThroughTime(0)
+	def.setName("Conductör")
+	def.setLevelSkipRequirement(0)
+	def.setRequiredLevel(0)
+	for int i = 1 to 10
+		def.setCooldown(i, 5)
+		def.setCastRange(i, 10000)
+		def.setManaCost(i, 0)
+		
+init
+	onPointCast('rami', (unit u, int lvl, vec2 pos) -> new Conductor(u, pos, lvl))
+
+public enum ConductorType
+	None
+	Single
+	Split
+	Triple
+	DoubleTriple
+	HexagonEnd
+	HexagonStart
+
+public class Conductor
+	static constant real range = 900
+	static constant real missleRadius = 50
+	static constant real missleHeight = 50
+	static constant real missleSpeed = 10
+	static constant real baseDamage = 10
+	static constant real bonusDamage = 5
+	static constant real lvlFactor = 1.2
+	Fx dummy
+	vec2 speed
+	unit owner
+	timer t
+	int lvl
+	ConductorType typ
+	real distance = range
+	
+	construct(unit caster, unit source, ConductorType typ, angle ang, int lvl)
+		print("created")
+		owner = caster
+		this.lvl = lvl
+		vec2 pos = source.getPos()
+		dummy = new Fx(pos.polarOffset(ang, 50 + missleRadius + 10).withZ(missleHeight), ang, "Abilities\\Weapons\\FireBallMissile\\FireBallMissile.mdl")
+		speed = vec2(0,0).polarOffset(ang, missleSpeed)
+		this.typ = typ
+		t = getTimer()
+			..setData(this castTo int)
+			..startPeriodic(ANIMATION_PERIOD, () -> GetExpiredTimer().getData()	castTo thistype.move())
+	
+	construct(unit caster, vec2 target, int lvl)
+		print("created")
+		owner = caster
+		this.lvl = lvl
+		vec2 pos = caster.getPos()
+		angle ang = pos.angleTo(target)
+		dummy = new Fx(pos.withZ(missleHeight), ang, "Abilities\\Weapons\\FireBallMissile\\FireBallMissile.mdl")
+		speed = vec2(0,0).polarOffset(ang, missleSpeed)
+		if lvl < 3
+			typ = ConductorType.Single
+		else if lvl < 6
+			typ = ConductorType.Split
+		else if lvl < 9
+			typ = ConductorType.Triple
+		else if lvl < 10
+			typ = ConductorType.DoubleTriple
+		else
+			typ = ConductorType.HexagonStart
+		t = getTimer()
+			..setData(this castTo int)
+			..startPeriodic(ANIMATION_PERIOD, () -> GetExpiredTimer().getData()	castTo thistype.move())
+		
+	function move()
+		dummy.setPos(dummy.getPos2() + speed)
+		ENUM_GROUP.enumUnitsInRange(dummy.getPos2(), missleRadius)
+		for unit u in ENUM_GROUP
+			if u.getOwner().isEnemyOf(owner.getOwner())
+				owner.damageTarget(u, baseDamage + bonusDamage * Pow(lvl - 1., lvlFactor)) // baseDamage + bonusDamage * Pow(lvl - 1., lvlFactor))
+				createNewMissles(u)
+				destroy this
+				print("hit")
+				return
+		distance -= missleSpeed
+		if distance <= 0
+			print("meep")
+			destroy this
+			
+	function createNewMissles(unit u)
+		switch typ
+			case ConductorType.Single
+				new Conductor(owner, u, ConductorType.None, dummy.getPos2().angleTo(u.getPos()), lvl)
+			case ConductorType.Split
+				angle alpha = dummy.getPos2().angleTo(u.getPos())
+				new Conductor(owner, u, ConductorType.None, alpha + 45..asAngleDegrees(), lvl)
+				new Conductor(owner, u, ConductorType.None, alpha - 315..asAngleDegrees(), lvl)
+			case ConductorType.Triple
+				angle alpha = dummy.getPos2().angleTo(u.getPos())
+				new Conductor(owner, u, ConductorType.None, alpha, lvl)
+				new Conductor(owner, u, ConductorType.None, alpha + 45..asAngleDegrees(), lvl)
+				new Conductor(owner, u, ConductorType.None, alpha - 315..asAngleDegrees(), lvl)
+			case ConductorType.DoubleTriple
+				angle alpha = dummy.getPos2().angleTo(u.getPos())
+				new Conductor(owner, u, ConductorType.Triple, alpha, lvl)
+				new Conductor(owner, u, ConductorType.Triple, alpha + 45..asAngleDegrees(), lvl)
+				new Conductor(owner, u, ConductorType.Triple, alpha + 315..asAngleDegrees(), lvl)
+			case ConductorType.HexagonStart
+				angle alpha = dummy.getPos2().angleTo(u.getPos())
+				for int i = 1 to 6
+					new Conductor(owner, u, ConductorType.HexagonEnd, alpha + (i * 60.).asAngleDegrees(), lvl)
+			case ConductorType.HexagonEnd
+				angle alpha = dummy.getPos2().angleTo(u.getPos())
+				for int i = 1 to 6
+					new Conductor(owner, u, ConductorType.None, alpha + (i * 60.).asAngleDegrees(), lvl)
+			default
+			
+	ondestroy
+		destroy dummy
+		t.release()
+
+		

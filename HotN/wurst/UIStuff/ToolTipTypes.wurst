@@ -1,0 +1,49 @@
+package ToolTipTypes
+import HashMap
+import ObjEditingNatives
+import ObjectIdGenerator
+import PreloadSystem
+
+HashMap<int, int> tipMap = new HashMap<int, int>()
+IdGenerator ids = new IdGenerator('=000')
+boolean compiletime = true
+constant real restColor = 0.3
+
+function types()
+	addTipType("meh", "das ist kacka")
+	
+	
+public function addTipType(string name, string content)
+	int tip = ids.next()
+	if not compiletime
+		tipMap.put(StringHash(name), tip)
+		addDestructableToPreload(tip)
+	else
+		var u = createObjectDefinition("w3b", tip, 'YTlb')
+		u.setReal("bgsc", 0.01)
+		u.setString("bshd", "")
+		u.setInt("bcpd", 0)
+		u.setString("bsuf", "Tip")
+		u.setUnreal("boch", 0.0)
+		u.setUnreal("bsel", 0.0)
+		u.setString("bfil", "war3mapImported\\ButtonC2.mdl")
+		u.setString("bnam", content)
+		u.setString("barm", "Ethereal")
+		u.setString("btar", "")
+		u.setInt("bcpr", 0)
+		u.setString("bptx", "")
+		u.setInt("btxi", 31)
+		u.setString("btxf", "Alphaicon.blp")
+		u.setBoolean("bgse", true)
+		u.setUnreal("bmas", 5.)
+		u.setUnreal("bmis", 5.)
+		
+@compiletime function compileInit()
+	types()
+	
+public function getTipType(string s) returns int
+	return tipMap.get(StringHash(s))
+		
+init
+	compiletime = false
+	types()
