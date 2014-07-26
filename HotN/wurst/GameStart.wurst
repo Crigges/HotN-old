@@ -394,8 +394,15 @@ package GameStart
 					shop39 = new Icon("Glove", element(32, 19), 2)
 					shop40 = new Icon("Glove", element(34, 19), 2)
 					
-					shop41 = new Icon("Glove", element(38, 18), 2)
-					buttonLayer = new ImageEx(element(38, 18), element(2,2),"64x64LayerShopIcon.blp", Layer.L1)
+
+					shop41 = new Icon("Glove", element(38, 18), 4)
+					
+					
+					
+					
+					buttonLayer = new ImageEx(element(38, 18), element(4,4),"64x64LayerShopIcon.blp", Layer.L1)
+
+
 //					buttonLayer.content
 					
 //					shop42 = new Icon("Glove", element(31, 13), 1)
