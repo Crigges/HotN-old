@@ -47,6 +47,7 @@ package GameStart
 	import TimedEffect
 	import Trackable
 	import UnitClass
+	import ToolTip
 
 	
 	trigger testt = CreateTrigger()..addAction(function setCallLimit)
@@ -211,39 +212,63 @@ package GameStart
 		Pane shopPleft = null
 //		Pane shopPmiddle = null
 		Pane shopPright = null
-		Pane shopPleftBot = null
-		Pane shopPleftBot2 = null
-		Pane shopPleftTop = null
+//		Pane shopPleftBot = null
+//		Pane shopPleftBot2 = null
+//		Pane shopPleftTop = null
 		
 		
 		Icon shop1 = null
+		ImageEx buttonLayerShop01 = null
 		Icon shop2 = null
+		ImageEx buttonLayerShop02 = null
 		Icon shop3 = null
+		ImageEx buttonLayerShop03 = null
 		Icon shop4 = null
+		ImageEx buttonLayerShop04 = null
 		Icon shop5 = null
+		ImageEx buttonLayerShop05 = null
 		Icon shop6 = null
+		ImageEx buttonLayerShop06 = null
 		Icon shop7 = null
+		ImageEx buttonLayerShop07 = null
 		Icon shop8 = null
+		ImageEx buttonLayerShop08 = null
 		Icon shop9 = null
+		ImageEx buttonLayerShop09 = null
 		Icon shop10 = null
+		ImageEx buttonLayerShop10 = null
 		Icon shop11 = null
+		ImageEx buttonLayerShop11 = null
 		Icon shop12 = null
+		ImageEx buttonLayerShop12 = null
 		Icon shop13 = null
+		ImageEx buttonLayerShop13 = null
 		Icon shop14 = null
+		ImageEx buttonLayerShop14 = null
 		Icon shop15 = null
+		ImageEx buttonLayerShop15 = null
 		Icon shop16 = null
+		ImageEx buttonLayerShop16 = null
 		Icon shop17 = null
+		ImageEx buttonLayerShop17 = null
 		Icon shop18 = null
+		ImageEx buttonLayerShop18 = null
 		Icon shop19 = null
+		ImageEx buttonLayerShop19 = null
 		Icon shop20 = null
+		ImageEx buttonLayerShop20 = null
 		Icon shop21 = null
+		ImageEx buttonLayerShop21 = null
 		Icon shop22 = null
+		ImageEx buttonLayerShop22 = null
 		Icon shop23 = null
+		ImageEx buttonLayerShop23 = null
 		Icon shop24 = null
+		ImageEx buttonLayerShop24 = null
 
-		Icon shop25 = null
-		Icon shop26 = null
-		Icon shop27 = null
+//		Icon shop25 = null
+//		Icon shop26 = null
+//		Icon shop27 = null
 
 //		Icon shop28 = null
 //		Icon shop29 = null
@@ -259,15 +284,15 @@ package GameStart
 //		Icon shop30a = null
 //		Icon shop31a = null
 //		Icon shop32a = null
-		Icon shop33 = null
-		Icon shop34 = null
-		Icon shop35 = null
-		Icon shop36 = null
-		Icon shop37 = null
-		Icon shop38 = null
-		Icon shop39 = null
-		Icon shop40 = null
-		Icon shop41 = null
+//		Icon shop33 = null
+//		Icon shop34 = null
+//		Icon shop35 = null
+//		Icon shop36 = null
+//		Icon shop37 = null
+//		Icon shop38 = null
+//		Icon shop39 = null
+//		Icon shop40 = null
+//		Icon shop41 = null
 //		Icon shop42 = null
 //		Icon shop43 = null
 //		Icon shop44 = null
@@ -275,16 +300,18 @@ package GameStart
 //		Icon shop46 = null
 //		Icon shop47 = null
 
-		ImageEx buttonLayer = null
+		
+
+		
 		
 		onPreload("Menu", (int i) -> begin
 			real ret = 0.01
 			switch i
 				case 0
-					shopB = new Button(element(2, 22), 1, Layer.L1, "Shop")
-					scoreB = new Button(element(7, 22), 1, Layer.L1, "Score")
-					guideB = new Button(element(12, 22), 1, Layer.L1, "Guide")
-					statsB = new Button(element(17, 22), 1, Layer.L1, "Stats")
+					shopB = new Button(element(1, 22), 1, Layer.L1, "Shop")
+					scoreB = new Button(element(6, 22), 1, Layer.L1, "Score")
+					guideB = new Button(element(11, 22), 1, Layer.L1, "Guide")
+					statsB = new Button(element(16, 22), 1, Layer.L1, "Stats")
 					
 //					offenseB = new Button(element(2, 20), 1, Layer.L1, "Offense")
 //					defenseB = new Button(element(7, 20), 1, Layer.L1, "Defense")
@@ -292,84 +319,149 @@ package GameStart
 					
 				//	buyB = new Button(element(34,4), 1, Layer.L1, "1300g")
 				case 1
-					shopPleft = new Pane(element(0, 2), element(36, 16), Layer.L3, 4,false)		
+					shopPleft = new Pane(element(0, -2), element(36, 16), Layer.L3, 4,false)		
 //					shopPmiddle = new Pane(element(20, 4), element(8, 12), Layer.L3, 4, false)	
-					shopPright = new Pane(element(36, -2), element(12, 28), Layer.L2, 4, false)
+					shopPright = new Pane(element(36, 8), element(12, 16), Layer.L2, 4, false)
 					
-					shopPleftBot = new Pane(element(18, 18), element(4, 2), Layer.L3, false)
-					shopPleftBot2 = new Pane(element(23, 18), element(12,2), Layer.L3, false)
-					
-					shopPleftTop = new Pane(element(2, 18), element(6,2), Layer.L3, false)
+//					shopPleftBot = new Pane(element(18, 18), element(4, 2), Layer.L3, false)
+//					shopPleftBot2 = new Pane(element(23, 18), element(12,2), Layer.L3, false)
+//					
+//					shopPleftTop = new Pane(element(2, 18), element(6,2), Layer.L3, false)
 				case 2
 //					shopT1 = new TextBox(element(5, 3), element(4, 2), 55, Layer.L3)
 //					shopT1.setColor(color(255,255,0))
 //					shopT1.setText("Inventory", Player(0))
 //		
-					shopT2 = new TextBox(element(36, 20), element(13, 2), 70, Layer.L2)
-					shopT2.setColor(color(255,205,155))
-					shopT2.setText("Ogre Glove", Player(0))
+					shopT2 = new TextBox(element(6, 19), element(13, 1), 70, Layer.L2)
+					shopT2.setColor(color(255, 180, 220))
+					shopT2.setText("Basic", Player(0))
 //		
-					shopT3 = new TextBox(element(36, 14), element(9, 1), 45, Layer.L2)
-					shopT3.setColor(color(255,255,100))
-					shopT3.setText("+ 1 Strength", Player(0))
+					shopT3 = new TextBox(element(2, 2), element(9, 1), 45, Layer.L1)
+					shopT3.setColor(color(255, 180, 220))
+					shopT3.setText("Ogre Glove", Player(0))
 					
-					shopT4 = new TextBox(element(36, 13), element(9, 1), 45, Layer.L2)
-					shopT4.setColor(color(255,255,100))
-					shopT4.setText("+ 10% Attack Speed", Player(0))
+					shopT4 = new TextBox(element(2, 1), element(9, 1), 45, Layer.L1)
+					shopT4.setColor(color(255, 240, 200))
+					shopT4.setText("4350", Player(0))
 					
-					shopT5 = new TextBox(element(36, 12), element(9, 1), 45, Layer.L2)
-					shopT5.setColor(color(255,255,100))
-					shopT5.setText("+ 1 Armor", Player(0))
+					shopT5 = new TextBox(element(14, 6), element(9, 1), 45, Layer.L1)
+					shopT5.setColor(color(0, 162, 232))
+					shopT5.setText("Healing Salve", Player(0))
 					
-					shopT6 = new TextBox(element(36, 11), element(9, 1), 45, Layer.L2)
-					shopT6.setColor(color(255,255,100))
-					shopT6.setText("+ 20 Hit Points", Player(0))					
+					shopT6 = new TextBox(element(14, 5), element(9, 1), 45, Layer.L1)
+					shopT6.setColor(color(255, 240, 200))
+					shopT6.setText("150", Player(0))					
 					
-					shopT7 = new TextBox(element(36, 10), element(9, 1), 40, Layer.L2)
-					shopT7.setColor(color(205,255,205))
-					shopT7.setText("Ogre Boulder: Throws a big ass rock boulder towards the target position. The first unit it hits gets damage and knocked back.", Player(0))					
+					shopT7 = new TextBox(element(12, 19), element(13, 1), 70, Layer.L2)
+					shopT7.setColor(color(0, 162, 232))
+					shopT7.setText("Superior", Player(0))					
 					
-					shopT8 = new TextBox(element(36, 7), element(9, 1), 40, Layer.L2)
-					shopT8.setColor(color(205,255,205))
-					shopT8.setText("PointTarget/Damage=20+Spellpower/Knockback=30/Cooldown=20sec.", Player(0))	
+					shopT8 = new TextBox(element(18, 19), element(13, 1), 70, Layer.L2)
+					shopT8.setColor(color(181, 230, 29))
+					shopT8.setText("Magic", Player(0))	
 					
-					shopT9 = new TextBox(element(36, 5), element(9, 1), 45, Layer.L2)
-					shopT9.setColor(color(155,205,255))
-					shopT9.setText("Point Target", Player(0))						
+					shopT9 = new TextBox(element(24, 19), element(13, 1), 70, Layer.L2)
+					shopT9.setColor(color(255, 201, 14))
+					shopT9.setText("Legendary", Player(0))						
 					
 				case 3
-					shop1 = new Icon("Glove", element(1, 16), 2)
-					shop2 = new Icon("Glove", element(7, 16), 2)
-					shop3 = new Icon("Glove", element(13, 16), 2)
-					shop4 = new Icon("Glove", element(19, 16), 2)
-					shop5 = new Icon("Glove", element(25, 16), 2)	
-					shop6 = new Icon("Glove", element(31, 16), 2)
+					shop1 = new Icon("Glove", element(1, 1), 2)
+					shop2 = new Icon("Glove", element(7, 1), 2)
+					shop3 = new Icon("Glove", element(13, 1), 2)
+					shop4 = new Icon("Glove", element(19, 1), 2)
+					shop5 = new Icon("Glove", element(25, 1), 2)	
+					shop6 = new Icon("Glove", element(31, 1), 2)
 
-					shop7 = new Icon("HealingSpray", element(1, 12), 2)
-					shop8 = new Icon("HealingSpray", element(7, 12), 2)
-					shop9 = new Icon("HealingSpray", element(13, 12), 2)
-					shop10 = new Icon("HealingSpray", element(19, 12), 2)
-					shop11 = new Icon("HealingSpray", element(25, 12), 2)
-					shop12 = new Icon("HealingSpray", element(31, 12), 2)
 					
-					shop13 = new Icon("Impale", element(1, 8), 2)	
-					shop14 = new Icon("Impale", element(7, 8), 2)
-					shop15 = new Icon("Impale", element(13, 8), 2)
-					shop16 = new Icon("Impale", element(19, 8), 2)
-					shop17 = new Icon("Impale", element(25, 8), 2)
-					shop18 = new Icon("Impale", element(31, 8), 2)
 					
-					shop19 = new Icon("Bash", element(1, 4), 2)
-					shop20 = new Icon("Bash", element(7, 4), 2)	
-					shop21 = new Icon("Bash", element(13, 4), 2)
-					shop22 = new Icon("Bash", element(19, 4), 2)
-					shop23 = new Icon("Bash", element(25, 4), 2)
-					shop24 = new Icon("Bash", element(31, 4), 2)
+					buttonLayerShop01 = new ImageEx(element(1, 1), element(2,2),"64x64LayerShopIcon.blp", Layer.L1)
+					buttonLayerShop01.content.setColor(color(255, 180, 220))
+					buttonLayerShop02 = new ImageEx(element(7, 1), element(2,2),"64x64LayerShopIcon.blp", Layer.L1)
+					buttonLayerShop02.content.setColor(color(255, 180, 220))
+					buttonLayerShop03 = new ImageEx(element(13, 1), element(2,2),"64x64LayerShopIcon.blp", Layer.L1)
+					buttonLayerShop03.content.setColor(color(255, 180, 220))
+					buttonLayerShop04 = new ImageEx(element(19, 1), element(2,2),"64x64LayerShopIcon.blp", Layer.L1)
+					buttonLayerShop04.content.setColor(color(255, 180, 220))
+					buttonLayerShop05 = new ImageEx(element(25, 1), element(2,2),"64x64LayerShopIcon.blp", Layer.L1)
+					buttonLayerShop05.content.setColor(color(255, 180, 220))
+					buttonLayerShop06 = new ImageEx(element(31, 1), element(2,2),"64x64LayerShopIcon.blp", Layer.L1)
+					buttonLayerShop06.content.setColor(color(255, 180, 220))
+															
 					
-					shop25 = new Icon("Command", element(3, 19), 2)
-					shop26 = new Icon("Defend", element(5, 19), 2)
-					shop27 = new Icon("CloakOfFlames", element(7, 19), 2)
+					
+					shop7 = new Icon("HealingSpray", element(1, 5), 2)
+					shop8 = new Icon("HealingSpray", element(7, 5), 2)
+					shop9 = new Icon("HealingSpray", element(13, 5), 2)
+					shop10 = new Icon("HealingSpray", element(19, 5), 2)
+					shop11 = new Icon("HealingSpray", element(25, 5), 2)
+					shop12 = new Icon("HealingSpray", element(31, 5), 2)
+					
+					
+					
+					buttonLayerShop07 = new ImageEx(element(1, 5), element(2,2),"64x64LayerShopIcon.blp", Layer.L1)
+					buttonLayerShop07.content.setColor(color(0, 162, 232))
+					buttonLayerShop08 = new ImageEx(element(7, 5), element(2,2),"64x64LayerShopIcon.blp", Layer.L1)
+					buttonLayerShop08.content.setColor(color(0, 162, 232))
+					buttonLayerShop09 = new ImageEx(element(13, 5), element(2,2),"64x64LayerShopIcon.blp", Layer.L1)
+					buttonLayerShop09.content.setColor(color(0, 162, 232))
+					buttonLayerShop10 = new ImageEx(element(19, 5), element(2,2),"64x64LayerShopIcon.blp", Layer.L1)
+					buttonLayerShop10.content.setColor(color(0, 162, 232))
+					buttonLayerShop11 = new ImageEx(element(25, 5), element(2,2),"64x64LayerShopIcon.blp", Layer.L1)
+					buttonLayerShop11.content.setColor(color(0, 162, 232))
+					buttonLayerShop12 = new ImageEx(element(31, 5), element(2,2),"64x64LayerShopIcon.blp", Layer.L1)
+					buttonLayerShop12.content.setColor(color(0, 162, 232))
+					
+					
+					shop13 = new Icon("Impale", element(1, 9), 2)	
+					shop14 = new Icon("Impale", element(7, 9), 2)
+					shop15 = new Icon("Impale", element(13, 9), 2)
+					shop16 = new Icon("Impale", element(19, 9), 2)
+					shop17 = new Icon("Impale", element(25, 9), 2)
+					shop18 = new Icon("Impale", element(31, 9), 2)
+					
+					
+					
+					buttonLayerShop13 = new ImageEx(element(1, 9), element(2,2),"64x64LayerShopIcon.blp", Layer.L1)
+					buttonLayerShop13.content.setColor(color(181, 230, 29))
+					buttonLayerShop14 = new ImageEx(element(7, 9), element(2,2),"64x64LayerShopIcon.blp", Layer.L1)
+					buttonLayerShop14.content.setColor(color(181, 230, 29))
+					buttonLayerShop15 = new ImageEx(element(13, 9), element(2,2),"64x64LayerShopIcon.blp", Layer.L1)
+					buttonLayerShop15.content.setColor(color(181, 230, 29))
+					buttonLayerShop16 = new ImageEx(element(19, 9), element(2,2),"64x64LayerShopIcon.blp", Layer.L1)
+					buttonLayerShop16.content.setColor(color(181, 230, 29))
+					buttonLayerShop17 = new ImageEx(element(25, 9), element(2,2),"64x64LayerShopIcon.blp", Layer.L1)
+					buttonLayerShop17.content.setColor(color(181, 230, 29))
+					buttonLayerShop18 = new ImageEx(element(31, 9), element(2,2),"64x64LayerShopIcon.blp", Layer.L1)
+					buttonLayerShop18.content.setColor(color(181, 230, 29))
+					
+					
+					shop19 = new Icon("Bash", element(1, 13), 2)
+					shop20 = new Icon("Bash", element(7, 13), 2)	
+					shop21 = new Icon("Bash", element(13, 13), 2)
+					shop22 = new Icon("Bash", element(19, 13), 2)
+					shop23 = new Icon("Bash", element(25, 13), 2)
+					shop24 = new Icon("Bash", element(31, 13), 2)
+					
+					
+					buttonLayerShop19 = new ImageEx(element(1, 13), element(2,2),"64x64LayerShopIcon.blp", Layer.L1)
+					buttonLayerShop19.content.setColor(color(255, 201, 14))
+					buttonLayerShop20 = new ImageEx(element(7, 13), element(2,2),"64x64LayerShopIcon.blp", Layer.L1)
+					buttonLayerShop20.content.setColor(color(255, 201, 14))
+					buttonLayerShop21 = new ImageEx(element(13, 13), element(2,2),"64x64LayerShopIcon.blp", Layer.L1)
+					buttonLayerShop21.content.setColor(color(255, 201, 14))
+					buttonLayerShop22 = new ImageEx(element(19, 13), element(2,2),"64x64LayerShopIcon.blp", Layer.L1)
+					buttonLayerShop22.content.setColor(color(255, 201, 14))
+					buttonLayerShop23 = new ImageEx(element(25, 13), element(2,2),"64x64LayerShopIcon.blp", Layer.L1)
+					buttonLayerShop23.content.setColor(color(255, 201, 14))
+					buttonLayerShop24 = new ImageEx(element(31, 13), element(2,2),"64x64LayerShopIcon.blp", Layer.L1)
+					buttonLayerShop24.content.setColor(color(255, 201, 14))
+					
 
+
+//					shop25 = new Icon("Command", element(10,15), 2)
+//					shop26 = new Icon("Defend", element(5, 19), 2)
+//					shop27 = new Icon("CloakOfFlames", element(7, 19), 2)
+//
 //					shop28 = new Icon("Bash", element(31, 3), 2)	
 //					shop29 = new Icon("Glove", element(13, 13), 2)
 //					shop30 = new Icon("HealingSpray", element(13, 15), 2)
@@ -384,23 +476,23 @@ package GameStart
 //					shop31a = new Icon("Glove", element(15, 17), 2)
 //					shop32a = new Icon("HealingSpray", element(15, 19), 2)
 					
-					shop33 = new Icon("Glove", element(19, 19), 2)
-					shop34 = new Icon("Glove", element(21, 19), 2)
-					
-					shop35 = new Icon("Glove", element(24, 19), 2)
-					shop36 = new Icon("Glove", element(26, 19), 2)
-					shop37 = new Icon("Glove", element(28, 19), 2)
-					shop38 = new Icon("Glove", element(30, 19), 2)
-					shop39 = new Icon("Glove", element(32, 19), 2)
-					shop40 = new Icon("Glove", element(34, 19), 2)
-					
-
-					shop41 = new Icon("Glove", element(38, 18), 4)
-					
-					
+//					shop33 = new Icon("Glove", element(19, 19), 2)
+//					shop34 = new Icon("Glove", element(21, 19), 2)
+//					
+//					shop35 = new Icon("Glove", element(24, 19), 2)
+//					shop36 = new Icon("Glove", element(26, 19), 2)
+//					shop37 = new Icon("Glove", element(28, 19), 2)
+//					shop38 = new Icon("Glove", element(30, 19), 2)
+//					shop39 = new Icon("Glove", element(32, 19), 2)
+//					shop40 = new Icon("Glove", element(34, 19), 2)
+//					
+//
+//					shop41 = new Icon("Glove", element(38, 15), 4)
 					
 					
-					buttonLayer = new ImageEx(element(38, 18), element(4,4),"64x64LayerShopIcon.blp", Layer.L1)
+					
+					
+					
 
 
 //					buttonLayer.content
@@ -453,10 +545,10 @@ package GameStart
 //					shopWindow.add(shopPmiddle)
 					shopWindow.add(shopPleft)
 					
-					shopWindow.add(shopPleftBot)
-					shopWindow.add(shopPleftBot2)
-					
-					shopWindow.add(shopPleftTop)
+//					shopWindow.add(shopPleftBot)
+//					shopWindow.add(shopPleftBot2)
+//					
+//					shopWindow.add(shopPleftTop)
 					
 					shopWindow.add(shop1)
 					shopWindow.add(shop2)
@@ -482,9 +574,11 @@ package GameStart
 					shopWindow.add(shop22)
 					shopWindow.add(shop23)
 					shopWindow.add(shop24)
-					shopWindow.add(shop25)
-					shopWindow.add(shop26)
-					shopWindow.add(shop27)
+					
+//					shopWindow.add(shop25)
+//					shopWindow.add(shop26)
+//					shopWindow.add(shop27)
+
 //					shopWindow.add(shop28)
 //					shopWindow.add(shop29)
 //					shopWindow.add(shop30)
@@ -499,17 +593,17 @@ package GameStart
 //					shopWindow.add(shop31a)
 //					shopWindow.add(shop32a)
 					
-					shopWindow.add(shop33)
-					shopWindow.add(shop34)
-					shopWindow.add(shop35)
-					shopWindow.add(shop36)
-					shopWindow.add(shop37)
-					shopWindow.add(shop38)
-					shopWindow.add(shop39)
-					shopWindow.add(shop40)
+//					shopWindow.add(shop33)
+//					shopWindow.add(shop34)
+//					shopWindow.add(shop35)
+//					shopWindow.add(shop36)
+//					shopWindow.add(shop37)
+//					shopWindow.add(shop38)
+//					shopWindow.add(shop39)
+//					shopWindow.add(shop40)
+//					
+//					shopWindow.add(shop41)
 					
-					shopWindow.add(shop41)
-					shopWindow.add(buttonLayer)
 //					shopWindow.add(shop42)
 //					shopWindow.add(shop43)
 //					shopWindow.add(shop44)
@@ -541,6 +635,33 @@ package GameStart
 					statsWindow.add(scoreOb)
 					statsWindow.add(guideOb)
 					statsWindow.add(statsOb)
+					
+					shopWindow.add(buttonLayerShop01)
+					shopWindow.add(buttonLayerShop02)
+					shopWindow.add(buttonLayerShop03)
+					shopWindow.add(buttonLayerShop04)
+					shopWindow.add(buttonLayerShop05)
+					shopWindow.add(buttonLayerShop06)
+					shopWindow.add(buttonLayerShop07)
+					shopWindow.add(buttonLayerShop08)
+					shopWindow.add(buttonLayerShop09)
+					shopWindow.add(buttonLayerShop10)
+					shopWindow.add(buttonLayerShop11)
+					shopWindow.add(buttonLayerShop12)
+					shopWindow.add(buttonLayerShop13)
+					shopWindow.add(buttonLayerShop14)
+					shopWindow.add(buttonLayerShop15)
+					shopWindow.add(buttonLayerShop16)
+					shopWindow.add(buttonLayerShop17)
+					shopWindow.add(buttonLayerShop18)
+					shopWindow.add(buttonLayerShop19)
+					shopWindow.add(buttonLayerShop20)
+					shopWindow.add(buttonLayerShop21)
+					shopWindow.add(buttonLayerShop22)
+					shopWindow.add(buttonLayerShop23)
+					shopWindow.add(buttonLayerShop24)
+					
+					
 					
 				default
 					ret = -1.
