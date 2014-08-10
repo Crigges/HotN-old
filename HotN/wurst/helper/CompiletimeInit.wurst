@@ -1,0 +1,67 @@
+package CompiletimeInit
+import UnitTypes
+
+boolean compiletime = true
+
+init
+	compiletime = false
+
+public module UnitInit
+	static boolean initHelperMember = initHelper()
+	static UnitType t
+	
+	@compiletime private static function initHelper() returns boolean
+		t = new UnitType(compiletime)
+		settings(t)
+		t.finalize()
+		return true
+
+	static abstract function settings(UnitType t)
+	
+//example useage
+
+
+
+public class SuperArcher
+	use UnitInit
+	
+	override static function settings(UnitType t)
+		t.setArmor(10)
+		t.setAttack(20)
+		
+public class SuperPeq
+	use UnitInit
+	
+	override static function settings(UnitType t)
+		t.setArmor(10)
+		t.setAttack(20)
+		
+//class ObjectDefinition<T> //spezielle interne klasse
+//	
+//	construct(string s, int newid)
+//
+//class UnitDefinition<T> extends ObjectDefinition<T>
+//	int armor
+//	construct(int id)
+//		super("w3u", id)
+//
+//	setArmor(int armor)
+//		this. armor = armor
+//		this.setInt("udef", armor)
+//
+//oetype SuperArbeiter extends UnitDefinition<'hpea'>	 //intern wird hier eine freie id generiert und mit dieser der constructor aufgerufen,	
+//	setArmor(1000)									 //der name vom oetype bildet absofort die refernz auf das objekt
+//	setOtherStuff(...)
+//	
+//init
+//	//erstellen eines superarbeiters
+//	CreateUnit(Player(0), SuperArbeiter castTo int, 0, 0, 0)
+//	//oder
+//	CreateUnit(Player(0), SuperArbeiter.getId(), 0, 0, 0)
+//	//um die rüstung des unittyps zu erhalten während der laufzeit
+//	print(SuperArcher.armor.toString())
+//	//Dynamic dispatch sollte natürlich auch gehen
+//	UnitDefinition someUnit = SuperArcher
+//	print(somnunit.armor.toString())
+//	
+	

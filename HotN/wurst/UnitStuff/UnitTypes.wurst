@@ -9,17 +9,17 @@ import StringList
 import ObjectIds
 import HashMap
 
-boolean compiletime = true
+//boolean compiletime = true
 HashMap<int, UnitType> unitTypes = new HashMap<int, UnitType>()
 
-function initTypes()
-
-@compiletime function compiletimeInit()
-	initTypes()
-
-init
-	compiletime = false
-	initTypes()
+//function initTypes()
+//
+//@compiletime function compiletimeInit()
+//	initTypes()
+//
+//init
+//	compiletime = false
+//	initTypes()
 
 public enum StatType
 	REQUIRED
@@ -144,6 +144,7 @@ public class UnitType
 	static constant IdGenerator gen = new IdGenerator('&000')
 	
 	private UnitDefinition def
+	private boolean compiletime
 	int id
 	intStat moveSpeed = intStat(basicMovespeed, StatType.FORBIDDEN)
 	StringList abis = new StringList()
@@ -179,6 +180,16 @@ public class UnitType
 	realStat mass = realStat(baseMass, StatType.OPTIONAL)
 	realStat radius = realStat(baseRadius, StatType.OPTIONAL)
 	realStat height = realStat(baseHeight, StatType.OPTIONAL)
+	
+	construct(boolean compiletime)
+		this.compiletime = compiletime
+		id = gen.next()
+		def = new UnitDefinition(id, basicId)
+		
+	construct(IdGenerator g, boolean compiletime)
+		this.compiletime = compiletime
+		id = g.next()
+		def = new UnitDefinition(id, basicId)
 	
 	function getMovespeed() returns int
 		return moveSpeed.content
@@ -329,15 +340,6 @@ public class UnitType
 	
 	function setHeight(real data)
 		height = realStat(data, StatType.SET)
-		
-	construct()
-		id = gen.next()
-		def = new UnitDefinition(id, basicId)
-		
-	construct(IdGenerator g)
-		id = g.next()
-		def = new UnitDefinition(id, basicId)
-		
 		
 	function finalize()
 		if compiletime

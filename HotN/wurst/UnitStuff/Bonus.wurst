@@ -12,84 +12,231 @@ package Bonus
 			remove()
 		
 	public abstract class BonusType
+		real amount
+		boolean per
+		
+		construct(real amount, boolean per)
+			this.amount = amount
+			this.per = per
+	
+		abstract function getBonusTypName() returns string
+		
+		function getBonusAsString() returns string
+			string s = " "
+			if per
+				s = "% " 
+			if amount > 0
+				return "+" + amount.toInt().toString() + s + getBonusTypName()
+			else
+				return "-" + amount.toInt().toString() + s + getBonusTypName()
 		
 		abstract function applyToUnit(Unit u) returns Bonus
 		
-		static function newAttackBonus(real amount) returns BonusType
-			return (Unit u) -> u.bonusAttack(amount)
+	public class AttackBonus extends BonusType
+	
+		construct(real amount, boolean per)
+			super(amount, per)
 			
-		static function newAttackBonusPer(real amount) returns BonusType
-			return (Unit u) -> u.bonusAttackPer(amount)
+		override function applyToUnit(Unit u) returns Bonus
+			if per
+				return u.bonusAttackPer(amount)
+			else
+				return u.bonusAttack(amount)
 			
-		static function newSpellpowerBonus(real amount) returns BonusType
-			return (Unit u) -> u.bonusSpellpower(amount)
+		override function getBonusTypName() returns string
+			return "Attack"
 			
-		static function newSpellpowerBonusPer(real amount) returns BonusType
-			return (Unit u) -> u.bonusSpellpowerPer(amount)
+	public class SpellpowerBonus extends BonusType
+	
+		construct(real amount, boolean per)
+			super(amount, per)
 			
-		static function newArmorBonus(real amount) returns BonusType
-			return (Unit u) -> u.bonusArmor(amount)
+		override function applyToUnit(Unit u) returns Bonus
+			if per
+				return u.bonusSpellpowerPer(amount)
+			else
+				return u.bonusSpellpower(amount)
 			
-		static function newArmorBonusPer(real amount) returns BonusType
-			return (Unit u) -> u.bonusArmorPer(amount)
+		override function getBonusTypName() returns string
+			return "Spellpower"
 			
-		static function newResistanceBonus(real amount) returns BonusType
-			return (Unit u) -> u.bonusResistance(amount)
+	public class ArmorBonus extends BonusType
+	
+		construct(real amount, boolean per)
+			super(amount, per)
 			
-		static function newResistanceBonusPer(real amount) returns BonusType
-			return (Unit u) -> u.bonusResistancePer(amount)
+		override function applyToUnit(Unit u) returns Bonus
+			if per
+				return u.bonusArmorPer(amount)
+			else
+				return u.bonusArmor(amount)
 			
-		static function newAttackspeedBonus(real amount) returns BonusType
-			return (Unit u) -> u.bonusAttackspeed(amount)
+		override function getBonusTypName() returns string
+			return "Armor"
 			
-		static function newMovespeedBonus(real amount) returns BonusType
-			return (Unit u) -> u.bonusMovespeed(amount)
+	public class ResistanceBonus extends BonusType
+	
+		construct(real amount, boolean per)
+			super(amount, per)
 			
-		static function newMovespeedBonusPer(real amount) returns BonusType
-			return (Unit u) -> u.bonusMovespeedPer(amount)
+		override function applyToUnit(Unit u) returns Bonus
+			if per
+				return u.bonusResistancePer(amount)
+			else
+				return u.bonusResistance(amount)
 			
-		static function newLifeBonus(real amount) returns BonusType
-			return (Unit u) -> u.bonusLife(amount)
+		override function getBonusTypName() returns string
+			return "Resistance"
 			
-		static function newLifeBonusPer(real amount) returns BonusType
-			return (Unit u) -> u.bonusLifePer(amount)
+	public class AttackspeedBonus extends BonusType
+	
+		construct(real amount)
+			super(amount, true)
 			
-		static function newLifeRegBonus(real amount) returns BonusType
-			return (Unit u) -> u.bonusLifeReg(amount)
+		override function applyToUnit(Unit u) returns Bonus
+			return u.bonusAttackspeed(amount)
 			
-		static function newLifeRegBonusPer(real amount) returns BonusType
-			return (Unit u) -> u.bonusLifeRegPer(amount)
+		override function getBonusTypName() returns string
+			return "Attackspeed"
 			
-		static function newManaBonus(real amount) returns BonusType
-			return (Unit u) -> u.bonusMana(amount)
+	public class MovespeedBonus extends BonusType
+	
+		construct(real amount)
+			super(amount, true)
 			
-		static function newManaBonusPer(real amount) returns BonusType
-			return (Unit u) -> u.bonusManaPer(amount)
+		override function applyToUnit(Unit u) returns Bonus
+			if per
+				return u.bonusMovespeedPer(amount)
+			else
+				return u.bonusMovespeed(amount)
 			
-		static function newManaRegBonus(real amount) returns BonusType
-			return (Unit u) -> u.bonusManaReg(amount)
+		override function getBonusTypName() returns string
+			return "Movespeed"
+
+
+	public class LifeBonus extends BonusType
+	
+		construct(real amount)
+			super(amount, true)
 			
-		static function newManaRegBonusPer(real amount) returns BonusType
-			return (Unit u) -> u.bonusManaRegPer(amount)
+		override function applyToUnit(Unit u) returns Bonus
+			if per
+				return u.bonusLifePer(amount)
+			else
+				return u.bonusLife(amount)
 			
-		static function newAgiBonus(real amount) returns BonusType
-			return (Unit u) -> u.bonusAgi(amount)
+		override function getBonusTypName() returns string
+			return "HP"
+
+	public class ManaBonus extends BonusType
+	
+		construct(real amount)
+			super(amount, true)
 			
-		static function newAgiBonusPer(real amount) returns BonusType
-			return (Unit u) -> u.bonusAgiPer(amount)
+		override function applyToUnit(Unit u) returns Bonus
+			if per
+				return u.bonusManaPer(amount)
+			else
+				return u.bonusMana(amount)
 			
-		static function newStrBonus(real amount) returns BonusType
-			return (Unit u) -> u.bonusStr(amount)
+		override function getBonusTypName() returns string
+			return "Mana"
 			
-		static function newStrBonusPer(real amount) returns BonusType
-			return (Unit u) -> u.bonusStrPer(amount)
+	public class LifeRegBonus extends BonusType
+	
+		construct(real amount)
+			super(amount, true)
 			
-		static function newIntBonus(real amount) returns BonusType
-			return (Unit u) -> u.bonusInt(amount)
+		override function applyToUnit(Unit u) returns Bonus
+			if per
+				return u.bonusLifeRegPer(amount)
+			else
+				return u.bonusLifeReg(amount)
 			
-		static function newIntBonusPer(real amount) returns BonusType
-			return (Unit u) -> u.bonusIntPer(amount)
+		override function getBonusTypName() returns string
+			return "HP regeneration"
+			
+	public class ManaRegBonus extends BonusType
+	
+		construct(real amount)
+			super(amount, true)
+			
+		override function applyToUnit(Unit u) returns Bonus
+			if per
+				return u.bonusManaRegPer(amount)
+			else
+				return u.bonusManaReg(amount)
+			
+		override function getBonusTypName() returns string
+			return "Mana regeneration"
+			
+	public class LifestealBonus extends BonusType
+	
+		construct(real amount)
+			super(amount, true)
+			
+		override function applyToUnit(Unit u) returns Bonus
+			return u.bonusLifesteal(amount)
+						
+		override function getBonusTypName() returns string
+			return "Lifesteal"
+			
+	public class SpellvampBonus extends BonusType
+	
+		construct(real amount)
+			super(amount, true)
+			
+		override function applyToUnit(Unit u) returns Bonus
+			return u.bonusSpellvamp(amount)
+						
+		override function getBonusTypName() returns string
+			return "Spellvamp"
+			
+	public class MagicReductionBonus extends BonusType
+	
+		construct(real amount)
+			super(amount, true)
+			
+		override function applyToUnit(Unit u) returns Bonus
+			return u.bonusMagicReduction(amount)
+						
+		override function getBonusTypName() returns string
+			return "Magic Reduction"
+			
+	public class NormalReductionBonus extends BonusType
+	
+		construct(real amount)
+			super(amount, true)
+			
+		override function applyToUnit(Unit u) returns Bonus
+			return u.bonusNormalReduction(amount)
+						
+		override function getBonusTypName() returns string
+			return "Normal Reduction"
+			
+	public class CritchanceBonus extends BonusType
+	
+		construct(real amount)
+			super(amount, true)
+			
+		override function applyToUnit(Unit u) returns Bonus
+			return u.bonusCritchance(amount)
+						
+		override function getBonusTypName() returns string
+			return "Critchance"
+			
+	public class CritdamageBonus extends BonusType
+	
+		construct(real amount)
+			super(amount, true)
+			
+		override function applyToUnit(Unit u) returns Bonus
+			return u.bonusCritdamage(amount)
+						
+		override function getBonusTypName() returns string
+			return "Critdamage"
 			
 			
+	
 						
 endpackage

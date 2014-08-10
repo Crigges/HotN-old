@@ -80,7 +80,7 @@ package UnitClass
 		boolean vunerable = true
 		ShieldList shieldList
 		Unit lastDamager = null
-		Hero lastHeroDamager = null
+		Hero lastHeroDamager = null	
 		//knockback system//
 		real mass = 0
 		real bonusMass = 0
@@ -509,6 +509,96 @@ package UnitClass
 			spellpower += amount
 			doAfter(duration, () -> begin
 				spellpower -= amount
+			end)
+			
+		function bonusLifesteal(real amount) returns Bonus
+			lifesteal += amount
+			return () -> begin
+				lifesteal -= amount
+			end
+			
+		function bonusLifesteal(real amount, real duration)
+			if duration >= 180
+				printError("Timed Bonis has to be shorter than 180 sec")
+				return
+			lifesteal += amount
+			doAfter(duration, () -> begin
+				lifesteal -= amount
+			end)
+			
+		function bonusSpellvamp(real amount) returns Bonus
+			spellVamp += amount
+			return () -> begin
+				spellVamp -= amount
+			end
+			
+		function bonusSpellvamp(real amount, real duration)
+			if duration >= 180
+				printError("Timed Bonis has to be shorter than 180 sec")
+				return
+			spellVamp += amount
+			doAfter(duration, () -> begin
+				spellVamp -= amount
+			end)
+			
+		function bonusNormalReduction(real amount) returns Bonus
+			normalReduction += amount
+			return () -> begin
+				normalReduction -= amount
+			end
+			
+		function bonusNormalReduction(real amount, real duration)
+			if duration >= 180
+				printError("Timed Bonis has to be shorter than 180 sec")
+				return
+			normalReduction += amount
+			doAfter(duration, () -> begin
+				normalReduction -= amount
+			end)
+			
+		function bonusMagicReduction(real amount) returns Bonus
+			magicReduction += amount
+			return () -> begin
+				magicReduction -= amount
+			end
+			
+		function bonusMagicReduction(real amount, real duration)
+			if duration >= 180
+				printError("Timed Bonis has to be shorter than 180 sec")
+				return
+			magicReduction += amount
+			doAfter(duration, () -> begin
+				magicReduction -= amount
+			end)
+			
+		function bonusCritchance(real amount) returns Bonus
+			critchance += amount
+			return () -> begin
+				critchance -= amount
+			end
+			
+		function bonusCritchance(real amount, real duration)
+			if duration >= 180
+				printError("Timed Bonis has to be shorter than 180 sec")
+				return
+			critchance += amount
+			doAfter(duration, () -> begin
+				critchance -= amount
+			end)
+			
+		function bonusCritdamage(real amount) returns Bonus
+			critdamage += amount
+			return () -> begin
+				critdamage -= amount
+			end
+			
+		function bonusCritdamage(real amount, real duration)
+			if duration >= 180
+				printError("Timed Bonis has to be shorter than 180 sec")
+				return
+			critdamage += amount
+			doAfter(duration, () -> begin
+				critdamage -= amount
 			end)
 				
 		function bonusSpellpowerPer(real amount) returns Bonus
@@ -1037,7 +1127,10 @@ package UnitClass
 				source.causeHitPre.fire(this)
 			if rand <= source.hitchance
 				rand = GetRandomReal(0., 100.)
-				if rand > evade
+				real ev = evade
+				if source.hitchance > 100
+					ev -= (source.hitchance - 100)
+				if rand > ev
 					//Unit got hit
 					//Dice damage
 					rand = GetRandomReal(0., 100.)
