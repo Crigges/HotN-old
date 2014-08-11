@@ -2,11 +2,13 @@ package ObjectIdGenerator
 
 int array id
 constant heroPrefix = 'W'
-constant nonheroPrefix = '!'
+constant nonheroPrefix = '%'
+boolean helperActivator = initHelper()
 
-init
+function initHelper() returns boolean
 	for int i = 0 to 2
-		id[i] = '!'
+		id[i] = '0'
+	return true
 	
 function nextValid(int c) returns int
 	int r = c + 1
@@ -18,13 +20,14 @@ function fourChar(int a, int b, int c, int d) returns int
 	return (((((a*256) + b)*256)+c)*256)+d
 	
 function newId(int prefix) returns int
-	for i = 0 to 2
-		if id[i] < '~'
-			id[i] = nextValid(id[i])
-			for j = 0 to i-1
-				id[j] = '!'
-			return fourChar(prefix, id[2], id[1], id[0])
-	error("No vaild id left")
+	if helperActivator
+		for i = 0 to 2
+			if id[i] < '~'
+				id[i] = nextValid(id[i])
+				for j = 0 to i-1
+					id[j] = '!'
+				return fourChar(prefix, id[2], id[1], id[0])
+		error("No vaild id left")
 	return 0
 		
 public function genId() returns int

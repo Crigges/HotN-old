@@ -22,6 +22,7 @@ public module UnitInit
 		return true
 
 	static abstract function settings(UnitType t)
+	
 public enum StatType
 	REQUIRED
 	OPTIONAL
