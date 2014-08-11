@@ -6,9 +6,9 @@ import ToolTipTypes
 import Bonus
 import HashMap
 import UnitEvents
+import StandardImports
 
 HashMap<int, ItemType> itemTypes = new HashMap<int, ItemType>()
-boolean compiletime = true
 
 function types()
 	var typ = new ItemType("SuperAxe", 450, "ClawsOfAttack", 1)
@@ -77,13 +77,7 @@ class Item
 	ondestroy
 		for Bonus b in bons
 			destroy b
-			
-@compiletime function compileInit()
-	types()
-
-init
-	compiletime = false
-	types()
+		
 	
 	
 

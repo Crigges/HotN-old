@@ -7,12 +7,11 @@ import ClosureEvents
 
 @compiletime function createSpell()
 	var def = new ChannelAbilityPreset('rami', 10)
-	def.setOption(Option.VISIBLE, true)
 	def.setLevels(10)
 	def.removeChannelProperties(true)
 	def.setHotkeyNormal("Q")
-	def.setTargetType(Targettype.PTARGET)
-	def.setFollowThroughTime(0)
+	def.presetTargetTypes(Targettype.PTARGET)
+	def.presetFollowThroughTime((int i) -> 0)
 	def.setName("Conductör")
 	def.setLevelSkipRequirement(0)
 	def.setRequiredLevel(0)
@@ -84,7 +83,7 @@ public class Conductor
 			..startPeriodic(ANIMATION_PERIOD, () -> GetExpiredTimer().getData()	castTo thistype.move())
 		
 	function move()
-		dummy.setPos(dummy.getPos2() + speed)
+		dummy.setXY(dummy.getPos2() + speed)
 		ENUM_GROUP.enumUnitsInRange(dummy.getPos2(), missleRadius)
 		for unit u in ENUM_GROUP
 			if u.getOwner().isEnemyOf(owner.getOwner())

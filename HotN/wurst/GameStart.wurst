@@ -138,14 +138,13 @@ package GameStart
 		static int loopCounter = 0
 		
 		override static function classInit()
-			initOrder[1] = "IconTypes"
-			initOrder[2] = "Abilitys"
-			initOrder[3] = "Units"
-			initOrder[4] = "Items"
-			initOrder[5] = "Destructables"
-			initOrder[6] = "Buffs"
-			initOrder[7] = "Trackables"
-			initOrder[8] = "Menu"
+			initOrder[1] = "Abilitys"
+			initOrder[2] = "Units"
+			initOrder[3] = "Items"
+			initOrder[4] = "Destructables"
+			initOrder[5] = "Buffs"
+			initOrder[6] = "Trackables"
+			initOrder[7] = "Menu"
 		
 		static function startPreload()
 			getTimer().start(1.0, function Preload.preload)

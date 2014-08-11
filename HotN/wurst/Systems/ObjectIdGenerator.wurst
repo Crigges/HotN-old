@@ -1,45 +1,34 @@
 package ObjectIdGenerator
 
-public class IdGenerator
-	int i1
-	int i2
-	int i3
-	int i4
+int array id
+constant heroPrefix = 'W'
+constant nonheroPrefix = '!'
+
+init
+	for int i = 0 to 2
+		id[i] = '!'
 	
-	construct(int start)
-		i1 = start mod 256
-		i2 = (start mod 65536) div 256
-		i3 = (start mod 16777216) div 65536
-		i4 = start div 16777216
+function nextValid(int c) returns int
+	int r = c + 1
+	if r == '_'
+		r++
+	return r 
+
+function fourChar(int a, int b, int c, int d) returns int
+	return (((((a*256) + b)*256)+c)*256)+d
+	
+function newId(int prefix) returns int
+	for i = 0 to 2
+		if id[i] < '~'
+			id[i] = nextValid(id[i])
+			for j = 0 to i-1
+				id[j] = '!'
+			return fourChar(prefix, id[2], id[1], id[0])
+	error("No vaild id left")
+	return 0
 		
-	function next() returns int
-		if i1 < '~'
-			i1++
-			if(i1 == '_')
-				i1++
-		else if i2 < '~'
-			i1 = '!'
-			i2++
-			if(i2 == '_')
-				i2++
-		else if i3 < '~'
-			i1 = '!'
-			i2 = '!'
-			i3++
-			if(i3 == '_')
-				i3++
-		else if i4 < '~'
-			i1 = '!'
-			i2 = '!'
-			i3 = '!'
-			i4++
-			if(i4 == '_')
-				i4++
-		else
-			error("No vaild id left")
-			return 0
-		return i1 + (i2 * 256) + (i3 * 65536) + (i4 * 16777216)
-		
-		
-		
-		
+public function genId() returns int
+	return newId(nonheroPrefix)
+	
+function genHeroId() returns int
+	return newId(heroPrefix)

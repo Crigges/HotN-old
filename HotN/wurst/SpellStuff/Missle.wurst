@@ -76,7 +76,7 @@ package Missle
 				atEnd.fire(source, null)
 				destroy this
 			else
-				fx.setPos(fx.getPos2() + vel)
+				fx.setXY(fx.getPos2() + vel)
 				group g = CreateGroup()
 				filterCheckUnit = source.u
 				filterCheckPlayer = source.owner

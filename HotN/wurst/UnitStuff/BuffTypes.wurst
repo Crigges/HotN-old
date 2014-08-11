@@ -5,19 +5,12 @@ import BuffObjEditing
 import AbilityObjEditing
 import ObjectIds
 import PreloadSystem
-
-//add buffs here
-function types()
-	addBuffType("slow", "ReplaceableTextures\\CommandButtons\\BTNSlow.blp", "Slow", "This unit moves slower than normal")
-	addBuffType("meep", "ReplaceableTextures\\CommandButtons\\someotherpath.blp", "Stunned", "This unit is braindead")
+import StandardImports
 	
 //======================================================================================================//
 	
 HashMap<int, int> buffMap = new HashMap<int, int>()
 int buffCount = '!000'
-boolean compiletime = true
-tuple bla(blo o)
-tuple blo(bla a)
 	
 function addBuffType(string buffName, string iconPath, string tooltip, string tooltipEx)
 	if not compiletime
@@ -42,10 +35,3 @@ public function getBuffType(string name) returns bufftype
 	return bufftype(i + 1, i)
 	
 public tuple bufftype(int abiId, int buffId)
-
-@compiletime function createObjects()
-	types()
-
-init
-	compiletime = false
-	types()

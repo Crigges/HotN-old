@@ -1,6 +1,6 @@
 package UnitTypes
 
-import UnitObjEditing
+import public UnitObjEditing
 import ObjectIdGenerator
 import ObjEditingNatives
 import StandardImports
@@ -9,95 +9,25 @@ import StringList
 import ObjectIds
 import HashMap
 
-//boolean compiletime = true
+
 HashMap<int, UnitType> unitTypes = new HashMap<int, UnitType>()
 
-//function initTypes()
-//
-//@compiletime function compiletimeInit()
-//	initTypes()
-//
-//init
-//	compiletime = false
-//	initTypes()
+public module UnitInit
+	static UnitType t
+	
+	@dinit private static function initHelper() returns boolean
+		t = new UnitType(compiletime)
+		settings(t)
+		t.finalize()
+		return true
 
+	static abstract function settings(UnitType t)
 public enum StatType
 	REQUIRED
 	OPTIONAL
 	FORBIDDEN
 	RANGED
 	SET
-	
-public enum WeaptonSound
-	Nothing
-	AxeMediumChop
-	MetalHeavyBash
-	MetalHeavyChop
-	MetalHeavySlice
-	MetalLightChop
-	MetalLightSlice
-	MetalMediumBash
-	MetalMediumChop
-	MetalMediumSlice
-	RockHeavyBash
-	WoodHeavyBash
-	WoodLightBash
-	WoodMediumBash
-	
-public enum ArmorSoundType
-	Ethereal
-	Metal
-	Flesh
-	Stone
-	Wood
-	
-public function WeaptonSound.toString() returns string
-	switch this
-		case WeaptonSound.Nothing
-			return "Nothing"
-		case WeaptonSound.AxeMediumChop
-			return "AxeMediumChop"
-		case WeaptonSound.MetalHeavyBash
-			return "MetalHeavyBash"
-		case WeaptonSound.MetalHeavyChop
-			return "MetalHeavyChop"
-		case WeaptonSound.MetalHeavySlice
-			return "MetalHeavySlice"
-		case WeaptonSound.MetalLightChop
-			return "MetalLightChop"
-		case WeaptonSound.MetalLightSlice
-			return "MetalLightSlice"
-		case WeaptonSound.MetalMediumBash
-			return "MetalMediumBash"
-		case WeaptonSound.MetalMediumChop
-			return "MetalMediumChop"
-		case WeaptonSound.MetalMediumSlice
-			return "MetalMediumSlice"
-		case WeaptonSound.RockHeavyBash
-			return "RockHeavyBash"
-		case WeaptonSound.WoodHeavyBash
-			return "WoodHeavyBash"
-		case WeaptonSound.WoodLightBash
-			return "WoodLightBash"
-		case WeaptonSound.WoodMediumBash
-			return "WoodMediumBash"
-		default
-			return null
-		
-public function ArmorSoundType.toString() returns string
-	switch this
-		case ArmorSoundType.Ethereal
-			return "Ethereal"
-		case ArmorSoundType.Flesh
-			return "Flesh"
-		case ArmorSoundType.Wood
-			return "Wood"
-		case ArmorSoundType.Stone
-			return "Stone"
-		case ArmorSoundType.Metal
-			return "Metal"
-		default
-			return null
 			
 public function getUnitType(string name) returns UnitType
 	return unitTypes.get(StringHash(name))
@@ -108,7 +38,7 @@ public tuple realStat(real content, StatType info)
 public tuple boolStat(boolean content, StatType info)
 public tuple vec3Stat(vec3 content, StatType info)
 public tuple vec2Stat(vec2 content, StatType info)
-public tuple weaptonSoundStat(WeaptonSound content, StatType info)
+public tuple weaponSoundStat(WeaponSound content, StatType info)
 public tuple armorSoundTypeStat(ArmorSoundType content, StatType info)
 
 /**	
@@ -141,8 +71,6 @@ public class UnitType
 	static constant real baseRadius = 50
 	static constant real baseHeight = 50
 	
-	static constant IdGenerator gen = new IdGenerator('&000')
-	
 	private UnitDefinition def
 	private boolean compiletime
 	int id
@@ -167,7 +95,7 @@ public class UnitType
 	intStat missleSpeed = intStat(0, StatType.RANGED)
 	intStat attackRange = intStat(0, StatType.REQUIRED)
 	realStat attackRangeBuffer = realStat(0, StatType.OPTIONAL)
-	weaptonSoundStat weaptonSound = weaptonSoundStat(WeaptonSound.Nothing, StatType.OPTIONAL)
+	weaponSoundStat weaponSound = weaponSoundStat(WeaponSound.Nothing, StatType.OPTIONAL)
 	intStat armor = intStat(0, StatType.REQUIRED)
 	armorSoundTypeStat armorType = armorSoundTypeStat(ArmorSoundType.Ethereal, StatType.OPTIONAL)
 	stringStat soundSet = stringStat("", StatType.OPTIONAL)
@@ -183,12 +111,12 @@ public class UnitType
 	
 	construct(boolean compiletime)
 		this.compiletime = compiletime
-		id = gen.next()
+		id = genId()
 		def = new UnitDefinition(id, basicId)
 		
-	construct(IdGenerator g, boolean compiletime)
+	construct(int id, boolean compiletime)
 		this.compiletime = compiletime
-		id = g.next()
+		this.id = id
 		def = new UnitDefinition(id, basicId)
 	
 	function getMovespeed() returns int
@@ -287,8 +215,8 @@ public class UnitType
 	function setAttackRangeBuffer(real data)
 		attackRangeBuffer = realStat(data, StatType.SET)
 		
-	function setWeaptonSound(WeaptonSound data)
-		weaptonSound = weaptonSoundStat(data, StatType.SET)
+	function setWeaptonSound(WeaponSound data)
+		weaponSound = weaponSoundStat(data, StatType.SET)
 		
 	function getArmor() returns int
 		return armor.content
@@ -405,15 +333,15 @@ public class UnitType
 				compileError("Missing information: attackrange?")
 			def.setAttack1DamageSidesperDie(diceSides)
 			def.setAttack1DamageNumberofDice(diceCount)
-			if weaptonSound.info == StatType.SET
-				def.setAttack1WeaponSound(weaptonSound.content.toString())
+			if weaponSound.info == StatType.SET
+				def.setAttack1WeaponSound(weaponSound.content)
 			if ranged.content
 				def.setAttack1WeaponType("missile")
 				def.setAttack1ProjectileHomingEnabled(true)
 			if armor.info == StatType.REQUIRED
 				compileError("Missing information: Basic armor?")
 			if armorType.info == StatType.SET
-				def.setArmorType(armorType.content.toString())
+				def.setArmorSoundType(armorType.content)
 			def.setAcquisitionRange(attackRange.content * 1.)
 			if soundSet.info == StatType.SET
 				def.setUnitSoundSet(soundSet.content)

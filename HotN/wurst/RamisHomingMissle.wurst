@@ -45,7 +45,7 @@ class Missle
 			canHitCaster = true
 		vec2 speedtemp = vec2(0,0).polarOffset(posmissle.angleTo(target.u.getPos()), speedAccel)
 		speed += speedtemp
-		missle.setPos(posmissle + speed)
+		missle.setXY(posmissle + speed)
 		boolean wasHit = false
 		ENUM_GROUP.enumUnitsInRange(posmissle + speed, missleRadius)
 		if canHitCaster and IsUnitInGroup(owner.u ,ENUM_GROUP)
