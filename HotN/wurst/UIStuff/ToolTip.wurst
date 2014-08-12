@@ -28,7 +28,7 @@ public class Tooltip extends Widget
 			EnablePreSelect(false, false)
 		doAfter(0.15, () -> begin
 			if GetLocalPlayer() == p
-				EnablePreSelect(true, true)
+				
 		end)
 		
 	override function enable(player p)

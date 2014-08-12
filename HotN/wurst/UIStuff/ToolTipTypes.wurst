@@ -6,6 +6,9 @@ import ObjectIdGenerator
 import PreloadSystem
 
 HashMap<int, int> tipMap = new HashMap<int, int>()
+
+@dinit function types()
+	addTipType("test", "Harry Potter ist eine populäre Fantasy-Romanreihe|nder englischen Schriftstellerin Joanne K. Rowling.|nErzählt wird die sieben-teilige Geschichte des|nTitelhelden Harry James Potter, eines Schülers|ndes britischen Zaubererinternats Hogwarts, und|nseiner Konfrontationen mit dem bösen Magier Lord|nVoldemort und dessen Gefolgsleuten, den|nsogenannten Todessern. Jeder der sieben Bände|nbeschreibt ein Schul- und Lebensjahr von Harry|nPotter, beginnend kurz vor seinem elften|nGeburtstag.")
 	
 	
 public function addTipType(string name, string content)

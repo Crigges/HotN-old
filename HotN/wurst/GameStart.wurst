@@ -92,7 +92,7 @@ package GameStart
 		trigger blub = CreateTrigger()
 		blub.addAction(function camTest)
 		
-		EnablePreSelect(false, false)
+		//EnablePreSelect(false, false)
 		
 
 		for player p in allPlayers
@@ -321,7 +321,7 @@ package GameStart
 					shopPleft = new Pane(element(0, -2), element(36, 16), Layer.L3, 4,false)		
 //					shopPmiddle = new Pane(element(20, 4), element(8, 12), Layer.L3, 4, false)	
 					shopPright = new Pane(element(36, 8), element(12, 16), Layer.L2, 4, false)
-					
+					doAfter(2, () -> new Tooltip(element(30, 5), "test").showDirect(Player(0)))
 //					shopPleftBot = new Pane(element(18, 18), element(4, 2), Layer.L3, false)
 //					shopPleftBot2 = new Pane(element(23, 18), element(12,2), Layer.L3, false)
 //					
