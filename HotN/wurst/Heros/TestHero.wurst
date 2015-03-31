@@ -1,0 +1,40 @@
+package TestHero
+
+import StandardImports
+import HeroTypes
+
+class TestHero
+	use HeroInit
+	
+	override static function settings(HeroType t)
+		t.setAttack(10)
+		t.setArmor(5)
+		t.setAttackBackSwingPoint(0.2)
+		t.setAttackDamagePoint(0.2)
+		t.setAttackRange(200)
+		t.setAttackRangeBuffer(100)
+		t.setBounty(100)
+		t.setCollisionSize(0)
+		t.setHeight(100)
+		t.setIsRanged(false)
+		t.setIcon("")
+		t.setModel("units\\human\\HeroPaladin\\HeroPaladin")
+		t.setScale(1.3)
+		t.setMass(1000)
+		t.setLife(1000)
+		t.setMana(100)
+		t.setName("testhero")
+		t.setRadius(100)
+		t.setRunspeed(200)
+		t.setSelectionRadius(1.2)
+		t.setShaddowPos(vec2(0,0))
+		t.setShaddowSize(vec2(200, 200))
+		t.setSoundSet("none")
+		t.setTier(1)
+		t.setCaptureAnimationIndex(7)
+		t.setCaptureAnimationSpeed(1)
+		t.setHashPeriodicAnimation(false)
+		t.setCaptureOffset(vec3(0, 200, 0))
+		t.setWeaptonSound(WeaponSound.MetalHeavyBash)
+		t.setArmorSoundType(ArmorSoundType.Flesh)
+		t.setHeroProperName("CriggesMasterOfDesaster")
