@@ -11,10 +11,13 @@ package ControlPoint
 	import TimedEffect
 	import Setup
 	import HashMap
+
+	import ObjEditingNatives
 	
 	constant real range = 900
 	constant real captureRange = 800
-	constant int model = 'cptd'
+	public constant int model = 'cptd'
+	public constant int modelMorphed = 'cpth'
 	constant int morphAbi = 'ctpm'
 	constant real height = 335
 	constant real baseDmg = 2
@@ -24,7 +27,7 @@ package ControlPoint
 	constant real unitDmgFactor = 0.01
 	constant real creepDmg = 0.75
 	constant real captureSpeedPoint = 0.0125
-	constant real captureSpeedHero = 0.009
+	constant real captureSpeed = 0.01
 	constant real baseSHeal = 2.0
 	constant real heroSHealFactor = 0.1
 	constant real unitSHealFactor = 0.025
@@ -38,16 +41,10 @@ package ControlPoint
 		lightning l2 = null
 		real blitzPos = 0
 		boolean wantCapture = false
-		boolean captures = false
 		Action<Units> onDeath = null
-		//ControlPoint currentTarget = null
+		Action<ControlPoint> captureCancel = null
 		Fx fx = null
-		Bonus armor = null
-		Bonus attack = null
-		Bonus life = null
-		Bonus mana = null
-		Bonus spellpower = null
-		Bonus resistance = null
+
 		
 		construct(Unit u)
 			owner = u
@@ -59,268 +56,175 @@ package ControlPoint
 				destroy onDeath
 			if fx != null
 				destroy fx
-			if armor != null
-				destroy armor
-				destroy attack
-				destroy life
-				destroy mana
-				destroy spellpower
-				destroy resistance
 		
-//	public class ControlPoint
-//		static HashMap<Unit, CaptureData> captureMap = new HashMap<Unit, CaptureData>()
-//		static constant Action<Unit> creationAction = Unit.onCreation((Unit u) -> captureMap.put(u, new CaptureData(u)))
-//		static constant Action<Unit> destructionAction = Unit.onDestroy((Unit u) -> destroy captureMap.get(u))
-//		vec3 pos
-//		unit clickDummy
-//		unit visualDummy
-//		group inRange = CreateGroup()
-//		int enemyHerosInGroup = 0
-//		int allyHerosInGroup = 0
-//		int enemysInGroup = 0
-//		int allysInGroup = 0
-//		player owner
-//		timer t1 = getTimer()
-//		timer t2 = getTimer()
-//		//==============//
-//		real hp = 1
-//		
-//		
-//		construct(vec2 pos, player owner)
-//			clickDummy = createUnit(owner, model, pos, angle(0))
-//			clickDummy.addAbility(morphAbi)
-//			clickDummy.setUserData(this castTo int)
-//			visualDummy = createUnit(owner, 'h003', pos, angle(0))
-//			this.pos = vec3(pos.x - 10, pos.y -25, height)
-//			this.owner = owner
-//			t1.setData(this castTo int)
-//			t1.startPeriodic(0.10, function callGroupCheck)
-//			t2.setData(this castTo int)
-//			t2.startPeriodic(0.03, function callInRangeActions)
-//			timer t3 = getTimer()
-//			t3.setData(this castTo int)
-//			t3.start(1, function hideDummy)
-//			
-//		static function hideDummy()
-//			GetExpiredTimer().getData() castTo thistype.clickDummy.setVertexColor(255, 255, 255, 0)
-//			
-//		private static function callGroupCheck()
-//			GetExpiredTimer().getData() castTo thistype.groupCheck()
-//			
-//		private function groupCheck()
-//			selfHeal()
-//			setColor()
-//			for unit gu in inRange
-//				Unit obj = gu.getUserData() castTo Unit
-//				if gu.getPos().distToVec(pos.toVec2()) > range
-//					if IsUnitAlly(gu, owner)
-//						if obj.isHero
-//							allyHerosInGroup--
-//						else
-//							allysInGroup--
-//					else
-//						if obj.isHero
-//							enemyHerosInGroup--
-//						else
-//							enemysInGroup--
-//					GroupRemoveUnit(inRange, gu)
-//							
-//			group tempGroup = CreateGroup()
-//			GroupEnumUnitsInRange(tempGroup, pos.x, pos.y, range, Condition(function notDead))
-//			for unit gu from tempGroup
-//				if not IsUnitInGroup(gu, inRange)
-//					//enter actions
-//					Unit obj = gu.getUserData() castTo Unit
-//					obj.ct = new CaptureData(this)
-//					Action<Units> a = obj.registerDeath((Units data) -> begin
-//						onDeath(data.target)
-//					end)
-//					obj.ct.onDeath = a
-//					GroupAddUnit(inRange, gu)
-//					if IsUnitAlly(gu, owner)
-//						addAllBons(obj)
-//						if obj.isHero
-//							allyHerosInGroup++
-//						else
-//							allysInGroup++
-//					else
-//						if obj.isHero
-//							enemyHerosInGroup++
-//							if obj castTo Hero.wantCapture
-//								startCapture(obj castTo Hero)
-//								
-//						else
-//							enemysInGroup++
-//						vec3 middle = obj.getMiddle()
-//						obj.ct.l1 = createLightning(FORKED_LIGHTNING, middle, pos)
-//						obj.ct.fx = new Fx(middle, 0..asAngleRadians(), "Abilities\\Spells\\Orc\\Bloodlust\\BloodlustTarget.mdl")
-//						obj.ct.fx.setScale(3.)
-//			DestroyGroup(tempGroup)
-//						
-//		private static function callInRangeActions()
-//			GetExpiredTimer().getData() castTo thistype.inRangeActions()
-//			
-//		private function inRangeActions()
-//			for unit gu in inRange
-//				Unit obj = gu.getUserData() castTo Unit
-//				CaptureData ct = obj.ct
-//				if IsUnitAlly(gu, owner)
-//					obj.healSystem(2.5)
-//				else
-//					if not ct.captures	
-//						if ct.blitzPos < 0
-//							vec3 middle = obj.getMiddle()
-//							ct.l1.setPos(vec3(pos.x, pos.y, height), middle)
-//							ct.fx.setPos(middle)
-//							obj.damageSystem(calcDamage(obj))
-//							if ct.l2 != null
-//								ct.l2.destr()
-//								ct.l2 = null
-//						else
-//							ct.blitzPos -= captureSpeedPoint
-//							vec3 pos1 = obj castTo Hero.getMiddle()
-//							vec3 mid = pos1*(1 - ct.blitzPos) + pos * ct.blitzPos
-//							ct.l1.setPos(pos, mid)
-//							ct.l2.setPos(pos1, mid)
-//							ct.fx.setPos(mid)
-//					else
-//						if ct.blitzPos < 1
-//							ct.blitzPos += captureSpeedHero
-//							vec3 pos1 = obj castTo Hero.getCaptureAttackPoint(pos)
-//							vec3 mid = pos1*(1 - ct.blitzPos) + pos * ct.blitzPos
-//							ct.l1.setPos(pos, mid)
-//							ct.l2.setPos(pos1, mid)
-//							ct.fx.setPos(mid)
-//						else
-//							damage(2, obj)
-//				
-//		function selfHeal()
-//			real heal = (baseSHeal + (heroSHealFactor * allyHerosInGroup) + (unitSHealFactor * allysInGroup))
-//			if hp + heal >= 1000
-//				hp = 1000
-//			else
-//				hp += heal
-//				
-//		function damage(real amount, Unit source)
-//			if hp - amount <= 0
-//				hp = 0
-//				if source.ct != null
-//					skip//source.ct.onDeath.fire()
-//				captured()
-//			else
-//				hp -= amount
-//				
-//		function captured()
-//			createTimedFx("war3mapImported\\BlizzardEruption.mdx", pos.toVec2(), 3).setScale(4)
-//			hp = 500
-//			for unit u from inRange
-//				Unit obj = u.getUserData() castTo Unit
-//				destroy obj.ct
-//				obj.ct = null
-//				SetUnitAnimationByIndex(u, 0)
-//				if IsUnitAlly(u, owner)
-//					if obj.isHero
-//						allyHerosInGroup--
-//					else
-//						allysInGroup--
-//				else
-//					if obj.isHero
-//						enemyHerosInGroup--
-//						obj castTo Hero.stopCaptureAnimation()
-//					else
-//						enemysInGroup--
-//			owner = Player(0)
-//				
-//		function setColor()
-//			real helpHP = hp
-//			if hp >= 500
-//				helpHP = 500
-//			if IsPlayerAlly(GetLocalPlayer(), owner)
-//				helpHP += 500
-//				real green = 30 + (helpHP / 1000) * 225
-//				real red = 255 - (helpHP / 1000) * 225
-//				visualDummy.setVertexColor(color(red.toInt(), green.toInt(), 30))
-//			else
-//				helpHP += 500
-//				real red = 30 + (helpHP / 1000) * 225
-//				real green = 255 - (helpHP / 1000) * 225
-//				visualDummy.setVertexColor(color(red.toInt(), green.toInt(), 30))
-//						
-//		function calcDamage(Unit u) returns real
-//			real damage = (baseDmg + (dmgPerLvl * u.level))
-//			if u.isHero
-//				damage += (GetUnitState(u.u, UNIT_STATE_MAX_LIFE) / 100) * percentualDmg
-//				damage += GetHeroLevel(u.u) * dmgPerLvl
-//			else
-//				damage *= creepDmg
-//			real damageModifer = ((allyHerosInGroup - enemyHerosInGroup) * heroDmgFactor) + ((allysInGroup - enemysInGroup) * unitDmgFactor)
-//			damage = damage * (1 + damageModifer)
-//			return damage
-//			
-//		private function addAllBons(Unit u)
-//			CaptureData ct = u.ct
-//			ct.armor = u.bonusArmorPer(10.)
-//			ct.attack = u.bonusAttackPer(10.)
-//			ct.life = u.bonusLifePer(10.)
-//			ct.mana = u.bonusManaPer(10.)
-//			ct.resistance = u.bonusResistancePer(10.)
-//			ct.spellpower = u.bonusSpellpowerPer(10.)
-//			
-//		private function onDeath(Unit triggerUnit)
-//			destroy triggerUnit.ct
-//			triggerUnit.ct = null
-//			if IsUnitAlly(triggerUnit.u, owner)
-//				if triggerUnit.isHero
-//					allyHerosInGroup--
-//				else
-//					allysInGroup--
-//			else
-//				if triggerUnit.isHero
-//					enemyHerosInGroup--
-//				else	
-//					enemysInGroup--
-//			GroupRemoveUnit(inRange, triggerUnit.u)
-//			
-//		function startCapture(Hero h)
-//			print("start")
-//			Hero.orderDetect.disable()
-//			IssueImmediateOrder(h.u, "stop")
-//			Hero.orderDetect.enable()
-//			h.ct.captures = true
-//			h.registerChannelCancel((Unit u) -> begin
-//				h.ct.captures = false
-//				h.stopCaptureAnimation()
-//			end)
-//			h.u.setFacing(h.u.getPos().angleTo(pos.toVec2()))
-//			h.playCaptureAnimation()
-//			vec3 hpos = h.getCaptureAttackPoint(pos)
-//			if h.ct.l2 == null
-//				h.ct.l2 = createLightning(FORKED_LIGHTNING, hpos, hpos)
-//				SetLightningColor(h.ct.l2, 1., 0.5, 0.1, 1)
-//			
-//
-//			
-//		function stopCapture(Hero h)
-//			h.ct.captures = false
-//			h.stopCaptureAnimation()
-//			
-//		function conquerOrderGet(Hero h)
-//			if not IsUnitAlly(h.u, owner)
-//				var obj = h.ct
-//				if obj != null and obj.target == this
-//					if not obj.captures
-//						startCapture(h)
-//					else
-//						Hero.orderDetect.disable()
-//						IssueImmediateOrder(h.u, "stop")
-//						Hero.orderDetect.enable()
-//				else
-//					Hero.orderDetect.disable()
-//					IssuePointOrder(h.u, "move", visualDummy.getX(), visualDummy.getY())
-//					Hero.orderDetect.enable()
-//					h.wantCapture = true
-				
+	public class ControlPoint
+		static HashMap<Unit, CaptureData> captureData = new HashMap<Unit, CaptureData>()
+		static constant creationAction = Unit.onCreation((Unit u) -> captureData.put(u, new CaptureData(u)))
+		static constant destructionAction = Unit.onDestroy((Unit u) -> destroy captureData.get(u))
+		static constant maxDistance = 900.
+		vec3 pos3
+		vec2 pos2
+		unit clickDummy
+		unit visualDummy
+		group inRange = CreateGroup()
+		Team owner
 		
 		
+		construct(vec2 pos, Team owner)
+			clickDummy = createUnit(Player(1), model, pos, angle(0))
+			clickDummy.addAbility(morphAbi)
+			clickDummy.setUserData(this castTo int)
+			clickDummy.setVertexColor(colorA(0, 0, 0, 0))
+			this.owner = owner
+			pos2 = pos
+			pos3 = pos.withZ(height)
+			getTimer()..setData(this castTo int).startPeriodic(0.1, () -> GetExpiredTimer().getData() castTo thistype.inRangeCheck())
+			getTimer()..setData(this castTo int).startPeriodic(0.03, () -> GetExpiredTimer().getData() castTo thistype.inRangeActions())
+			for int i = 1 to 360 step 2
+				new Fx(pos2.polarOffset(i.toReal().asAngleDegrees(), getRadius(i.toReal().asAngleDegrees())), 0..asAngleDegrees(), "Abilities\\Weapons\\BoatMissile\\BoatMissile.mdl")
 			
-endpackage
+		private function getRadius(angle ang) returns real
+			return maxDistance * Sin(60 * DEGTORAD) / (Sin((120 - (ang.degrees() + 30) % 60) * DEGTORAD))
+			
+		private function isInRange(unit u) returns boolean
+			return getRadius(pos2.angleTo(u.getPos())) >= u.getPos().distToVec(pos2)
+			
+		private function inRangeCheck()
+			for unit u in ENUM_GROUP..enumUnitsInRange(pos2, maxDistance)
+				if u.getUserData() != 0 and u != clickDummy and u.getAbilityLevel('dead') == 0 and not inRange.contains(u) and isInRange(u)
+					enter(u.getUserData() castTo Unit)
+					
+		private function enter(Unit u)
+			inRange.addUnit(u.u)
+			let data = captureData.get(u)
+			if u.team != owner
+				data.l1 = createLightning(FORKED_LIGHTNING, u.getMiddle(), pos3)
+				data.fx = new Fx(u.getMiddle(), 0..asAngleDegrees(), "Abilities\\Spells\\Orc\\Bloodlust\\BloodlustTarget.mdl")
+				data.fx.setScale(3)
+				data.fx.getDummy().setTimeScale(2)
+				if data.wantCapture
+					startCapture(u castTo Hero)
+			data.onDeath = u.registerDeath((Units u) -> leave(u.target))
+			
+		private function leave(Unit u)
+			inRange.removeUnit(u.u)
+			let data = captureData.get(u)
+			if u.team != owner
+				data.l1.destr()
+				data.l1 = null
+				destroy data.fx
+				data.fx = null
+				if data.l2 != null
+					data.l2.destr()
+					data.l2 = null
+					data.blitzPos = 0
+			destroy data.onDeath
+			data.onDeath = null
+			
+		private function inRangeActions()
+			for unit temp in inRange 
+				Unit u = temp.getUserData() castTo Unit
+				if temp.getPos().distToVec(pos2) < getRadius(temp.getPos().angleTo(pos2))
+					let data = captureData.get(u)
+					if owner == u.team
+						u.healSystem(1)
+					else
+						if data.l2 == null
+							data.l1.setPos(u.getMiddle(), pos3)
+							data.fx.setXY(temp.getPos())
+							u.damageSystem(1)
+						else
+							captures(u castTo Hero, data)
+				else
+					leave(u)
+					
+		function captures(Hero h, CaptureData data)
+			if data.wantCapture
+				vec3 pos = h.getCaptureAttackPoint(pos2)
+				if data.blitzPos < 1
+					data.blitzPos += captureSpeed
+					data.fx.setXYZ(getBlitzPos(pos, data.blitzPos))
+				data.l1.setPos(data.fx.getPos3d(), pos3)
+				data.l2.setPos(pos, data.fx.getPos3d())
+			else
+				vec3 pos = h.getMiddle()
+				if data.blitzPos > 0
+					data.blitzPos -= captureSpeed
+					data.fx.setXYZ(getBlitzPos(pos, data.blitzPos))
+					data.l1.setPos(data.fx.getPos3d(), pos3)
+					data.l2.setPos(pos, data.fx.getPos3d())
+				else
+					data.l2.destr()
+					data.l2 = null
+					data.fx.setXYZ(pos)
+					
+		function getBlitzPos(vec3 pos, real progress) returns vec3
+			vec3 dif = pos3 - pos
+			return pos + dif * progress
+			
+		function wantCapture(Hero h) returns boolean
+			var data = captureData.get(h)
+			if not data.wantCapture and h.team != owner
+				data.wantCapture = true
+				if inRange.contains(h.u)
+					startCapture(h)
+				data.captureCancel = h.registerCaptureCancel((ControlPoint cp) -> begin
+					if cp != this
+						data.wantCapture = false
+						if inRange.contains(h.u)
+							stopCapture(h)
+						destroy data.captureCancel
+				end)
+			return not inRange.contains(h.u)
+				
+		function startCapture(Hero h)
+			IssueImmediateOrder(h.u, "stop")
+			h.enableAutoAttack(false)
+			var data = captureData.get(h)
+			if data.l2 == null
+				data.l2 = createLightning(FINGER_OF_DEATH, h.getMiddle(), data.fx.getPos3d())
+			
+		function stopCapture(Hero h)
+			
+			
+			
+			
+			
+					
+					
+	@compiletime function create_w3a_ctpm()
+		let u = createObjectDefinition("w3a", 'ctpm', 'Sca6')
+		u.setLvlDataString("Cha1", 1, 0, "cpth")
+		u.setLvlDataString("areq", 0, 0, "")
+		
+	@compiletime function create_w3u_cpth()
+		let u = createObjectDefinition("w3u", 'cpth', 'hpea')
+		u.setInt("uhpm", 500000)
+		u.setString("unam", "Controlpoint Unit (Dummy)")
+		u.setInt("umvs", 0)
+		u.setString("ushu", "")
+		u.setString("umdl", "Abilities\\Weapons\\BoatMissile\\BoatMissile.mdl")
+		u.setUnreal("umvf", 150.0)
+		u.setUnreal("umvh", 150.0)
+		u.setString("uabi", "Avul")
+		u.setString("upgr", "")
+		u.setString("ubui", "")
+		u.setString("umvt", "hover")
+		u.setReal("usca", 3.0)
+		u.setInt("uaen", 0)
+		
+	@compiletime function create_w3u_cptd()
+		let u = createObjectDefinition("w3u", 'cptd', 'hpea')
+		u.setInt("uhpm", 500000)
+		u.setString("unam", "Controlpoint Unit (Dummy)")
+		u.setInt("umvs", 0)
+		u.setString("ushu", "")
+		u.setString("umdl", "Abilities\\Weapons\\BoatMissile\\BoatMissile.mdl")
+		u.setUnreal("umvf", 150.0)
+		u.setUnreal("umvh", 150.0)
+		u.setString("uabi", "Avul,Aloc")
+		u.setString("upgr", "")
+		u.setString("ubui", "")
+		u.setString("umvt", "hover")
+		u.setReal("usca", 3.0)
+		u.setInt("uaen", 0)

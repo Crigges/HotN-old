@@ -8,7 +8,8 @@ import ClassInit
 import LinkedList
 
 public class Pane extends Widget
-	static int tileSize = 2 //alt 2
+
+	static int tileSize = 2 
 	static element tileDimensions = element(tileSize, tileSize)
 	static string horizontalSide = "Seite1.blp" 
 	static string verticalSide = "Seite2.blp"
@@ -22,7 +23,7 @@ public class Pane extends Widget
 	static vec2 posFixRight = vec2(32 / (4 / tileSize), 0 / (4 / tileSize))
 	static vec2 posFixLeft = vec2(-32 / (4 / tileSize), 0)
 	
-	
+
 	PlayerAction onExit = null
 	ImageList list = new ImageList()
 	LinkedList<Widget> content = new LinkedList<Widget>()

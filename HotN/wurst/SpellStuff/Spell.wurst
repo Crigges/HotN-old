@@ -2,9 +2,13 @@ package Spell
 
 	import UnitClass
 	import HeroClass
-	import Setup
-	import ObjectId
-	import PreloadHandler
+
+	import StandardImports
+	import ObjectIdGenerator
+	import ChannelAbilityPreset
+	import OrderHandling
+	import StringList
+	import ArrayList
 
 	public constant int qSpellId 				= 852490 // ancestralspirit
 	public constant int wSpellId 				= 852491 // ancestralspirittarget
@@ -13,7 +17,279 @@ package Spell
 	public constant int dSpellId 				= 852576 // attributemodskill
 	public constant int fSpellId 				= 852215 // auraunholy
 	
-	public enum SpellType
+
+	public constant int qLearnId 				= 852216 // auravampirc
+	public constant int wLearnId 				= 852132 // autodispel
+	public constant int eLearnId 				= 852134 // autodispeloff
+	public constant int rLearnId 				= 852133 // autodispelon
+	public constant int dLearnId 				= 852505 // autoentaangle
+	public constant int fLearnId 				= 852506 // autoentaangleinstant
+	
+	constant string spellColor = ""
+	constant string hotkeyColor = ""
+	constant string notLearnedColor = ""
+	constant string notLearnedMessage = "NOT LEARNED YET"
+	constant string effectColor = ""
+	int array spellCost
+	
+	init
+		spellCost[1] = 3
+		spellCost[2] = 1
+		spellCost[3] = 2
+		spellCost[4] = 2
+		spellCost[5] = 2
+		spellCost[6] = 3
+		spellCost[7] = 3
+		spellCost[8] = 3
+		spellCost[9] = 4
+		spellCost[10] = 5
+		
+	
+	function replaceToken(string s, ArrayList<StatTable> list, int lvl) returns string
+		int i = 1
+		string builder = s
+		for StatTable st in list
+			builder = builder.replace("%" + i.toString(), st.getStat(lvl))
+			i++
+		return builder
+		
+	function replaceToken(string s, string t1) returns string
+		string builder = s
+		builder = builder.replace("%1", t1)
+		return builder
+	
+	public abstract class StatTable
+		string name
+	
+		abstract function getStat(int lvl) returns string
+		
+		abstract function getStatChange(int newlvl) returns string
+		
+	public class IntStatTable extends StatTable
+		int array[11] stat
+		
+		construct(int i1, int i2, int i3, int i4, int i5, int i6, int i7, int i8, int i9, int i10, string name)
+			this.name = name
+			stat[0] = 0
+			stat[1] = i1
+			stat[2] = i2
+			stat[3] = i3
+			stat[4] = i4
+			stat[5] = i5
+			stat[6] = i6
+			stat[7] = i7
+			stat[8] = i8
+			stat[9] = i9
+			stat[10] = i10
+			
+		override function getStat(int lvl) returns string
+			return stat[lvl].toString() 
+			
+		override function getStatChange(int lvl) returns string
+			if stat[lvl] == 0
+				return null
+			else
+				return stat[lvl - 1].toString() + "\t>>>\t" + stat[lvl].toString()
+			
+	public class RealStatTable extends StatTable
+		real array[11] stat
+		
+		construct(real r1, real r2, real r3, real r4, real r5,
+			real r6, real r7, real r8, real r9, real r10, string name)
+			this.name = name
+			stat[0] = 0
+			stat[1] = r1
+			stat[2] = r2
+			stat[3] = r3
+			stat[4] = r4
+			stat[5] = r5
+			stat[6] = r6
+			stat[7] = r7
+			stat[8] = r8
+			stat[9] = r9
+			stat[10] = r10
+
+		
+		override function getStat(int lvl) returns string
+			return stat[lvl].toString() 
+			
+		override function getStatChange(int lvl) returns string
+			if stat[lvl] == 0
+				return null
+			else
+				return name + "\t\t" + stat[lvl - 1].toString() + "\t>>>\t" + stat[lvl].toString()
+			
+				
+	function ArrayList<StatTable>.getStatChange(int lvl) returns string
+		string builder = ""
+		for StatTable st in this
+			builder += st.getStatChange(lvl)
+		return builder
+				
+	/*
+		function setToolTip("fires a missle that deals %1 + 30% spellpower damage")
+		new IntStatTable()
+		basic lvl
+		lvl multiplikator
+		lvl faktor
+		start offset
+		end lvl		
+	*/
+		
+		
+	@dinit function test()
+		var def = new BasicSpellDef()
+	
+	public class BasicSpellDef
+		ChannelAbilityPreset spell
+		ChannelAbilityPreset learn
+		int spellOptions = 9
+		SpellKey sk
+		string tooltip = null
+		string firstEffectTooltip = null
+		string secondEffectTooltip = null
+		string thirdEffectTooltip = null
+		string finalEffectTooltip = null
+		ArrayList<StatTable> statTables = new ArrayList<StatTable>()
+		
+		construct()
+			spell = new ChannelAbilityPreset(genId(), 11)
+			spell.removeChannelProperties(true, true)
+			spell.setHeroAbility(false)
+			learn = new ChannelAbilityPreset(genId(), 10)
+			learn.removeChannelProperties(true, true)
+			learn.setHeroAbility(false)
+			
+		function addStatTable(StatTable t)
+			statTables.add(t)
+			
+		function addColldownTable(RealStatTable t)
+			statTables.add(t)
+			for int i = 1 to 10
+				spell.setCooldown(i, t.stat[i])
+			
+		function addManaCostTable(IntStatTable t)
+			statTables.add(t)
+			for int i = 1 to 10
+				spell.setManaCost(i, t.stat[i])
+			
+		function addTargetRangeTable(RealStatTable t)
+			for int i = 1 to 10
+				spell.setOptions(i, spellOptions + 2)
+			
+		function setName(string name)
+			spell.setName(name)
+			learn.setName(name + "learner")
+			
+		function setBasicTooltip(string name)
+			tooltip = name
+			
+		function setTargetType(Targettype t)
+			spell.presetTargetTypes(t)
+			
+		function setFirstEffectTooltip(string name)
+			firstEffectTooltip = name
+			
+		function setSecondEffectTooltip(string name)
+			secondEffectTooltip = name
+			
+		function setThirdEffectTooltip(string name)
+			thirdEffectTooltip = name
+			
+		function setFinalEffectTooltip(string name)
+			finalEffectTooltip = name
+			if tooltip == null
+				error("Basic tooltip missing")
+			if firstEffectTooltip == null
+				error("First effect tooltip missing")
+			if secondEffectTooltip == null
+				error("Second effect tooltip missing")
+			if thirdEffectTooltip == null
+				error("Third effect tooltip missing")
+			if finalEffectTooltip == null
+				error("Final effect tooltip missing")
+			spell.setTooltipNormal(1, spellColor + name + "|r  " + notLearnedColor + notLearnedMessage + "|r " + hotkeyColor + "[" + sk.toIdString() + "]|r")
+			spell.setTooltipNormalExtended(1, "NOT LEARNED")
+			for int i = 2 to 11
+				spell.setTooltipNormal(i, spellColor + name + "|r Level " + i.toString() + " " + hotkeyColor + "[" + sk.toIdString() + "]|r")
+			for int i = 2 to 3
+				spell.setTooltipNormalExtended(i, replaceToken(tooltip, statTables, i - 1))
+			for int i = 4 to 6
+				spell.setTooltipNormalExtended(i, replaceToken(tooltip, statTables, i - 1) + "|n|n" + 
+					effectColor + replaceToken(firstEffectTooltip, statTables, i - 1) + "|r")
+			for int i = 7 to 9
+				spell.setTooltipNormalExtended(i, replaceToken(tooltip, statTables, i - 1) + "|n|n" + 
+					effectColor + replaceToken(firstEffectTooltip, statTables, i - 1) + "|r|n|n" +
+					effectColor + replaceToken(secondEffectTooltip, statTables, i - 1) + "|r")
+			spell.setTooltipNormalExtended(10, replaceToken(tooltip, statTables, 9) + "|n|n" + 
+				effectColor + replaceToken(firstEffectTooltip, statTables, 9) + "|r|n|n" +
+				effectColor + replaceToken(secondEffectTooltip, statTables, 9) + "|r|n|n" +
+				effectColor + replaceToken(thirdEffectTooltip, statTables, 9) + "|r")
+			spell.setTooltipNormalExtended(11, replaceToken(tooltip, statTables, 10) + "|n|n" + 
+				effectColor + replaceToken(firstEffectTooltip, statTables, 10) + "|r|n|n" +
+				effectColor + replaceToken(secondEffectTooltip, statTables, 10) + "|r|n|n" +
+				effectColor + replaceToken(thirdEffectTooltip, statTables, 10) + "|r")
+			for int i = 1 to 11
+				learn.setTooltipNormal(i, "Learn " + spellColor + name + "|r Level " + i.toString() + " " + 
+					hotkeyColor + "[" + sk.toIdString() + "] SpellPointCost: " + spellCost[i].toString())
+			string builder = ""
+			for int i = 1 to 10
+				if i == 1
+					builder += replaceToken(tooltip, statTables, i)
+				if i == 3
+					builder += replaceToken(firstEffectTooltip, statTables, i)
+				if i == 6
+					builder += replaceToken(secondEffectTooltip, statTables, i)
+				if i == 9
+					builder += replaceToken(thirdEffectTooltip, statTables, i)
+				if i == 10
+					builder += replaceToken(finalEffectTooltip, statTables, i)
+				learn.setTooltipNormalExtended(i, builder + "|n" + statTables.getStatChange(i))
+			
+			
+		function setKey(SpellKey sk)
+			this.sk = sk
+			switch sk
+				case SpellKey.Q
+					spell.presetBaseOrderID((int lvl) -> qSpellId.toString())
+					spell.presetButtonPosResearch(0, 0)
+					learn.presetBaseOrderID((int lvl) -> qLearnId.toString())
+				case SpellKey.W
+					spell.presetBaseOrderID((int lvl) -> wSpellId.toString())
+					spell.presetButtonPosResearch(1, 0)
+					learn.presetBaseOrderID((int lvl) -> wLearnId.toString())
+				case SpellKey.E
+					spell.presetBaseOrderID((int lvl) -> eSpellId.toString())
+					spell.presetButtonPosResearch(2, 0)
+					learn.presetBaseOrderID((int lvl) -> eLearnId.toString())
+				case SpellKey.R
+					spell.presetBaseOrderID((int lvl) -> rSpellId.toString())
+					spell.presetButtonPosResearch(3, 0)
+					learn.presetBaseOrderID((int lvl) -> rLearnId.toString())
+				case SpellKey.D
+					spell.presetBaseOrderID((int lvl) -> dSpellId.toString())
+					spell.presetButtonPosResearch(2, 1)
+					learn.presetBaseOrderID((int lvl) -> dLearnId.toString())
+				case SpellKey.F
+					spell.presetBaseOrderID((int lvl) -> fSpellId.toString())
+					spell.presetButtonPosResearch(3, 1)
+					learn.presetBaseOrderID((int lvl) -> fLearnId.toString())
+				default
+					error("unknown spellkey")
+			spell.setHotkeyNormal(sk.toIdString())
+			learn.setHotkeyNormal(sk.toIdString())
+			
+		function setIcon(string path)
+			spell.setIconNormal(path)
+		
+		
+		
+		
+			
+				
+				
+	
+	public enum SpellKey
 		Q
 		W
 		E
@@ -21,271 +297,264 @@ package Spell
 		D
 		F
 		
-	public function SpellType.toId() returns int
+	public function SpellKey.toId() returns int
 		switch this
-			case SpellType.Q
+			case SpellKey.Q
 				return 'Q'
-			case SpellType.W
+			case SpellKey.W
 				return 'W'
-			case SpellType.E
+			case SpellKey.E
 				return 'E'
-			case SpellType.R
+			case SpellKey.R
 				return 'R'
-			case SpellType.D
+			case SpellKey.D
 				return 'D'
-			case SpellType.F
+			case SpellKey.F
 				return 'F'
 			default
 				return -1
 				
-	public function SpellType.toOrderId() returns int
+	public function SpellKey.toIdString() returns string
 		switch this
-			case SpellType.Q
+			case SpellKey.Q
+				return "Q"
+			case SpellKey.W
+				return "W"
+			case SpellKey.E
+				return "E"
+			case SpellKey.R
+				return "R"
+			case SpellKey.D
+				return "D"
+			case SpellKey.F
+				return "F"
+			default
+				return "SpellKey Missing!"
+				
+	public function SpellKey.toOrderId() returns int
+		switch this
+			case SpellKey.Q
 				return qSpellId
-			case SpellType.W
+			case SpellKey.W
 				return wSpellId
-			case SpellType.E
+			case SpellKey.E
 				return eSpellId
-			case SpellType.R
+			case SpellKey.R
 				return rSpellId
-			case SpellType.D
+			case SpellKey.D
 				return dSpellId
-			case SpellType.F
+			case SpellKey.F
 				return fSpellId
 			default
 				return -1
 		
-	public enum TargetType
-		NOTHING
-		UNIT
-		POINT
-		UNIT_POINT
-		
-	public function	TargetType.toId() returns int
-		switch this
-			case TargetType.NOTHING
-				return '0'
-			case TargetType.UNIT
-				return '1'
-			case TargetType.POINT
-				return '2'
-			case TargetType.UNIT_POINT
-				return '3'
-			default
-				return -1
-			
-	
-	public class SpellSetup
-		SpellType sp
-		int spell
-		int spellbook
-		int maxLvl
-		ObjId castDummy = new ObjId()
-		Table pointCost = new Table()
-		
-		construct()
-			castDummy.setId2('S')
-			castDummy.setId3('P')
-		
-		function setTargetType(TargetType tt)
-			castDummy.setId4(tt.toId())
-			
-		function setSpellType(SpellType sp)
-			this.sp = sp
-			castDummy.setId1(sp.toId())
-			
-		function setMaxLvl(int lvl)
-			maxLvl = lvl
-			
-		function setNeededSkillpoints(int lvl, int points)
-			pointCost.saveInt(lvl, points)
-		
-		function setSpell(int abiCode)
-			spell = abiCode
-			
-		function setDummySpellBook(int abiCode)
-			spellbook = abiCode
-	
-	public constant int cleanSpellbook = 'ZAma'
-	
-	public class Spellcast
-		unit target
-		vec2 pos
-		Spell spell
-		
-		function forceC()
-			spell.forceCast(this)
-		
-	public abstract class Spell
-		int spell
-		int spellbook
-		int castDummy
-		int maxLvl
-		int lvl = 1
-		Table pointCost
-		SpellType st 
-		Hero owner
-		
-		construct(Hero owner, SpellType st)
-			this.owner = owner
-			this.st = st
-			switch st
-				case SpellType.Q
-					owner.spellQ = this
-				case SpellType.W
-					owner.spellW = this
-				case SpellType.E
-					owner.spellE = this
-				case SpellType.R
-					owner.spellR = this
-				case SpellType.D
-					owner.spellD = this
-				case SpellType.F
-					owner.spellF = this
-		
-		abstract function callOnCast(Hero caster, vec2 targetPos, Unit target)
-		
-		function incLvl() returns boolean
-			if lvl != maxLvl
-				SetUnitAbilityLevel(owner.u, spell, GetUnitAbilityLevel(owner.u, spell) + 1)
-				return true
-			else 
-				return false
-				
-		protected function readSetup(SpellSetup ss)
-			spell = ss.spell
-			spellbook = ss.spellbook
-			castDummy = ss.castDummy.getId()
-			maxLvl = ss.maxLvl
-			Hero.abiIdToSpell.put(spell, this)
-			owner.u.addAbility(spellbook)
-			//owner.u.addAbility(castDummy)
-			owner.u.addAbility(spell)
-			SetPlayerAbilityAvailable(owner.owner, spellbook, false)
-			
-			
-		protected static function timedDisableCastDummy()
-			timer t = GetExpiredTimer()
-			Spell s = t.getData() castTo Spell
-			SetPlayerAbilityAvailable(s.owner.owner, s.castDummy, false)
-			t.release()
-			t = null
-			
-		protected function enableCastDummy()
-			SetPlayerAbilityAvailable(owner.owner, castDummy, true)
-			
-		protected function disableCastDummyTimed()
-			getTimer()..setData(this castTo int).start(0.0, function timedDisableCastDummy)
-			
-		function getInstantSpellCast() returns Spellcast
-			Spellcast sc = new Spellcast()
-			sc.spell = this
-			return sc
-			
-		function getPointSpellCast(vec2 pos) returns Spellcast
-			Spellcast sc = new Spellcast()
-			sc.spell = this
-			sc.pos = pos
-			return sc
-			
-		function getUnitSpellCast(unit target) returns Spellcast
-			Spellcast sc = new Spellcast()
-			sc.spell = this
-			sc.target = target
-			return sc
-			
-		abstract function forceCast(Spellcast sc)
-			
-		function hide()
-			SetPlayerAbilityAvailable(owner.owner, spell, false)
-			
-		function show()
-			SetPlayerAbilityAvailable(owner.owner, spell, true)
-			
-		function resetCooldown()
-			UnitRemoveAbility(owner.u, spellbook)
-			UnitAddAbility(owner.u, spellbook)
-			
-	public abstract class InstantSpell extends Spell
-	
-		construct(Hero owner, SpellSetup ss, SpellType st)
-			super(owner, st)
-			ss.setTargetType(TargetType.NOTHING)
-			ss.setSpellType(st)
-			readSetup(ss)
-		
-		override function callOnCast(Hero caster, vec2 targetPos, Unit target)
-			onCast(caster)
-			
-		override function forceCast(Spellcast sc)
-			enableCastDummy()
-			IssueImmediateOrderById(owner.u, st.toOrderId())
-			disableCastDummyTimed()
-			
-		abstract function onCast(Hero caster)
-		
-		
-	public abstract class PointSpell extends Spell
-		
-		construct(Hero owner, SpellSetup ss, SpellType st)
-			super(owner, st)
-			ss.setTargetType(TargetType.POINT)
-			ss.setSpellType(st)
-			readSetup(ss)
-			
-		override function callOnCast(Hero caster, vec2 targetPos, Unit target)
-			onCast(caster, targetPos)
-			
-		override function forceCast(Spellcast sc)
-			//enableCastDummy()
-			IssuePointOrderById(owner.u, st.toOrderId(), sc.pos.x, sc.pos.y)
-			//disableCastDummyTimed()
-			
-		abstract function onCast(Hero caster, vec2 targetPos)
-		
-	public abstract class UnitSpell extends Spell
-		
-		construct(Hero owner, SpellSetup ss, SpellType st)
-			super(owner, st)
-			ss.setTargetType(TargetType.UNIT)
-			ss.setSpellType(st)
-			readSetup(ss)
-		
-		override function callOnCast(Hero caster, vec2 targetPos, Unit target)
-			onCast(caster, target)
-			
-		override function forceCast(Spellcast sc)
-			enableCastDummy()
-			IssueTargetOrderById(owner.u, st.toOrderId(), sc.target)
-			disableCastDummyTimed()
-			
-		abstract function onCast(Hero caster, Unit target)
-		
-	public abstract class PointOrUnitSpell extends Spell
-		
-		construct(Hero owner, SpellSetup ss, SpellType st)
-			super(owner, st)
-			ss.setTargetType(TargetType.UNIT_POINT)
-			ss.setSpellType(st)
-			readSetup(ss)
-		
-		override function callOnCast(Hero caster, vec2 targetPos, Unit target)
-			if target == null
-				onPointCast(caster, targetPos)
-			else
-				onUnitCast(caster, target)
-			
-		override function forceCast(Spellcast sc)
-			enableCastDummy()
-			if sc.target == null
-				IssuePointOrderById(owner.u, st.toOrderId(), sc.pos.x, sc.pos.y)
-			else
-				IssueTargetOrderById(owner.u, st.toOrderId(), sc.target)
-			disableCastDummyTimed()
-		
-		abstract function onPointCast(Hero caster, vec2 targetPos)
-		
-		abstract function onUnitCast(Hero caster, Unit target)
-			
+//	public enum TargetType
+//		NOTHING
+//		UNIT
+//		POINT
+//		UNIT_POINT
+//		
+//	public function	TargetType.toId() returns int
+//		switch this
+//			case TargetType.NOTHING
+//				return '0'
+//			case TargetType.UNIT
+//				return '1'
+//			case TargetType.POINT
+//				return '2'
+//			case TargetType.UNIT_POINT
+//	 			return '3'
+//			default
+//				return -1
+//			
+//	
+//	public class SpellType
+//		SpellKey hkey
+//		TargetType targetType
+//		
+//		
+//		construct(SpellKey hkey, TargetType tt)
+//			this.hkey = hkey
+//			targetType = tt
+//			//10 lvlsnotlvled
+//			//not lvled
+//			//10 skillbook lvls
+//	
+//	public constant int cleanSpellbook = 'ZAma'
+//		
+//	public abstract class Spell
+//		int spell
+//		int spellbook
+//		int castDummy
+//		int maxLvl
+//		int lvl = 1
+//		Table pointCost
+//		SpellType st 
+//		Hero owner
+//		
+//		construct(Hero owner, SpellKey st)
+//			this.owner = owner
+//			switch st
+//				case SpellKey.Q
+//					owner.spellQ = this
+//				case SpellKey.W
+//					owner.spellW = this
+//				case SpellKey.E
+//					owner.spellE = this
+//				case SpellKey.R
+//					owner.spellR = this
+//				case SpellKey.D
+//					owner.spellD = this
+//				case SpellKey.F
+//					owner.spellF = this
+//		
+//		abstract function callOnCast(order o)
+//		
+//		function castReservation(real time)
+//			owner.castReservation(time, this)
+//		
+//		function incLvl() returns boolean
+//			if lvl != maxLvl
+//				SetUnitAbilityLevel(owner.u, spell, GetUnitAbilityLevel(owner.u, spell) + 1)
+//				return true
+//			else 
+//				return false
+//				
+//		protected function readSetup(SpellSetup ss)
+//			spell = ss.spell
+//			spellbook = ss.spellbook
+//			castDummy = ss.castDummy.getId()
+//			maxLvl = ss.maxLvl
+//			Hero.abiIdToSpell.put(spell, this)
+//			owner.addAbility(spellbook)
+//			//owner.u.addAbility(castDummy)
+//			owner.addAbility(spell)
+//			SetPlayerAbilityAvailable(owner.owner, spellbook, false)
+//			
+//			
+//		protected static function timedDisableCastDummy()
+//			timer t = GetExpiredTimer()
+//			Spell s = t.getData() castTo Spell
+//			SetPlayerAbilityAvailable(s.owner.owner, s.castDummy, false)
+//			t.release()
+//			t = null
+//			
+//		protected function enableCastDummy()
+//			SetPlayerAbilityAvailable(owner.owner, castDummy, true)
+//			
+//		protected function disableCastDummyTimed()
+//			getTimer()..setData(this castTo int).start(0.0, function timedDisableCastDummy)
+//			
+//		function getInstantSpellCast() returns Spellcast
+//			Spellcast sc = new Spellcast()
+//			sc.spell = this
+//			return sc
+//			
+//		function getPointSpellCast(vec2 pos) returns Spellcast
+//			Spellcast sc = new Spellcast()
+//			sc.spell = this
+//			sc.pos = pos
+//			return sc
+//			
+//		function getUnitSpellCast(unit target) returns Spellcast
+//			Spellcast sc = new Spellcast()
+//			sc.spell = this
+//			sc.target = target
+//			return sc
+//			
+//		abstract function forceCast(Spellcast sc)
+//			
+//		function hide()
+//			SetPlayerAbilityAvailable(owner.owner, spell, false)
+//			
+//		function show()
+//			SetPlayerAbilityAvailable(owner.owner, spell, true)
+//			
+//		function resetCooldown()
+//			UnitRemoveAbility(owner.u, spellbook)
+//			UnitAddAbility(owner.u, spellbook)
+//			
+//	public abstract class InstantSpell extends Spell
+//	
+//		construct(Hero owner, SpellSetup ss, SpellType st)
+//			super(owner, st)
+//			ss.setTargetType(TargetType.NOTHING)
+//			ss.setSpellType(st)
+//			readSetup(ss)
+//		
+//		override function callOnCast(Hero caster, vec2 targetPos, Unit target)
+//			onCast(caster)
+//			
+//		override function forceCast(Spellcast sc)
+//			enableCastDummy()
+//			IssueImmediateOrderById(owner.u, st.toOrderId())
+//			disableCastDummyTimed()
+//			
+//		abstract function onCast(Hero caster)
+//		
+//		
+//	public abstract class PointSpell extends Spell
+//		
+//		construct(Hero owner, SpellSetup ss, SpellType st)
+//			super(owner, st)
+//			ss.setTargetType(TargetType.POINT)
+//			ss.setSpellType(st)
+//			readSetup(ss)
+//			
+//		override function callOnCast(Hero caster, vec2 targetPos, Unit target)
+//			onCast(caster, targetPos)
+//			
+//		override function forceCast(Spellcast sc)
+//			//enableCastDummy()
+//			IssuePointOrderById(owner.u, st.toOrderId(), sc.pos.x, sc.pos.y)
+//			//disableCastDummyTimed()
+//			
+//		abstract function onCast(Hero caster, vec2 targetPos)
+//		
+//	public abstract class UnitSpell extends Spell
+//		
+//		construct(Hero owner, SpellSetup ss, SpellType st)
+//			super(owner, st)
+//			ss.setTargetType(TargetType.UNIT)
+//			ss.setSpellType(st)
+//			readSetup(ss)
+//		
+//		override function callOnCast(Hero caster, vec2 targetPos, Unit target)
+//			onCast(caster, target)
+//			
+//		override function forceCast(Spellcast sc)
+//			enableCastDummy()
+//			IssueTargetOrderById(owner.u, st.toOrderId(), sc.target)
+//			disableCastDummyTimed()
+//			
+//		abstract function onCast(Hero caster, Unit target)
+//		
+//	public abstract class PointOrUnitSpell extends Spell
+//		
+//		construct(Hero owner, SpellSetup ss, SpellType st)
+//			super(owner, st)
+//			ss.setTargetType(TargetType.UNIT_POINT)
+//			ss.setSpellType(st)
+//			readSetup(ss)
+//		
+//		override function callOnCast(Hero caster, vec2 targetPos, Unit target)
+//			if target == null
+//				onPointCast(caster, targetPos)
+//			else
+//				onUnitCast(caster, target)
+//			
+//		override function forceCast(Spellcast sc)
+//			enableCastDummy()
+//			if sc.target == null
+//				IssuePointOrderById(owner.u, st.toOrderId(), sc.pos.x, sc.pos.y)
+//			else
+//				IssueTargetOrderById(owner.u, st.toOrderId(), sc.target)
+//			disableCastDummyTimed()
+//		
+//		abstract function onPointCast(Hero caster, vec2 targetPos)
+//		
+//		abstract function onUnitCast(Hero caster, Unit target)
+//			
+
 		
 endpackage

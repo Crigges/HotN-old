@@ -7,6 +7,7 @@ import ObjEditingNatives
 	let u = createObjectDefinition("w3b", 'B000', 'DTg8')
 
 
+<<<<<<< HEAD
 @compiletime function create_w3b_%001()
 	let u = createObjectDefinition("w3b", '%001', 'YTlb')
 	u.setInt("wurs", 42)
@@ -48,6 +49,8 @@ import ObjEditingNatives
 	u.setInt("bvcb", 76)
 
 
+=======
+>>>>>>> 87aa8264aa7f378d5abe48407ff0bc5fccf29539
 @compiletime function create_w3b_%003()
 	let u = createObjectDefinition("w3b", '%003', 'YTlb')
 	u.setInt("wurs", 42)
@@ -58,13 +61,21 @@ import ObjEditingNatives
 	u.setUnreal("boch", 0.0)
 	u.setUnreal("bsel", 0.0)
 	u.setString("bfil", "war3mapImported\\ButtonC.mdl")
+<<<<<<< HEAD
 	u.setString("bnam", "3M1")
+=======
+	u.setString("bnam", "RingDesCrigges")
+>>>>>>> 87aa8264aa7f378d5abe48407ff0bc5fccf29539
 	u.setString("barm", "Ethereal")
 	u.setString("btar", "")
 	u.setInt("bcpr", 0)
 	u.setString("bptx", "")
 	u.setInt("btxi", 31)
+<<<<<<< HEAD
 	u.setString("btxf", "ReplaceableTextures\\CommandButtons\\BTN3M1.blp")
+=======
+	u.setString("btxf", "ReplaceableTextures\\CommandButtons\\BTNSlow.blp")
+>>>>>>> 87aa8264aa7f378d5abe48407ff0bc5fccf29539
 
 
 @compiletime function create_w3b_%004()
@@ -77,13 +88,21 @@ import ObjEditingNatives
 	u.setUnreal("boch", 0.0)
 	u.setUnreal("bsel", 0.0)
 	u.setString("bfil", "war3mapImported\\ButtonC.mdl")
+<<<<<<< HEAD
 	u.setString("bnam", "3M1")
+=======
+	u.setString("bnam", "RingDesCrigges")
+>>>>>>> 87aa8264aa7f378d5abe48407ff0bc5fccf29539
 	u.setString("barm", "Ethereal")
 	u.setString("btar", "")
 	u.setInt("bcpr", 0)
 	u.setString("bptx", "")
 	u.setInt("btxi", 31)
+<<<<<<< HEAD
 	u.setString("btxf", "ReplaceableTextures\\CommandButtons\\BTN3M1.blp")
+=======
+	u.setString("btxf", "ReplaceableTextures\\CommandButtons\\BTNSlow.blp")
+>>>>>>> 87aa8264aa7f378d5abe48407ff0bc5fccf29539
 	u.setInt("bvcr", 76)
 	u.setInt("bvcg", 76)
 	u.setInt("bvcb", 76)
@@ -99,13 +118,21 @@ import ObjEditingNatives
 	u.setUnreal("boch", 0.0)
 	u.setUnreal("bsel", 0.0)
 	u.setString("bfil", "war3mapImported\\ButtonC.mdl")
+<<<<<<< HEAD
 	u.setString("bnam", "Bash")
+=======
+	u.setString("bnam", "3M1")
+>>>>>>> 87aa8264aa7f378d5abe48407ff0bc5fccf29539
 	u.setString("barm", "Ethereal")
 	u.setString("btar", "")
 	u.setInt("bcpr", 0)
 	u.setString("bptx", "")
 	u.setInt("btxi", 31)
+<<<<<<< HEAD
 	u.setString("btxf", "ReplaceableTextures\\CommandButtons\\BTNBash.blp")
+=======
+	u.setString("btxf", "ReplaceableTextures\\CommandButtons\\BTN3M1.blp")
+>>>>>>> 87aa8264aa7f378d5abe48407ff0bc5fccf29539
 
 
 @compiletime function create_w3b_%006()
@@ -118,13 +145,21 @@ import ObjEditingNatives
 	u.setUnreal("boch", 0.0)
 	u.setUnreal("bsel", 0.0)
 	u.setString("bfil", "war3mapImported\\ButtonC.mdl")
+<<<<<<< HEAD
 	u.setString("bnam", "Bash")
+=======
+	u.setString("bnam", "3M1")
+>>>>>>> 87aa8264aa7f378d5abe48407ff0bc5fccf29539
 	u.setString("barm", "Ethereal")
 	u.setString("btar", "")
 	u.setInt("bcpr", 0)
 	u.setString("bptx", "")
 	u.setInt("btxi", 31)
+<<<<<<< HEAD
 	u.setString("btxf", "ReplaceableTextures\\CommandButtons\\BTNBash.blp")
+=======
+	u.setString("btxf", "ReplaceableTextures\\CommandButtons\\BTN3M1.blp")
+>>>>>>> 87aa8264aa7f378d5abe48407ff0bc5fccf29539
 	u.setInt("bvcr", 76)
 	u.setInt("bvcg", 76)
 	u.setInt("bvcb", 76)
@@ -133,6 +168,7 @@ import ObjEditingNatives
 @compiletime function create_w3b_%007()
 	let u = createObjectDefinition("w3b", '%007', 'YTlb')
 	u.setInt("wurs", 42)
+<<<<<<< HEAD
 	u.setReal("bgsc", 0.0)
 	u.setString("bshd", "")
 	u.setInt("bcpd", 0)
@@ -461,6 +497,8 @@ import ObjEditingNatives
 @compiletime function create_w3b_%00G()
 	let u = createObjectDefinition("w3b", '%00G', 'YTlb')
 	u.setInt("wurs", 42)
+=======
+>>>>>>> 87aa8264aa7f378d5abe48407ff0bc5fccf29539
 	u.setReal("bgsc", 0.01)
 	u.setString("bshd", "")
 	u.setInt("bcpd", 0)
@@ -468,7 +506,11 @@ import ObjEditingNatives
 	u.setUnreal("boch", 0.0)
 	u.setUnreal("bsel", 0.0)
 	u.setString("bfil", "war3mapImported\\ButtonC2.mdl")
+<<<<<<< HEAD
 	u.setString("bnam", "|cffb9d1eaHarry Potter is a series of seven epic fantasy|nnovels written by the British author J. K.|nRowling.|n|n|cff98fb98+60 Movement Speed|n+50 Traction|n+2% Critical Hit Chance|n|n|cfff0e68cActive Ability:|nThe series was originally printed in English by|ntwo major publishers, Bloomsbury in the United|nKingdom and Scholastic Press in the United States.|nThe books have since been published by many|npublishers worldwide. The books, with the seventh|nbook split into two parts.|n|cff00ffffCooldown 30sec.|nBuy it or die!")
+=======
+	u.setString("bnam", "Harry Potter ist eine popul�re Fantasy-Romanreihe|nder englischen Schriftstellerin Joanne K. Rowling.|nErz�hlt wird die sieben-teilige Geschichte des|nTitelhelden Harry James Potter, eines Sch�lers|ndes britischen Zaubererinternats Hogwarts, und|nseiner Konfrontationen mit dem b�sen Magier Lord|nVoldemort und dessen Gefolgsleuten, den|nsogenannten Todessern. Jeder der sieben B�nde|nbeschreibt ein Schul- und Lebensjahr von Harry|nPotter, beginnend kurz vor seinem elften|nGeburtstag.")
+>>>>>>> 87aa8264aa7f378d5abe48407ff0bc5fccf29539
 	u.setString("barm", "Ethereal")
 	u.setString("btar", "")
 	u.setInt("bcpr", 0)

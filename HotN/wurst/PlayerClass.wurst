@@ -31,6 +31,7 @@ package PlayerClass
 		timer camSet = getTimer()
 		real sightfield = 40
 		real perspektiv = 295
+
 		
 		construct(player p)
 			lastp = this

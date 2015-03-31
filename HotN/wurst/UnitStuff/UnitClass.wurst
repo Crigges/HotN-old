@@ -35,6 +35,8 @@ package UnitClass
 		static constant real knockbackFactor = 6000
 		static constant real basicAttackspeed = 0.5 
 		UnitType typ
+		Team team
+
 		unit u
 		//fight system//
 		real attack = 0
@@ -139,6 +141,12 @@ package UnitClass
 		
 		construct(string typName, vec2 pos, player owner)
 			this.typ = getUnitType(typName)
+
+			if owner.getId() > 5
+				team = Team.Everliving
+			else
+				team = Team.Wargrin
+
 			this.u = CreateUnit(owner, typ.id, pos.x, pos.y, 0)
 			this.mass = typ.getMass()
 			this.attack = typ.getAttack() * 1.
@@ -155,11 +163,22 @@ package UnitClass
 			SetUnitUserData(u, this castTo int)
 			last = this
 			shieldList = new ShieldList()
+
 			for int i = 0 to 11
 				playerDamage.saveReal(i, 0.)
 		
 		override static function classname() returns string
 			return "Unit"	
+
+			
+		function addAbility(int abi)
+			u.addAbility(abi)
+			
+		function removeAbility(int abi)
+			u.removeAbility(abi)
+			
+		function giveItem(item i)
+			UnitAddItem(u, i)		
 	
 		function knockback()
 			if knockSpeed.lengthSquared() <= 0.25		
@@ -241,7 +260,8 @@ package UnitClass
 		function kill(Unit source)
 			if not isDead
 				isDead = true
-				u.addAbility('dead')
+				addAbility('dead')
+
 				if onDeath != null
 					onDeath.fire(source, this)
 				if causeDeath != null
@@ -435,7 +455,8 @@ package UnitClass
 			attack += amount
 			int bonus = 256
 			int statHelper = roundReal(amount)
-			u.addAbility('Aihn')
+			addAbility('Aihn')
+
 			if statHelper >= 0
 				for int i = 8 downto 0
 					if statHelper >= bonus
@@ -952,7 +973,9 @@ package UnitClass
 			if statHelper >= 0
 				for int i = raw + 'a' to raw + 'a' + (maxBonSize - 1)
 					if statHelper mod 2 == 1
-						u.addAbility(i)
+
+						addAbility(i)
+
 					statHelper = statHelper div 2
 					if statHelper == 0
 						return
@@ -960,9 +983,10 @@ package UnitClass
 				statHelper += 1
 				for int i = raw + 'a' to raw + 'a' + (maxBonSize - 1)
 					if statHelper mod 2 == 0
-						u.addAbility(i)
+						addAbility(i)
 					statHelper = statHelper div 2
-				u.addAbility(raw + '-')
+				addAbility(raw + '-')
+
 					
 		//----------------------------------------------//
 		//--------------Stun System---------------------//
@@ -1120,6 +1144,7 @@ package UnitClass
 				dotTT(amount)
 				
 		function damageAtk(Unit source)
+			print("onatk")
 			real rand = GetRandomReal(0., 100.)
 			if takeHitPre != null
 				takeHitPre.fire(source)
@@ -1131,10 +1156,12 @@ package UnitClass
 				if source.hitchance > 100
 					ev -= (source.hitchance - 100)
 				if rand > ev
+
+					print("onatk1")
 					//Unit got hit
 					//Dice damage
-					rand = GetRandomReal(0., 100.)
 					real amount = source.getAttack(true) + GetRandomReal(-source.getAttack(true) / 10, source.getAttack(true) / 10)
+					print(amount.toString())
 					//Dice crit
 					boolean crit = false
 					rand = GetRandomReal(0., 100.)
@@ -1299,7 +1326,17 @@ package UnitClass
 			if causeHitPre == null
 				causeHitPre = new PreDamageEvent(this)
 			return causeHitPre.addAction(action)
+
+		Action<OnDamageData> action
 			
+		function foo(Unit u)
+			action = u.registerCauseCritHitOn((OnDamageData data) -> begin
+				data.source.bonusMovespeedTimed(-50, 1)
+				destroy action
+			end)
+			doAfter(5, () -> destroy action)
+
+
 		function registerTakeHitPre(Action<PreDamageData> action) returns Action<PreDamageData>
 			if takeHitPre == null
 				takeHitPre = new PreDamageEvent(this)

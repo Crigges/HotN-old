@@ -26,45 +26,47 @@ package SpellTemplate
 		UnitKlasse, AreaMarker, Buff, Dot, Filter, HeroClass, CustomEvent, Fx;
 	*/
 	
-	import UnitClass
-	import HeroClass
-	import Spell
-	
-	class SamplePointSpellSetup extends PointSpell
-		static SpellSetup setup = setSpellData(new SpellSetup())
-		//Add Spelldata here
-		static real sampleVar
-		
-		private static function setSpellData(SpellSetup ss) returns SpellSetup
-			ss.setSpell('ABCD')
-			ss.setDummySpellBook('EFGH')
-			ss.setMaxLvl(5)
-			ss.setNeededSkillpoints(1, 1)
-			ss.setNeededSkillpoints(2, 1)
-			ss.setNeededSkillpoints(3, 2)
-			ss.setNeededSkillpoints(4, 2)
-			ss.setNeededSkillpoints(5, 3)
-			return ss
-		
-		construct(Hero owner, SpellType st)
-			super(owner, setup, st)
-			
-		override function onCast(Hero caster, vec2 pos)
-			new SamplePointSpell(caster, pos, this)
-							
-	class SamplePointSpell
-		SamplePointSpellSetup setupData
-		timer t
-		
-		private construct(Hero caster, vec2 pos, SamplePointSpellSetup setupData)
-			t = getTimer()
-			t.setData(this castTo int)
-			t.startPeriodic(0.03, function callCallback) 
-			
-		private static function callCallback()
-			GetExpiredTimer().getData() castTo thistype.callback()
-		
-		private function callback()
-			skip
+
+//	import UnitClass
+//	import HeroClass
+//	import Spell
+//	
+//	class SamplePointSpellSetup extends PointSpell
+//		static SpellSetup setup = setSpellData(new SpellSetup())
+//		//Add Spelldata here
+//		static real sampleVar
+//		
+//		private static function setSpellData(SpellSetup ss) returns SpellSetup
+//			ss.setSpell('ABCD')
+//			ss.setDummySpellBook('EFGH')
+//			ss.setMaxLvl(5)
+//			ss.setNeededSkillpoints(1, 1)
+//			ss.setNeededSkillpoints(2, 1)
+//			ss.setNeededSkillpoints(3, 2)
+//			ss.setNeededSkillpoints(4, 2)
+//			ss.setNeededSkillpoints(5, 3)
+//			return ss
+//		
+//		construct(Hero owner, SpellType st)
+//			super(owner, setup, st)
+//			
+//		override function onCast(Hero caster, vec2 pos)
+//			new SamplePointSpell(caster, pos, this)
+//							
+//	class SamplePointSpell
+//		SamplePointSpellSetup setupData
+//		timer t
+//		
+//		private construct(Hero caster, vec2 pos, SamplePointSpellSetup setupData)
+//			t = getTimer()
+//			t.setData(this castTo int)
+//			t.startPeriodic(0.03, function callCallback) 
+//			
+//		private static function callCallback()
+//			GetExpiredTimer().getData() castTo thistype.callback()
+//		
+//		private function callback()
+//			skip
+
 
 endpackage

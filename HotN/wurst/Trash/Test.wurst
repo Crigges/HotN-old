@@ -1,6 +1,8 @@
 package Test
 import LinkedListModule
 import AbilityObjEditing
+import LinkedList
+
 
 public class A
 	use LinkedListModule
@@ -16,7 +18,6 @@ public class B extends A
 		print(i.toString())
 	
 function test()
-	new B()
-	A.first.me()
-	B.first.me() 
+	var w = new LinkedList<int>()
+
 	

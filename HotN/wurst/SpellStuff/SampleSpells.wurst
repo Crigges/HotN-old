@@ -1,60 +1,57 @@
 package SampleSpells
 
-	import Spell
-	import HeroClass
-	import UnitClass
-		
-
-	public class TestSpell1Setup extends PointSpell
-		static SpellSetup setup = setSpellData(new SpellSetup())
-		//much more vars here
-		
-		private static function setSpellData(SpellSetup ss) returns SpellSetup
-			ss.setSpell('tes1')
-			ss.setDummySpellBook('ZAt1')
-			ss.setMaxLvl(5)
-			ss.setNeededSkillpoints(1, 1)
-			ss.setNeededSkillpoints(2, 1)
-			ss.setNeededSkillpoints(3, 2)
-			ss.setNeededSkillpoints(4, 2)
-			ss.setNeededSkillpoints(5, 3)
-			return ss
-		
-		construct(Hero owner, SpellType st)
-			super(owner, setup, st)
-			
-		override function onCast(Hero caster, vec2 pos)
-			new TestSpell1(caster, this)
-							
-	class TestSpell1
-		static int animationType = 7
-		Spell setup
-		Hero caster
-		timer t
-		
-		static function bla()
-			SetUnitAnimationByIndex(last.u, animationType)
-		
-		private construct(Hero caster, Spell setup)
-			SetUnitAnimationByIndex(caster.u, animationType)
-			getTimer().start(0.0, function bla)
-			this.setup = setup
-			this.caster = caster
-			caster.spellStart()
-			t = getTimer()
-			t.setData(this castTo int)
-			t.start(setup.lvl.toReal() + 3, function callCallback) //<- auch schön
-			
-		private static function callCallback()
-			GetExpiredTimer()
-				.getData() castTo thistype
-					.callback()
-		
-		private function callback()
-			ResetUnitAnimation(caster.u)
-			caster.spellEnd()
-			destroy this
-		
-		
+//
+//	import Spell
+//	import HeroClass
+//	import UnitClass
+//		
+//
+//	public class TestSpell1Setup extends PointSpell
+//		static SpellSetup setup = setSpellData(new SpellSetup())
+//		//much more vars here
+//		
+//		private static function setSpellData(SpellSetup ss) returns SpellSetup
+//			ss.setSpell('tes1')
+//			ss.setDummySpellBook('ZAt1')
+//			ss.setMaxLvl(5)
+//			ss.setNeededSkillpoints(1, 1)
+//			ss.setNeededSkillpoints(2, 1)
+//			ss.setNeededSkillpoints(3, 2)
+//			ss.setNeededSkillpoints(4, 2)
+//			ss.setNeededSkillpoints(5, 3)
+//			return ss
+//		
+//		construct(Hero owner, SpellType st)
+//			super(owner, setup, st)
+//			
+//		override function onCast(Hero caster, vec2 pos)
+//			new TestSpell1(caster, this)
+//							
+//	class TestSpell1
+//		static int animationType = 7
+//		Spell setup
+//		Hero caster
+//		timer t
+//		
+//		static function bla()
+//			SetUnitAnimationByIndex(last.u, animationType)
+//		
+//		private construct(Hero caster, Spell setup)
+//			SetUnitAnimationByIndex(caster.u, animationType)
+//			getTimer().start(0.0, function bla)
+//			this.setup = setup
+//			this.caster = caster
+//			t = getTimer()
+//			t.setData(this castTo int)
+//			t.start(setup.lvl.toReal() + 3, function callCallback) //<- auch schön
+//			
+//		private static function callCallback()
+//			GetExpiredTimer()
+//				.getData() castTo thistype
+//					.callback()
+//		
+//		private function callback()
+//			ResetUnitAnimation(caster.u)
+//			destroy this
 
 endpackage

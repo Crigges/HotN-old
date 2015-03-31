@@ -21,7 +21,7 @@ public class Tooltip extends Widget
 		if GetLocalPlayer() == p
 			temp = id
 		d = CreateDestructable(temp, realPos.x, realPos.y, 0, 8, 0)
-		print("ID: " + temp.asFourchar())
+
 		doAfter(0.15, () -> RemoveDestructable(d))
 		
 	override function hideDirect(player p)

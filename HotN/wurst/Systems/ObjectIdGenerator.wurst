@@ -12,9 +12,12 @@ function initHelper() returns boolean
 	
 function nextValid(int c) returns int
 	int r = c + 1
-	if r == '_'
+
+	if r == '_' or r == ','or r == '"'or r == '\' or r == '-'
 		r++
-	return r 
+		if r == '_' or r == ','or r == '"'or r == '\' or r == '-'
+			r++
+	return r  
 
 function fourChar(int a, int b, int c, int d) returns int
 	return (((((a*256) + b)*256)+c)*256)+d
@@ -32,6 +35,7 @@ function newId(int prefix) returns int
 		
 public function genId() returns int
 	return newId(nonheroPrefix)
-	
-function genHeroId() returns int
+
+
+public function genHeroId() returns int
 	return newId(heroPrefix)

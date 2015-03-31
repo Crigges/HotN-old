@@ -11,15 +11,15 @@ public class StringList
 		
 	function add(string s)
 		String news = new String(s)
-		if first == null
+		if last == null
 			first = news
 			last = news
 			news.next = null
 			news.prev = null
 		else
-			first.prev = news
-			news.next = first
-			first = news
+			last.next = news
+			news.prev = last
+			last = news
 			
 	function remove(string s)
 		String curr = first
@@ -33,8 +33,8 @@ public class StringList
 				break
 			curr = curr.next
 			
-	function iterator() returns StringIterator
-		return new StringIterator(first)
+	function iterator() returns StringIteratorC
+		return new StringIteratorC(first)
 			
 	ondestroy
 		String curr = first
@@ -57,7 +57,7 @@ class String
 		if prev != null
 			prev.next = next
 			
-public class StringIterator
+public class StringIteratorC
 	String pos
 	
 	construct(String first)
