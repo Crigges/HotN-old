@@ -5,27 +5,27 @@ package CaptureAnimation
 	
 	Table captureTimer = new Table()
 	
-	public function Hero.playCaptureAnimation()
-		if this.hasPeriodicAnimation
-			timer t = getTimer()
-			t.setData(this castTo int)
-			t.startPeriodic(this.animationIntervall, function playAnimation)
-			captureTimer.saveTimer(this castTo int, t)
-			SetUnitAnimationByIndex(this.u, this.animationIndex)
-		else
-			SetUnitAnimationByIndex(this.u, this.animationIndex)
-		if this.captureEffect != null
-			this.currentEffect = this.u.addEffect(this.captureEffect, this.captureEffectAttachmentPoint)
-		SetUnitTimeScale(this.u, this.animationSpeed / 100)
-			
-	public function Hero.stopCaptureAnimation()
-		if captureTimer.loadTimer(this castTo int) != null
-			captureTimer.loadTimer(this castTo int).release()
-		if this.currentEffect != null
-			this.currentEffect.destr()
-			
-	function playAnimation()
-		Hero h = GetExpiredTimer().getData() castTo Hero
-		SetUnitAnimationByIndex(h.u, h.animationIndex)
+//	public function Hero.playCaptureAnimation()
+//		if this.hasPeriodicAnimation
+//			timer t = getTimer()
+//			t.setData(this castTo int)
+//			t.startPeriodic(this.animationIntervall, function playAnimation)
+//			captureTimer.saveTimer(this castTo int, t)
+//			SetUnitAnimationByIndex(this.u, this.animationIndex)
+//		else
+//			SetUnitAnimationByIndex(this.u, this.animationIndex)
+//		if this.captureEffect != null
+//			this.currentEffect = this.u.addEffect(this.captureEffect, this.captureEffectAttachmentPoint)
+//		SetUnitTimeScale(this.u, this.animationSpeed / 100)
+//			
+//	public function Hero.stopCaptureAnimation()
+//		if captureTimer.loadTimer(this castTo int) != null
+//			captureTimer.loadTimer(this castTo int).release()
+//		if this.currentEffect != null
+//			this.currentEffect.destr()
+//			
+//	function playAnimation()
+//		Hero h = GetExpiredTimer().getData() castTo Hero
+//		SetUnitAnimationByIndex(h.u, h.animationIndex)
 
 endpackage

@@ -17,6 +17,8 @@ import CompiletimeInit
 	armorAbilitys()
 	lifeRegAbilitys()
 	manaRegAbilitys()
+	permAttackItems()
+	permAttackAbilitys()
 
 function lifeAbilitys()
 	for int i = 'a' to 'a' + (maxBonSize - 1)
@@ -222,3 +224,48 @@ function manaRegAbilitys()
 		objN.setEditorSuffix((2).pow(maxBonSize).toString())
 	else
 		addAbilityToPreload(manaRegRaw + '-', 1)
+		
+function permAttackItems()
+	for int i = 'a' to 'a' + (maxBonSize - 1)
+		if compiletime
+			var u = createObjectDefinition("w3t", permAttackItemRaw + i, 'tint')
+			u.setString("iabi", (permAttackRaw + i).asFourchar())
+			u.setString("ifil", "none.mdl")
+			u.setInt("ihtp", 100)
+			u.setString("iico", "ReplaceableTextures\\CommandButtons\\BTNArcaniteMelee.blp")
+			u.setString("unam", "Attack Tome +" + (2).pow(i - 'a').toString())
+			u.setInt("iicd", 1)
+		else
+			addItemToPreload(permAttackItemRaw + i)
+	if compiletime
+		let un = createObjectDefinition("w3t", (permAttackItemRaw + '-'), 'tint')
+		un.setString("iabi", (permAttackRaw + '-').asFourchar())
+		un.setString("ifil", "none.mdl")
+		un.setInt("ihtp", 100)
+		un.setString("iico", "ReplaceableTextures\\CommandButtons\\BTNArcaniteMelee.blp")
+		un.setString("unam", "Attack Tome -" + (2).pow(maxBonSize).toString())
+		un.setInt("iicd", 1)
+	else
+		addItemToPreload(permAttackItemRaw + '-')
+		
+function permAttackAbilitys()
+	for int i = 'a' to 'a' + (maxBonSize - 1)
+		if compiletime
+			let u = createObjectDefinition("w3a", permAttackRaw + i, 'AIaa')
+			u.setLvlDataString("anam", 0, 0, "BonusMod - AttackPerm")
+			u.setLvlDataString("ansf", 0, 0, "(+" + (2).pow(i - 'a').toString() + ")")
+			u.setLvlDataString("acat", 0, 0, "")
+			u.setLvlDataInt("Iaa1", 1, 1, (2).pow(i - 'a'))
+			u.setLvlDataInt("aite", 0, 0, 0)
+		else
+			addItemToPreload(permAttackItemRaw + i)
+	if compiletime
+		let un = createObjectDefinition("w3a", (permAttackRaw + '-'), 'AIaa')
+		un.setLvlDataString("anam", 0, 0, "BonusMod - AttackPerm")
+		un.setLvlDataString("ansf", 0, 0, "(-" + (2).pow(maxBonSize).toString() + ")")
+		un.setLvlDataString("acat", 0, 0, "")
+		un.setLvlDataInt("Iaa1", 1, 1, (2).pow(maxBonSize))
+		un.setLvlDataInt("aite", 0, 0, 0)
+	else
+		addItemToPreload(permAttackItemRaw + '-')
+	

@@ -16,7 +16,7 @@ public module UnitInit
 	static UnitType t
 	
 	@dinit private static function initHelper() returns boolean
-		t = new UnitType(compiletime)
+		t = new UnitType()
 		settings(t)
 		t.finalize()
 		return true
@@ -28,6 +28,7 @@ public enum StatType
 	OPTIONAL
 	FORBIDDEN
 	RANGED
+	PERIODIC
 	SET
 			
 public function getUnitType(string name) returns UnitType
@@ -72,8 +73,7 @@ public class UnitType
 	static constant real baseRadius = 50
 	static constant real baseHeight = 50
 	
-	private UnitDefinition def
-	private boolean compiletime
+	protected HeroDefinition def
 	int id
 	intStat moveSpeed = intStat(basicMovespeed, StatType.FORBIDDEN)
 	StringList abis = new StringList()
@@ -110,15 +110,13 @@ public class UnitType
 	realStat radius = realStat(baseRadius, StatType.OPTIONAL)
 	realStat height = realStat(baseHeight, StatType.OPTIONAL)
 	
-	construct(boolean compiletime)
-		this.compiletime = compiletime
+	construct()
 		id = genId()
-		def = new UnitDefinition(id, basicId)
+		def = new HeroDefinition(id, basicId)
 		
-	construct(int id, boolean compiletime)
-		this.compiletime = compiletime
+	construct(int id)
 		this.id = id
-		def = new UnitDefinition(id, basicId)
+		def = new HeroDefinition(id, basicId)
 	
 	function getMovespeed() returns int
 		return moveSpeed.content
@@ -361,6 +359,8 @@ public class UnitType
 				def.setManaInitialAmount(startMana)
 			def.setSightRadiusDay(sightRange)
 			def.setSightRadiusNight(sightRange)
+			def.setHitPointsRegenerationRate(0)
+			def.setManaRegeneration(0)
 		else
 			unitTypes.put(StringHash(name.content), this)
 			addUnitToPreload(id)

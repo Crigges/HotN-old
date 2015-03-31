@@ -7,22 +7,28 @@ package HeroClass
 	import initlater OrderHandling
 	import HashMap
 	import initlater Spell
+	import initlater ControlPoint
 	import LinkedListModule
 	import LinkedList
+	import HeroTypes
 	
 	public int heroCount = 0
 	
 	public class Hero extends Unit
 		use GetOrders
 		use LinkedListModule
-		static constant trigger castDetect = CreateTrigger()..addAction(function handleCasts)
-		static constant HashMap<int, Spell> abiIdToSpell = new HashMap<int, Spell>()
+//		static constant HashMap<int, Spell> abiIdToSpell = new HashMap<int, Spell>()
 		static constant timer checkOrders  = getTimer()//..startPeriodic(0.01, function checkOrders)
 		static constant LinkedList<Hero> toMove = new LinkedList<Hero>()
-		static constant timer movespeedX= getTimer()..startPeriodic(0.01, () -> begin
+		static constant HashMap<player, Hero> heroOfPlayer = new HashMap<player, Hero>()
+		static constant timer movespeedX = getTimer()..startPeriodic(0.01, () -> begin
 			for Hero h in toMove
 				h.u.setXY(h.u.getPos().polarOffset(h.u.getFacingAngle(), 0.5))
+			unit own = heroOfPlayer.get(GetLocalPlayer()).u
+			SetCameraQuickPosition(own.getX(), own.getY())
 		end)
+		HeroType htyp
+		unit cdum
 		real agi
 		real bonusAgi
 		real bonusAgiPer
@@ -36,8 +42,16 @@ package HeroClass
 		int attackBuffer = 0
 		int morphAbi
 		boolean onAdd = false
-		boolean wantCapture = false
+		//Order Spell and Capture handling
+		boolean isCasting = false
+//		Spell castingSpell = null
+		Order nextOrder = null
+		Order lastOrder = null
 		UnitEvent channelCancel = null
+		CaptureCancelEvent captureCancel = null
+		SmartEvent smartEvent = null
+		//Animation handling
+		boolean playsAnimation = false
 		// CaptureAnimation
 		int animationIndex = 0
 		boolean hasPeriodicAnimation = false
@@ -55,34 +69,23 @@ package HeroClass
 		HashMap<timer, int> enableAbility = new HashMap<timer, int>()
 		boolean acceptOrders = true
 		boolean stillNoOrder = false
-		Order mainOrder = null
-		Order lastOrdered = null
-		Queue<Spellcast> castQueue = new Queue<Spellcast>()
 		//Spells
-		Spell spellQ = null
-		Spell spellW = null
-		Spell spellE = null
-		Spell spellR = null
-		Spell spellD = null
-		Spell spellF = null
+//		Spell spellQ = null
+//		Spell spellW = null
+//		Spell spellE = null
+//		Spell spellR = null
+//		Spell spellD = null
+//		Spell spellF = null
 		
-		construct(unit hero, real attack, real mass, real radius, real height, int morphAbi, int bounty)
-			super("fail", vec2(0,0), Player(0))
-			this.agi = GetHeroAgi(hero, false).toReal()
-			this.str = GetHeroStr(hero, false).toReal()
-			this.inte = GetHeroInt(hero, false).toReal()
-			this.morphAbi = morphAbi
+		construct(string name, vec2 pos, player p)
+			super(name, pos, p)
+			htyp = getHeroType(name)
 			hb = new Bar(this)
 			isHero = true
-			hero.addAbility('ARal')
-			hero.addAbility(morphAbi)
-			hero.addAbility(cleanSpellbook)
-			hero.addAbility('ZAat')
-			hero.addAbility('ZAst')
-			hero.addAbility('ZAsc')
-			hero.addAbility('exit')
-			castDetect.registerUnitEvent(hero, EVENT_UNIT_SPELL_CAST)
-//			addOrderDetection(hero)
+			cdum = CreateUnit(p, htyp.dummyId, recycleGraveyard.x, recycleGraveyard.y, 0)
+			cdum.setUserData(this castTo int)
+			addOrderDetection(cdum)
+			heroOfPlayer.put(p, this)
 			
 		override function kill(Unit source)
 			hb.disable()
@@ -96,20 +99,7 @@ package HeroClass
 			for int i = 0 to 11
 				playerDamage.saveReal(i, 0.)
 					
-//		function addAgi(real amount)
-//			agi += amount
-//			SetHeroAgi(u, roundReal(agi), true)
-//			updateState(Update.AGI)
-//			
-//		function addStr(real amount)
-//			str += amount
-//			SetHeroAgi(u, roundReal(str), true)
-//			updateState(Update.AGI)
-//			
-//		function addInt(real amount)
-//			inte += amount
-//			SetHeroAgi(u, roundReal(inte), true)
-//			updateState(Update.INT)
+		
 			
 		function addArmor(real amount)
 			if not onAdd
@@ -183,49 +173,13 @@ package HeroClass
 		function getBarPos() returns vec3
 			return vec3(u.getX() - 55, u.getY(), GetUnitFlyHeight(u) + height)
 				
-		function getCaptureAttackPoint(vec3 controllPointPos) returns vec3
+		function getCaptureAttackPoint(vec2 cpPos) returns vec3
 			vec3 pos = getMiddle()
-			vec2 pos2D = pos.toVec2()
-			pos.z += captureOffsetZ
-			pos2D = pos2D.polarOffset(pos2D.angleTo(controllPointPos.toVec2()) + captureOffsetAngle, captureOffsetDistance)
-			pos.x = pos2D.x
-			pos.y = pos2D.y
-			return pos
-			
-		static function handleCasts()
-			Spell s = abiIdToSpell.get(GetSpellAbilityId())
-			if s != null
-				Hero h = GetTriggerUnit().getUserData() castTo thistype
-				vec2 pos = vec2(GetSpellTargetX(), GetSpellTargetY())
-				Unit un = GetSpellTargetUnit().getUserData() castTo Unit
-				s.callOnCast(h, pos, un)
-			
-			
-		function spellStart()
-			acceptOrders = false
-			
-		function spellEnd()
-			acceptOrders = true
-			nextOrder()
-				
-		function nextOrder()
-			if castQueue.getSize() <= 0
-				if mainOrder != null and mainOrder != lastOrdered
-					lastOrdered = mainOrder
-					if mainOrder.issueToUnit(u)
-						setMainOrder(null)
-			else
-				Spellcast sc = castQueue.dequeue()
-				sc.forceC()
-				destroy sc
-				
-				
-		static function checkOrders()
-			Hero buffer = first
-			while buffer != null
-				if buffer.acceptOrders and GetUnitCurrentOrder(buffer.u) == 0
-					buffer.nextOrder()
-				buffer = buffer.next
+			vec3 offset = htyp.getCaptureOffset()
+			vec2 offset2 = offset.toVec2()
+			offset2 = offset2.rotate(pos.toVec2().angleTo(cpPos).degrees() * (-1.).asAngleDegrees())
+			offset2.y = -offset2.y
+			return pos + offset2.withZ(offset.z)
 			
 		private static function enableAbilityTimed()
 			timer t = GetExpiredTimer()
@@ -241,115 +195,206 @@ package HeroClass
 			enableAbility.put(t, abiId)
 			t.start(0.0, function enableAbilityTimed)
 			
-		private function setMainOrder(Order o)
-			if mainOrder != null
-				destroy mainOrder
-			mainOrder = o
+		override function isUnitEnemy(unit other) returns boolean
+			return IsUnitEnemy(other, owner)
 					
-		override function onOrder(vec2 pos, unit target, int orderId)
-			lastOrdered = null
-			//Menu Orders
-			switch orderId
-				case exitDetectId
-					//addAbilityCastProtection('exit')
-					SetPlayerAbilityAvailable(owner, 'exit', false)
-					return
-				case scoreboardId
-					addAbilityCastProtection('scor')
-					return
-					
-			if acceptOrders
-				switch orderId
-					case smartId
-						if target == null
-							setMainOrder(new MoveOrder(pos))
-							mainOrder.issueToUnit(u)
-						else
-							if IsUnitAlly(target, owner)
-								setMainOrder(new MoveOrder(target.getPos()))
-								mainOrder.issueToUnit(u)
-							else
-								setMainOrder(new AttackOrder(target))
-								mainOrder.issueToUnit(u)
-					case attackId
-						if IsUnitAlly(target, owner)
-							setMainOrder(new MoveOrder(target.getPos()))
-							mainOrder.issueToUnit(u)
-						else
-							setMainOrder(new AttackOrder(target))
-							mainOrder.issueToUnit(u)
-					case stopId
-						setMainOrder(null)
-						IssueImmediateOrderById(u, 851972)
-				if channelCancel != null and GetUnitTypeId(target) != 'cptu'
-					channelCancel()
-				else if GetUnitTypeId(target) == 'cptu'
-					skip//target.getUserData() castTo ControlPoint.conquerOrderGet(this)
+		override function onMoveOrder(vec2 pos)
+			Order o = () -> u.issuePointOrder("move", pos)
+			if isCasting
+				setNextOrder(o)
+				setLastOrder(o)
 			else
-				Spell casted = null
-				switch orderId
-					case smartId
-						cleanCastQueue()
-						if target == null
-							setMainOrder(new MoveOrder(pos))
-						else
-							if IsUnitAlly(target, owner)
-								setMainOrder(new MoveOrder(target.getPos()))
-							else
-								setMainOrder(new AttackOrder(target))
-					case attackId
-						cleanCastQueue()
-						addAbilityCastProtection(attackSpell)
-						if IsUnitAlly(target, owner)
-							setMainOrder(new MoveOrder(target.getPos()))
-						else
-							setMainOrder(new AttackOrder(target))
-					case stopId
-						cleanCastQueue()
-						addAbilityCastProtection(stopSpell)
-						setMainOrder(null)
-					case qSpellId
-						casted = spellQ
-						addAbilityCastProtection(spellQ.spell)
-					case wSpellId
-						casted = spellW
-						addAbilityCastProtection(spellW.spell)
-					case eSpellId
-						casted = spellE
-						addAbilityCastProtection(spellE.spell)
-					case rSpellId
-						casted = spellR
-						addAbilityCastProtection(spellR.spell)
-					case dSpellId
-						casted = spellD
-						addAbilityCastProtection(spellD.spell)
-					case fSpellId
-						casted = spellF
-						addAbilityCastProtection(spellF.spell)
-				if casted != null
-					if target == null
-						if pos == vec2(0, 0)
-							castQueue.enqueue(casted.getInstantSpellCast())
-						else
-							castQueue.enqueue(casted.getPointSpellCast(pos))
-					else
-						castQueue.enqueue(casted.getUnitSpellCast(target))					
-				if channelCancel != null and GetUnitTypeId(target) != 'cptu'
-					channelCancel()
-				else if GetUnitTypeId(target) == 'cptu'
-					skip//setMainOrder(new CaptureOrder(target.getUserData() castTo ControlPoint))
-							
+				setLastOrder(o)
+				u.issuePointOrder("move", pos)
+			if captureCancel != null
+				captureCancel.fire()
+			if smartEvent != null
+				smartEvent.fire(pos)
+			
+		override function onAttackOrder(Unit target)
+			Order o = () -> u.issueTargetOrder("attack", target.u)
+			if isCasting
+				setNextOrder(o)
+				setLastOrder(o)
+			else
+				setLastOrder(o)
+				u.issueTargetOrder("attack", target.u)
+			if captureCancel != null
+				captureCancel.fire()
+			if smartEvent != null
+				smartEvent.fire(target)
+			
+		override function onStopOrder()
+			if isCasting
+				//maybe castingSpell.stop()
+			else
+				IssueImmediateOrder(u, "stop")
+			setLastOrder(null)
+			setNextOrder(null)
+			if captureCancel != null
+				captureCancel.fire()
+			
 				
-		function cleanCastQueue()
-			while castQueue.dequeue() != null
+		override function onCaptureOrder(ControlPoint target)
+			Order o = () -> begin
+				if target.wantCapture(this)
+					u.issuePointOrder("move", target.pos2)
+				if captureCancel != null
+					captureCancel.fire(target)
+			end
+			if isCasting
+				setNextOrder(o)
+				setLastOrder(o)
+			else
+				if target.wantCapture(this)
+					u.issuePointOrder("move", target.pos2)
+				if captureCancel != null
+					captureCancel.fire(target)
+				setLastOrder(o)
+		
+		override function onScoreOrder()
+			print("Score")
+			
+//		override function onSpellCastQ(order o)
+//			attendCast(spellQ, o)
+//		
+//		override function onSpellCastW(order o)
+//			attendCast(spellW, o)
+//		
+//		override function onSpellCastE(order o)
+//			attendCast(spellE, o)
+//		
+//		override function onSpellCastR(order o)
+//			attendCast(spellR, o)
+//		
+//		override function onSpellCastD(order o)
+//			attendCast(spellD, o)
+//		
+//		override function onSpellCastF(order o)
+//			attendCast(spellF, o)
+//		
+//		function attendCast(Spell s, order o)
+//			if isCasting
+//				setNextOrder(() -> s.callOnCast(o))
+//			else	
+//				s.callOnCast(o)
+//			if captureCancel != null
+//				captureCancel.fire()
+			
+		function playCaptureAnimation()
+			if htyp.hasPeriodicAnimation()
+				//TODO
+			else
+				playAnimation(htyp.getCaptureAnimationIndex(), htyp.getCaptureAnimationSpeed())
+			
+		function playAnimation(int index)
+			if playsAnimation
+				error("New animation was played before the old one was stopped")
+			playsAnimation = true
+			SetUnitAnimationByIndex(u, index)
+			
+		function playAnimation(int index, real speed)
+			if playsAnimation
+				error("New animation was played before the old one was stopped")
+			playsAnimation = true
+			u.setTimeScale(speed)
+			SetUnitAnimationByIndex(u, index)
+				
+		function stopAnimation()
+			if not playsAnimation
+				error("No animation to stop")
+			playsAnimation = false
+			u.setTimeScale(1)
+			SetUnitAnimationByIndex(u, htyp.getStandAnimationIndex())
+						
+		function enableAutoAttack(boolean enable)
+			if enable
+				UnitAddType(u, UNIT_TYPE_PEON)
+			else
+				UnitRemoveType(u, UNIT_TYPE_PEON)
 		
 		function registerChannelCancel(Action<Unit> action) returns Action<Unit>
 			if channelCancel == null
 				channelCancel = new UnitEvent()
 			return channelCancel.addAction(action)
 			
+		function registerSmartOrder(Action<SmartData> action) returns Action<SmartData>
+			if smartEvent == null
+				smartEvent = new SmartEvent(this)
+			return smartEvent.addAction(action)
+			
+		function registerCaptureCancel(Action<ControlPoint> action) returns Action<ControlPoint>
+			if captureCancel == null
+				captureCancel = new CaptureCancelEvent()
+			return captureCancel.addAction(action)
+			
 		function channelCancel()
-			wantCapture = false
 			channelCancel.fire(this)
+			
+		function setNextOrder(Order o)
+			if nextOrder != null
+				destroy nextOrder
+			this.nextOrder = o
+			
+		function setLastOrder(Order o)
+			if lastOrder != null
+				destroy lastOrder
+			this.lastOrder = o
+			
+//		function castReservation(real time, Spell casted)
+//			if isCasting
+//				error("new cast started before the old ended")
+////			castingSpell = casted
+//			isCasting = true
+//			getTimer()..setData(this castTo int).start(time, () -> begin
+//				Hero h = GetExpiredTimer().getData() castTo thistype
+//				h.isCasting = false
+////				h.castingSpell = null
+//				if h.nextOrder != null
+//					h.nextOrder.issue()
+//				else if h.lastOrder != null
+//					h.lastOrder.issue()
+//				GetExpiredTimer().release()
+//			end)
+				
+	class SmartEvent extends Event<SmartData>
+		Hero owner
+		
+		construct(Hero h)
+			owner = h
+		
+		function fire(vec2 target)
+			var data = new SmartData()
+			data.source = owner
+			data.pos = target
+			data.target = null
+			callActions(data)
+			destroy data
+			
+		function fire(Unit target)
+			var data = new SmartData()
+			data.source = owner
+			data.pos = vec2(0,0)
+			data.target = target
+			callActions(data)
+			destroy data
+		
+	public class SmartData
+		Hero source
+		Unit target
+		vec2 pos
+		
+	class CaptureCancelEvent extends Event<ControlPoint>
+		
+		function fire(ControlPoint t)
+			callActions(t)
+			
+		function fire()
+			callActions(null)
+			
+	abstract class Order
+		
+		abstract function issue()
+		
 			
 endpackage

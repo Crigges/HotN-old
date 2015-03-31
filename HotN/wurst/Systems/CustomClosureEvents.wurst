@@ -46,8 +46,9 @@ package CustomClosureEvents
 					buffer = buffer.next
 			else
 				while buffer != null
-					buffer.fire(d)
+					var temp = buffer
 					buffer = buffer.next
+					temp.fire(d)
 				
 				
 		ondestroy
@@ -74,5 +75,6 @@ package CustomClosureEvents
 				next.prev = prev
 			else
 				ev.last = prev
+			
 	
 endpackage

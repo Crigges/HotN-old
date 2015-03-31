@@ -45,6 +45,8 @@ package Setup
 	public constant int intRaw		 			= '(H)0' - '0'
 	public constant int lifeRegRaw		 		= '(I)0' - '0'
 	public constant int manaRegRaw		 		= '(J)0' - '0'
+	public constant int permAttackItemRaw 		= '(K)0' - '0'
+	public constant int permAttackRaw 			= '(L)0' - '0'
 	public int array attackPerm
 	
 	public HashList<int> preloadAbi = new HashList<int>()
@@ -225,6 +227,10 @@ package Setup
 		BOT_LEFT
 		CENTER
 		AUTO
+		
+	public enum Team
+		Everliving
+		Wargrin
 	
 	public function roundReal(real value) returns integer
 		if value > 0

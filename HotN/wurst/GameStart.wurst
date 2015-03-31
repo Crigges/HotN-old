@@ -59,7 +59,6 @@ package GameStart
 	real ttSize = 0.0300
 	real testr = 0
 	string tests = null
-	Spell testSpell = null
 	string testChar = ""
 	unit testu // = CreateUnit(Player(0), 'hpea', 0, 0, 0)
 	group testg = CreateGroup()
@@ -74,9 +73,7 @@ package GameStart
 	Window scoreWindow = new Window()
 	Window guideWindow = new Window()
 	Window statsWindow = new Window()
-	
 	init
-		
 		for int i = 0 to 11
 			if GetPlayerSlotState(Player(i)) == PLAYER_SLOT_STATE_PLAYING and GetPlayerController(Player(i)) == MAP_CONTROL_USER
 				allPlayers.add(Player(i))	
@@ -93,8 +90,17 @@ package GameStart
 		blub.addAction(function camTest)
 		
 		//EnablePreSelect(false, false)
+		new ControlPoint(vec2(2000,0), Team.Everliving)
+		doAfter(2, () -> begin
+			for int i = 1 to 2
+				new Hero("testhero", vec2(0, 0), Player(0))
+		end)
+//		for int k = 1 to 10
+//			doAfter(2, () -> begin
+//				for int i = 1 to 500
+//					CreateUnit(Player(0), 'hpea', 0, 0, 0)..addAbility('Aloc').setPathing(false)
+//			end)
 		
-
 		for player p in allPlayers
 			new Player(p)
 		
@@ -321,7 +327,7 @@ package GameStart
 					shopPleft = new Pane(element(0, -2), element(36, 16), Layer.L3, 4,false)		
 //					shopPmiddle = new Pane(element(20, 4), element(8, 12), Layer.L3, 4, false)	
 					shopPright = new Pane(element(36, 8), element(12, 16), Layer.L2, 4, false)
-					doAfter(2, () -> new Tooltip(element(30, 5), "test").showDirect(Player(0)))
+					doAfter(5, () -> new Tooltip(element(30, -1), "test").showDirect(Player(0)))
 //					shopPleftBot = new Pane(element(18, 18), element(4, 2), Layer.L3, false)
 //					shopPleftBot2 = new Pane(element(23, 18), element(12,2), Layer.L3, false)
 //					

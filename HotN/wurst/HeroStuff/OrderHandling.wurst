@@ -1,15 +1,13 @@
 package OrderHandling
-
-	import UnitClass
-	import HeroClass
-	import InstanceBoard
+	import StandardImports
+	import ControlPoint
+	import AbilityObjEditing
 
 	//OrderIds
 	public constant int smartId 				= 851971
 	public constant int stopId 					= 852529 // absorb
 	public constant int attackId 				= 852662 // acidbomb
 	public constant int scoreboardId 			= 852185 // acolyteharvest
-	public constant int exitDetectId 			= 852131 // ambush
 	public constant int skillMenuId 			= 852131 // ambush
 	
 	//SpellIds
@@ -18,99 +16,188 @@ package OrderHandling
 	public constant int scoreboardSpell 		= 'scor'
 	public constant int exitDetectSpell 		= 'exit'
 	
-	public constant int qSpellNoTarget 			= 'QSP0'
-	public constant int qSpellUnitTarget 		= 'QSP1'
-	public constant int qSpellPointTarget 		= 'QSP2'
-	public constant int qSpellUnitPointTarget 	= 'QSP3'
-	public constant int wSpellNoTarget 			= 'WSP4'
-	public constant int wSpellUnitTarget 		= 'WSP1'
-	public constant int wSpellPointTarget 		= 'WSP2'
-	public constant int wSpellUnitPointTarget 	= 'WSP3'
-	public constant int eSpellNoTarget 			= 'ESP0'
-	public constant int eSpellUnitTarget 		= 'ESP1'
-	public constant int eSpellPointTarget 		= 'ESP2'
-	public constant int eSpellUnitPointTarget 	= 'ESP3'
-	public constant int rSpellNoTarget 			= 'RSP0'
-	public constant int rSpellUnitTarget 		= 'RSP1'
-	public constant int rSpellPointTarget 		= 'RSP2'
-	public constant int rSpellUnitPointTarget 	= 'RSP3'
-	public constant int dSpellNoTarget 			= 'DSP0'
-	public constant int dSpellUnitTarget 		= 'DSP1'
-	public constant int dSpellPointTarget 		= 'DSP2'
-	public constant int dSpellUnitPointTarget 	= 'DSP3'
-	public constant int fSpellNoTarget 			= 'FSP0'
-	public constant int fpellUnitTarget 		= 'FSP1'
-	public constant int fSpellPointTarget 		= 'FSP2'
-	public constant int fSpellUnitPointTarget 	= 'FSP3'
+	//SpellOrderIds
+	public constant int qSpellId 				= 852490 // ancestralspirit
+	public constant int wSpellId 				= 852491 // ancestralspirittarget
+	public constant int eSpellId 				= 852217 // animatedead
+	public constant int rSpellId 				= 852186 // antimagicshell
+	public constant int dSpellId 				= 852576 // attributemodskill
+	public constant int fSpellId 				= 852215 // auraunholy
+
+	public tuple order(vec2 pos, unit target)
 
 	public module GetOrders
 		static trigger orderDetect = CreateTrigger()..addAction(function callOnOrder)
 		
 		static function addOrderDetection(unit u)
+			u.addAbility(stopSpell)
+			u.addAbility(attackSpell)
+			u.addAbility(scoreboardSpell)
 			orderDetect.registerUnitEvent(u, EVENT_UNIT_ISSUED_ORDER)
 			orderDetect.registerUnitEvent(u, EVENT_UNIT_ISSUED_POINT_ORDER)
 			orderDetect.registerUnitEvent(u, EVENT_UNIT_ISSUED_TARGET_ORDER)
 		
 		static function callOnOrder()
 			orderDetect.disable()
-			GetTriggerUnit().getUserData() castTo thistype.onOrder(vec2(GetOrderPointX(), GetOrderPointY()), GetOrderTargetUnit(), GetIssuedOrderId())
+			thistype h = GetTriggerUnit().getUserData() castTo thistype
+			int id = GetIssuedOrderId()
+			vec2 pos = vec2(GetOrderPointX(), GetOrderPointY())
+			unit u = GetOrderTargetUnit()
+			switch id
+				case stopId
+					h.onStopOrder()
+				case attackId
+					h.onAttackOrder((u.getUserData() castTo thistype))
+				case scoreboardId
+					h.onScoreOrder()
+				case smartId
+					if u == null
+						h.onMoveOrder(pos)
+					else
+						if u.getTypeId() == modelMorphed
+							h.onCaptureOrder(u.getUserData() castTo ControlPoint)
+						else	
+							if h.isUnitEnemy(u)
+								h.onAttackOrder(u.getUserData() castTo thistype)
+							else
+								h.onMoveOrder(u.getPos())
+//				case qSpellId
+//					h.onSpellCastQ(order(pos, u))
+//				case wSpellId
+//					h.onSpellCastW(order(pos, u))
+//				case eSpellId
+//					h.onSpellCastE(order(pos, u))
+//				case rSpellId
+//					h.onSpellCastR(order(pos, u))
+//				case dSpellId
+//					h.onSpellCastD(order(pos, u))
+//				case fSpellId
+//					h.onSpellCastF(order(pos, u))
 			orderDetect.enable()
 			
-		abstract function onOrder(vec2 pos, unit target, int orderId)
+		abstract function isUnitEnemy(unit u) returns boolean
 		
-	public abstract class Order
-		use ShowInstances
-		int orderId
+		abstract function onCaptureOrder(ControlPoint cp)
 		
-		override static function classname() returns string
-			return "Order"
-		
-		abstract function issueToUnit(unit u) returns boolean
-		
-			
-	public class MoveOrder extends Order
-		static constant moveOrderId = 851986
-		vec2 pos
-		vec2 lastPos = vec2(0, 0)
-		
-		construct(vec2 pos)
-			this.orderId = orderId
-			this.pos = pos
-		
-		override function issueToUnit(unit u) returns boolean
-			Hero.orderDetect.disable()
-			IssuePointOrderById(u, moveOrderId, pos.x, pos.y)
-			Hero.orderDetect.enable()
-			vec2 currentPos = u.getPos()
-			boolean b = currentPos == lastPos
-			lastPos = currentPos
-			return b
-			
-	public class AttackOrder extends Order
-		static constant atkOrderId = 852541
-		unit target
-		
-		construct(unit target)
-			this.orderId = orderId
-			this.target = target
-		
-		override function issueToUnit(unit u) returns boolean
-			Hero.orderDetect.disable()
-			IssueTargetOrderById(u, atkOrderId, target)
-			Hero.orderDetect.enable()
-			return GetUnitAbilityLevel(u, 'dead') == 1
-			
-//	public class CaptureOrder extends Order
-//		ControlPoint cp
+//		abstract function onSpellCastQ(order o)
 //		
-//		construct(ControlPoint cp)
-//			this.cp = cp
+//		abstract function onSpellCastW(order o)
 //		
-//		override function issueToUnit(unit u) returns boolean
-//			Hero h = u.getUserData() castTo Hero
-//			Hero.orderDetect.disable()
-//			cp.conquerOrderGet(h)
-//			Hero.orderDetect.enable()
-//			return h.ct != null and h.ct.captures
+//		abstract function onSpellCastE(order o)
+//		
+//		abstract function onSpellCastR(order o)
+//		
+//		abstract function onSpellCastD(order o)
+//		
+//		abstract function onSpellCastF(order o)
+		
+//		abstract function onItemCastC(order o)
+//		
+//		abstract function onItemCastV(order o)
+		
+		abstract function onMoveOrder(vec2 pos)
+		
+		abstract function onAttackOrder(thistype u)
+		
+		abstract function onStopOrder()
+		
+		abstract function onScoreOrder()
+		
+			
+		
+	@compiletime function create_w3a_stop()
+		let u = createObjectDefinition("w3a", 'stop', 'ANcl')
+		u.setLvlDataString("anam", 0, 0, "Stop")
+		u.setLvlDataString("aani", 0, 0, "")
+		u.setLvlDataInt("alev", 0, 0, 1)
+		u.setLvlDataInt("aher", 0, 0, 0)
+		u.setLvlDataUnreal("aran", 1, 0, 99999.0)
+		u.setLvlDataUnreal("Ncl1", 1, 1, 0.0)
+		u.setLvlDataUnreal("Ncl4", 1, 4, 0.0)
+		u.setLvlDataInt("Ncl3", 1, 3, 1)
+		u.setLvlDataString("aeat", 0, 0, "")
+		u.setLvlDataString("acat", 0, 0, "")
+		u.setLvlDataString("atat", 0, 0, "")
+		u.setLvlDataInt("Ncl5", 1, 5, 0)
+		u.setLvlDataString("Ncl6", 1, 6, "absorb")
+		u.setLvlDataString("atp1", 1, 0, "Stop [S]")
+		u.setLvlDataString("ahky", 0, 0, "S")
+		u.setLvlDataString("aub1", 1, 0, "Stops the Hero imediatly. Prevents also autoattaclking")
+		u.setLvlDataString("aart", 0, 0, "ReplaceableTextures\\CommandButtons\\BTNStop.blp")
+		u.setLvlDataBoolean("aher", 0, 0, false)
+		u.setLvlDataInt("abpx", 0, 0, 0)
+		u.setLvlDataInt("abpy", 0, 0, 1)
+		
+	@compiletime function create_w3a_attk()
+		let u = createObjectDefinition("w3a", 'attk', 'ANcl')
+		u.setLvlDataString("anam", 0, 0, "Attack")
+		u.setLvlDataString("aani", 0, 0, "")
+		u.setLvlDataInt("alev", 0, 0, 1)
+		u.setLvlDataInt("aher", 0, 0, 0)
+		u.setLvlDataUnreal("aran", 1, 0, 99999.0)
+		u.setLvlDataUnreal("Ncl1", 1, 1, 0.0)
+		u.setLvlDataUnreal("Ncl4", 1, 4, 0.0)
+		u.setLvlDataInt("Ncl3", 1, 3, 1)
+		u.setLvlDataString("aeat", 0, 0, "")
+		u.setLvlDataString("acat", 0, 0, "")
+		u.setLvlDataString("atat", 0, 0, "")
+		u.setLvlDataInt("Ncl5", 1, 5, 0)
+		u.setLvlDataString("Ncl6", 1, 6, "acidbomb")
+		u.setLvlDataString("atp1", 1, 0, "Attack [A]")
+		u.setLvlDataString("ahky", 0, 0, "A")
+		u.setLvlDataString("aub1", 1, 0, "Attacks the target.")
+		u.setLvlDataInt("Ncl2", 1, 2, 1)
+		u.setLvlDataString("aart", 0, 0, "ReplaceableTextures\\CommandButtons\\BTNAttack.blp")
+		u.setLvlDataBoolean("aher", 0, 0, false)
+		u.setLvlDataInt("abpx", 0, 0, 1)
+		u.setLvlDataInt("abpy", 0, 0, 1)
+		
+	@compiletime function create_w3a_scor()
+		let u = createObjectDefinition("w3a", 'scor', 'ANcl')
+		u.setLvlDataString("anam", 0, 0, "Scoreboard")
+		u.setLvlDataString("aani", 0, 0, "")
+		u.setLvlDataInt("alev", 0, 0, 1)
+		u.setLvlDataInt("aher", 0, 0, 0)
+		u.setLvlDataUnreal("aran", 1, 0, 99999.0)
+		u.setLvlDataUnreal("Ncl1", 1, 1, 0.0)
+		u.setLvlDataUnreal("Ncl4", 1, 4, 0.0)
+		u.setLvlDataInt("Ncl3", 1, 3, 1)
+		u.setLvlDataString("aeat", 0, 0, "")
+		u.setLvlDataString("acat", 0, 0, "")
+		u.setLvlDataString("atat", 0, 0, "")
+		u.setLvlDataInt("Ncl5", 1, 5, 0)
+		u.setLvlDataString("Ncl6", 1, 6, "acolyteharvest")
+		u.setLvlDataString("atp1", 1, 0, "Open/Close Scoreboard [Shift]")
+		u.setLvlDataString("ahky", 0, 0, "0")
+		u.setLvlDataString("aub1", 1, 0, "Open or closes the scoreboard.")
+		u.setLvlDataString("aart", 0, 0, "ReplaceableTextures\\CommandButtons\\BTNUndeadCaptureFlag.blp")
+		u.setLvlDataString("atp1", 2, 0, "Open/Close Scoreboard [Shift]")
+		u.setLvlDataString("aub1", 2, 0, "Open or closes the scoreboard.")
+		u.setLvlDataUnreal("aran", 2, 0, 99999.0)
+		u.setLvlDataUnreal("Ncl1", 2, 1, 0.0)
+		u.setLvlDataString("Ncl6", 2, 6, "acolyteharvest")
+		u.setLvlDataInt("Ncl5", 2, 5, 0)
+		u.setLvlDataInt("Ncl3", 2, 3, 1)
+		u.setLvlDataInt("abpx", 0, 0, 0)
+		u.setLvlDataInt("abpy", 0, 0, 2)
+		u.setLvlDataBoolean("aher", 0, 0, false)
+		
+	@compiletime function createBuildingRightClick()
+		let u = createObjectDefinition("w3a", 'rclk', 'ANcl')
+		u.setLvlDataInt("wurs", 0, 0, 42)
+		u.setLvlDataString("aani", 0, 0, "")
+		u.setLvlDataString("aeat", 0, 0, "")
+		u.setLvlDataString("acat", 0, 0, "")
+		u.setLvlDataString("atat", 0, 0, "")
+		u.setLvlDataString("aord", 0, 0, "smart")
+		u.setLvlDataInt("alev", 0, 0, 1)
+		u.setLvlDataUnreal("aran", 1, 0, 100000.0)
+		u.setLvlDataUnreal("Ncl1", 1, 1, 0.0)
+		u.setLvlDataUnreal("Ncl4", 1, 4, 0.0)
+		u.setLvlDataInt("Ncl5", 1, 5, 0)
+		u.setLvlDataString("Ncl6", 1, 6, "smart")
+		u.setLvlDataInt("Ncl2", 1, 2, 3)
+		u.setLvlDataBoolean("aher", 0, 0, false)
+		u.setLvlDataString("atar", 0 , 0, "invulnerable,vulnerable")
 
 endpackage

@@ -36,6 +36,11 @@ package HeroBar
 		texttag tt
 		
 		construct(Hero h)
+			
+			
+		
+		
+		
 			owner = h
 			tt = CreateTextTag()
 			tt.setPos(h.getBarPos())
