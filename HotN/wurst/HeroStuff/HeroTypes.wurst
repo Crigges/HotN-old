@@ -1,0 +1,132 @@
+package HeroTypes
+
+import StandardImports
+import ObjEditingNatives
+import public UnitTypes
+import ObjectIdGenerator
+import HashMap
+
+HashMap<int, HeroType> heros = new HashMap<int, HeroType>()
+
+public function getHeroType(string name) returns HeroType
+	return heros.get(StringHash(name))
+
+
+public module HeroInit
+	static HeroType t
+	
+	@dinit private static function initHelper() returns boolean
+		t = new HeroType()
+		settings(t)
+		t.finalize()
+		return true
+
+	static abstract function settings(HeroType t)
+	
+public class HeroType extends UnitType
+	static constant heroAbis = ""
+	static constant dummyAbis = "Clic"
+
+	int dummyId
+	BuildingAndHeroDefinition dummyDef
+	stringStat properName = stringStat("", StatType.REQUIRED)
+	intStat captureAnimationIndex = intStat(0, StatType.REQUIRED)
+	intStat standAnimationIndex = intStat(0, StatType.REQUIRED)
+	boolStat hasPeriodicAnimation = boolStat(false, StatType.REQUIRED)
+	realStat captureAnimationIntervall = realStat(0, StatType.PERIODIC)
+	realStat captureAnimationSpeed = realStat(0, StatType.REQUIRED)
+	vec3Stat captureOffset = vec3Stat(vec3(0, 0, 0), StatType.REQUIRED)
+	
+	function setHeroProperName(string name)
+		properName = stringStat(name, StatType.SET)
+		
+	function setCaptureAnimationIndex(int index)
+		captureAnimationIndex = intStat(index, StatType.SET)
+		
+	function getCaptureAnimationIndex() returns int
+		return captureAnimationIndex.content
+		
+	function setStandAnimationIndex(int index)
+		standAnimationIndex = intStat(index, StatType.SET)
+		
+	function getStandAnimationIndex() returns int
+		return standAnimationIndex.content
+		
+	function setHashPeriodicAnimation(boolean has)
+		hasPeriodicAnimation = boolStat(has, StatType.SET)
+		
+	function hasPeriodicAnimation() returns boolean
+		return hasPeriodicAnimation.content
+		
+	function setCaptureAnimationIntervall(real time)
+		captureAnimationIntervall = realStat(time, StatType.SET)
+		
+	function getCaptureAnimationIntervall() returns real
+		return captureAnimationIntervall.content
+		
+	function setCaptureAnimationSpeed(real timescale)
+		captureAnimationSpeed = realStat(timescale, StatType.SET)
+		
+	function getCaptureAnimationSpeed() returns real
+		return captureAnimationSpeed.content
+		
+	function setCaptureOffset(vec3 offset)
+		captureOffset = vec3Stat(offset, StatType.SET)
+		
+	function getCaptureOffset() returns vec3
+		return captureOffset.content
+	
+	construct()
+		super(genHeroId())
+		dummyId = genHeroId()
+		dummyDef = new BuildingAndHeroDefinition(dummyId, 'Hpal')
+		
+	override function finalize()
+		if compiletime
+			super.finalize()
+			def.setHeroAbilities(heroAbis)
+			def.setStartingStrength(0)
+			def.setStrengthPerLevel(0)
+			def.setStartingAgility(0)
+			def.setAgilityPerLevel(0)
+			def.setStartingIntelligence(0)
+			def.setIntelligencePerLevel(0)
+			def.setPrimaryAttribute("strength")
+			if properName.info == StatType.REQUIRED
+				compileError("Missing information: Hero proper name?")
+			def.setProperNames(properName.content)
+			//===============Dummy===============//
+			dummyDef.setHeroAbilities("")
+			dummyDef.setNormalAbilities("AInv,rclk")
+			dummyDef.setIsaBuilding(true)
+			dummyDef.setSpeedBase(0)
+			dummyDef.setAttack1ShowUI(false)
+			dummyDef.setHeroAbilities(heroAbis)
+			dummyDef.setStartingStrength(0)
+			dummyDef.setStrengthPerLevel(0)
+			dummyDef.setStartingAgility(0)
+			dummyDef.setAgilityPerLevel(0)
+			dummyDef.setStartingIntelligence(0)
+			dummyDef.setIntelligencePerLevel(0)
+			dummyDef.setPrimaryAttribute("strength")
+			dummyDef.setProperNames(properName.content)
+			dummyDef.setAnimationCastPoint(castPoint)
+			dummyDef.setIconGameInterface(icon.content)
+			dummyDef.setAttack1DamageBase(basicAttack)
+			dummyDef.setAttack1DamageSidesperDie(diceSides)
+			dummyDef.setAttack1DamageNumberofDice(diceCount)	
+			dummyDef.setUnitSoundSet(soundSet.content) //TODO
+			dummyDef.setName(name.content)
+			dummyDef.setFoodCost(foodCost)
+			dummyDef.setHitPointsMaximumBase(life.content)
+			dummyDef.setManaMaximum(mana.content)
+			dummyDef.setManaInitialAmount(startMana)
+			dummyDef.setSightRadiusDay(1)
+			dummyDef.setSightRadiusNight(1)
+			dummyDef.setHitPointsRegenerationRate(0)
+			dummyDef.setManaRegeneration(0)
+		else
+			heros.put(StringHash(name.content), this)
+		super.finalize()
+
+			

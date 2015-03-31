@@ -1,5 +1,0 @@
-package WurstExportedObjects_w3d
-import ObjEditingNatives
-
-//modifiedTable: 
-

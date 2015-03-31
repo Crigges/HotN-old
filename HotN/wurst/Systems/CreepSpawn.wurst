@@ -1,0 +1,63 @@
+package CreepSpawn
+
+import StringList
+import UnitClass
+
+public constant vec2 wargrinTopStart = vec2(0, 0)
+public constant vec2 wargrinBotStart = vec2(0, 0)
+public constant vec2 everlivingTopStart = vec2(0, 0)
+public constant vec2 everlivingBotStart = vec2(0, 0)
+public constant real waveInterval = 30
+public constant real unitInterval = 0.9
+public constant player wargrinOwner = Player(1)
+public constant player everlivingOwner = Player(7)
+
+public constant StringList wargrinSpawnorder = wargrinSpawnorder()
+public constant StringList everlivingSpawnorder = everlivingSpawnorder()
+
+
+function wargrinSpawnorder() returns StringList
+	var w = new StringList()
+	w.add("")
+	return w
+	
+function everlivingSpawnorder() returns StringList
+	var w = new StringList()
+	w.add("")
+	return w
+	
+function initSpawn()
+	wargrinSpawn()
+	everlivingSpawn()
+	getTimer().startPeriodic(waveInterval, () -> begin
+		wargrinSpawn()
+		everlivingSpawn()
+	end)
+	
+function wargrinSpawn()
+	getTimer()..setData(wargrinSpawnorder.iterator() castTo int).start(unitInterval, function wargrinSpawnCallback)
+	
+function wargrinSpawnCallback()
+	StringIteratorC iter = GetExpiredTimer().getData() castTo StringIteratorC
+	if iter.hasNext()
+		string s = iter.next()
+		new Unit(s, wargrinTopStart, wargrinOwner)
+		new Unit(s, wargrinTopStart, wargrinOwner)
+	else
+		destroy iter
+		GetExpiredTimer().release()
+		
+function everlivingSpawn()
+	getTimer()..setData(everlivingSpawnorder.iterator() castTo int).start(unitInterval, function everlivingSpawnCallback)
+	
+function everlivingSpawnCallback()
+	StringIteratorC iter = GetExpiredTimer().getData() castTo StringIteratorC
+	if iter.hasNext()
+		string s = iter.next()
+		new Unit(s, everlivingTopStart, wargrinOwner)
+		new Unit(s, everlivingTopStart, wargrinOwner)
+	else
+		destroy iter
+		GetExpiredTimer().release()
+		
+	

@@ -1,0 +1,28 @@
+function PreloadFiles takes nothing returns nothing
+
+	call Preload( "")
+meep1
+" )
+	call Preload( "")
+meep2
+" )
+	call Preload( "")
+meep3
+" )
+	call Preload( "")
+meep4
+" )
+	call Preload( "")
+meep5
+" )
+	call Preload( "")
+meep6
+" )
+	call Preload( "")
+meep7
+" )
+	call PreloadEnd( 16471.0 )
+
+endfunction
+
+
