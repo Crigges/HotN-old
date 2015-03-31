@@ -1,0 +1,74 @@
+package Pull2//   Der Pull braucht nur noch einen Abbruch wenn nicht Pathable oder kein Damage an gepullter Unit
+	import UnitClass
+	import Terrain
+
+	
+	init
+		
+		trigger t=CreateTrigger()
+		t.addCondition(Condition(function spellCondition))
+		t.addAction(function spellStart)
+		t.registerAnyUnitEvent(EVENT_PLAYER_UNIT_SPELL_CAST)
+		
+	function spellCondition() returns boolean
+			if GetSpellAbilityId()=='AUcs'
+				return true
+			else
+				return false
+	
+	
+	function spellStart()
+		new Pull2(GetTriggerUnit(),GetSpellTargetUnit())
+		
+	class Pull2
+		
+		timer t
+		unit u
+		unit ut
+		lightning l
+		int i
+		int imax
+		Unit uut
+
+		
+		
+		construct(unit u,unit ut)
+			this.u=u
+			this.ut=ut
+			uut = GetUnitUserData(ut)castTo Unit
+			
+			i = R2I(distanceBetweenCoords(u.getX(),u.getY(),ut.getX(),ut.getY())/20)
+			imax=i
+			
+			l=AddLightningEx("LEAS",true,u.getX(),u.getY(),50,ut.getX(),ut.getY(),50)
+			
+			t=getTimer()
+			t.setData(this castTo int)
+			t.startPeriodic(0.03,function blackHCall)
+			
+		static function blackHCall()
+			GetExpiredTimer().getData()castTo Pull2.theSpell()
+		
+		function theSpell()
+			i--
+			SetLightningColor(l,i/imax,i/imax,i/imax,1)
+			MoveLightningEx(l,true,u.getX(),u.getY(),50,ut.getX(),ut.getY(),50)
+			real dist=distanceBetweenCoords(u.getX(),u.getY(),ut.getX(),ut.getY())
+			
+			if i <=0
+				t.release()
+				DestroyLightning(l)
+			else if dist > 100
+				
+				uut.knockSpeed *= 0.5
+				real x = 0//(polarProjectionXD(ut.getX(), (i/imax)*15*((distanceBetweenCoords(u.getX(),u.getY(),ut.getX(),ut.getY()))/600), angleBetweenCoordsD(ut.getX(),ut.getY(),u.getX(),u.getY()))-ut.getX())
+				real y = 0//(polarProjectionYD(ut.getY(), (i/imax)*15*((distanceBetweenCoords(u.getX(),u.getY(),ut.getX(),ut.getY()))/600), angleBetweenCoordsD(ut.getX(),ut.getY(),u.getX(),u.getY()))-ut.getY())
+				if isTerrainWalkable(ut.getX()+x,ut.getY()+y) == true
+					print(R2S(RAbsBJ(x)+RAbsBJ(y)))
+					uut.lastKnocker = u.getUserData()castTo Unit
+					uut.addKnock(x,y)
+				else
+					i=0
+			else
+				i=0
+endpackage

@@ -1,0 +1,36 @@
+package AreaMarker
+
+	import Image
+ 
+	public function createAreaMarker(vec2 pos, real radius, player p) returns AreaMarker
+		return new AreaMarker(pos, radius, p, 0)
+		
+	public function createAreaMarkerTimed(vec2 pos, real radius, player p, real duration) returns AreaMarker
+		return new AreaMarker(pos, radius, p, duration)
+		
+	class AreaMarker
+		image img
+		int bla
+		timer t = null
+		
+		construct(vec2 pos, real radius, player p, real duration)
+			img = createImage("ReplaceableTextures\\Selection\\SelectionCircleSmall.blp", pos, (radius * 2.1875) / 2, (radius * 2.1875) / 2, Layer.L3)
+//			if IsPlayerAlly(GetLocalPlayer(), p)
+//				img.setColor(color(0, 255, 0))
+//			else
+//				img.setColor(color(255, 0, 0))
+			img.show()
+			if duration > 0
+				t = getTimer()
+				t.setData(this castTo int)
+				t.start(duration, function destr)
+	
+		static function destr()
+			destroy ((GetExpiredTimer().getData()) castTo AreaMarker)
+			
+		ondestroy
+			img.remove()
+			if t != null
+				t.release()
+			
+endpackage

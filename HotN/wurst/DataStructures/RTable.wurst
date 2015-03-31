@@ -1,0 +1,31 @@
+package RTable
+
+	constant int tableSize = 8192
+	
+	public class RTable<PK, CK, T>
+		private hashtable ht = InitHashtable()
+		private int indexPos
+
+		function put(PK parentKey, CK childKey, T data)
+			if parentKey castTo int > 0 and parentKey castTo int < tableSize and childKey castTo int > 0 and childKey castTo int < tableSize
+				ht.saveInt(this castTo int, (parentKey castTo int)*tableSize + (childKey castTo int), data castTo int)
+			else
+				if childKey castTo int > 0 and childKey castTo int < tableSize
+					printError("RTable Error: The parentkey Id was negative or over the table size")
+				else
+					printError("RTable Error: The childkey Id was negative or over the table size")
+			
+		function get(PK parentKey, CK childKey) returns T
+			if parentKey castTo int > 0 and parentKey castTo int < tableSize and childKey castTo int > 0 and childKey castTo int < tableSize
+				return ht.loadInt(this castTo int, (parentKey castTo int)*tableSize + (childKey castTo int)) castTo T
+			else
+				if childKey castTo int > 0 and childKey castTo int < tableSize
+					printError("RTable Error: The parentkey Id was negative or over the table size")
+				else
+					printError("RTable Error: The childkey Id was negative or over the table size")
+				return null
+				
+		ondestroy
+			FlushChildHashtable(ht, this castTo int)
+
+endpackage

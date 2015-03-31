@@ -1,0 +1,23 @@
+package Array
+
+public class Array<T>
+	static int currentSize = 0
+	static int array content
+	int pos
+	int size
+
+	construct(int size)
+		if currentSize + size > 8191
+			destroy this
+			error("Not enought memory for new created array")
+		else
+			pos = currentSize
+			currentSize += size
+			this.size = size
+			
+	function get(int index) returns T
+		return content[index + pos] castTo T
+		
+	function set(int index, T data)
+		content[index + pos] = data castTo int
+

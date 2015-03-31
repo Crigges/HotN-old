@@ -1,0 +1,23 @@
+package TimedEffect
+	
+	import Effect
+	import Fx
+	Table effectData = new Table()
+	
+	public function createTimedEffect(string path, vec2 pos, real duration)
+		effectData.saveEffect(GetHandleId(getTimer()..start(duration, function destroyTimedEffect)), addEffect(path, pos))
+		
+	function destroyTimedEffect()
+		effectData.loadEffect(GetHandleId(GetExpiredTimer())).destr()
+		
+	public function createTimedFx(string path, vec2 pos, real duration) returns Fx
+		Fx fx = new Fx(pos, angle(0), path)
+		getTimer()..start(duration, function destroyTimedFx).setData(fx castTo int)
+		return fx
+		
+	function destroyTimedFx()
+		timer t = GetExpiredTimer()
+		destroy t.getData() castTo Fx
+		t.release()
+	
+endpackage

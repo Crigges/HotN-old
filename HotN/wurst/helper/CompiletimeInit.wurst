@@ -1,0 +1,11 @@
+package CompiletimeInit
+import ClosureTimers
+
+public boolean compiletime = true
+
+init
+	compiletime = false
+	nullTimer(() -> callFunctionsWithAnnotation("@dinit"))
+	
+@compiletime function cinit()
+	callFunctionsWithAnnotation("@dinit")

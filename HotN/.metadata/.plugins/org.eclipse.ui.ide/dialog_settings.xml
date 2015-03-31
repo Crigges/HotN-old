@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<list key="installedFeatures">
+		<item value="org.eclipse.egit.mylyn:3.4.1.201406201815-r"/>
+		<item value="org.eclipse.egit.source:3.4.1.201406201815-r"/>
+		<item value="org.eclipse.egit:3.4.1.201406201815-r"/>
+		<item value="org.eclipse.emf.common:2.10.0.v20140514-1158"/>
+		<item value="org.eclipse.emf.ecore:2.10.0.v20140514-1158"/>
+		<item value="org.eclipse.help:2.0.102.v20140606-1215"/>
+		<item value="org.eclipse.jgit:3.4.1.201406201815-r"/>
+		<item value="org.eclipse.mylyn.commons.identity:1.4.0.v20140605-1728"/>
+		<item value="org.eclipse.mylyn.commons.notifications:1.4.0.v20140605-1728"/>
+		<item value="org.eclipse.mylyn.commons.repositories:1.4.0.v20140605-1728"/>
+		<item value="org.eclipse.mylyn.commons:3.12.0.v20140605-1728"/>
+		<item value="org.eclipse.mylyn.context_feature:3.12.0.v20140606-1805"/>
+		<item value="org.eclipse.mylyn.discovery:3.12.0.v20140605-1728"/>
+		<item value="org.eclipse.mylyn.monitor:3.12.0.v20140605-1728"/>
+		<item value="org.eclipse.mylyn.team_feature:3.12.0.v20140606-1805"/>
+		<item value="org.eclipse.mylyn_feature:3.12.0.v20140605-1718"/>
+		<item value="org.eclipse.platform:4.4.0.v20140606-1558"/>
+		<item value="org.eclipse.rcp:4.4.0.v20140606-1445"/>
+	</list>
+	<section name="WORKBENCH_SETTINGS">
+		<list key="ENABLED_TRANSFERS">
+		</list>
+	</section>
+	<section name="ChooseWorkspaceDialogSettings">
+		<item value="202" key="DIALOG_X_ORIGIN"/>
+		<item value="197" key="DIALOG_Y_ORIGIN"/>
+	</section>
+</section>

@@ -1,0 +1,854 @@
+package GameStart
+//Do NOT import this into any package!!!
+	import AuraHelper
+	import Bonus
+	import Buff
+	import Button
+	import Char
+	import ClassInit
+	import ClosureTimers
+	import Colors
+	import ControlPoint
+	import CustomBar
+	import DebugFile
+	import Dot
+	import Filter
+	import FloatingText
+	import Fx
+	import HandleCounter
+	import HashList
+	import Helper
+	import HeroBar
+	import HeroClass
+	import Icon
+	import IconType
+	import Image
+	import ImageEx
+	import ItemClass
+	import LinkedList
+	import Menu
+	import Missle
+	import Model
+	import ObjectId
+	import ObjectIds
+	import OrderHandling
+	import Pane
+	import PlayerClass
+	import PreloadHandler
+	import PreloadSystem
+	import SampleSpells
+	import Setup
+	import Spell
+	import Stack
+	import Terrain
+	import TextBox
+	import TextSplat
+	import Texttag
+	import TimedEffect
+	import Trackable
+	import UnitClass
+	import ToolTip
+
+	
+	trigger testt = CreateTrigger()..addAction(function setCallLimit)
+	Bonus lastBon = null
+	vec2 tvec = vec2(0, 0)
+	real hp = 0
+	int testc = 0
+	int testi = 0
+	real ttSize = 0.0300
+	real testr = 0
+	string tests = null
+	Spell testSpell = null
+	string testChar = ""
+	unit testu // = CreateUnit(Player(0), 'hpea', 0, 0, 0)
+	group testg = CreateGroup()
+	int progress = 0
+	int recursionCounter = 0
+	destructable testd //= CreateDestructable('Icon', menuStart.x + 20., menuStart.y + 10., 0, 1, 1)
+	int callLimit = 1
+	HashList<Unit> tList = new HashList<Unit>()
+	LinkedList<Unit> lList = new LinkedList<Unit>()
+	
+	Window shopWindow = new Window()
+	Window scoreWindow = new Window()
+	Window guideWindow = new Window()
+	Window statsWindow = new Window()
+	
+	init
+		
+		for int i = 0 to 11
+			if GetPlayerSlotState(Player(i)) == PLAYER_SLOT_STATE_PLAYING and GetPlayerController(Player(i)) == MAP_CONTROL_USER
+				allPlayers.add(Player(i))	
+				SetPlayerAbilityAvailable(Player(i), 'ZAph', false)	
+				SetPlayerAbilityAvailable(Player(i), 'ZAat', false)	
+				SetPlayerAbilityAvailable(Player(i), 'ZAst', false)	
+				SetPlayerAbilityAvailable(Player(i), 'ZAsc', false)
+		//Dot
+		getTimer().startPeriodic(0.5, function Dot.loopList)
+		//UnitClass
+		getTimer().startPeriodic(0.03, function callKnockback)
+		
+		trigger blub = CreateTrigger()
+		blub.addAction(function camTest)
+		
+		//EnablePreSelect(false, false)
+		
+
+		for player p in allPlayers
+			new Player(p)
+		
+
+		testt.registerPlayerChatEvent(Player(0), "", false)
+		TriggerRegisterPlayerEventEndCinematic(CreateTrigger()..addAction(function onEsc), Player(0))
+
+
+		
+		//---------------------------------------------//
+		//-------------Preload Stuff-------------------//
+		//---------------------------------------------//
+		Preload.startPreload()
+		
+		
+		//---------------Attack Bons-------------------//
+		
+		
+	function textTag()
+		skip
+
+		
+	function noOpLimit()
+		Preload.preloadStatus++
+		if Preload.preloadStatus >= 83
+			GetExpiredTimer().release()
+		print("nooplimit" + Preload.preloadStatus.toString())
+		
+	//========================================================================================================================================================================================//
+	//========================================================================================================================================================================================//
+	//========================================================================================================================================================================================//
+		
+	class Preload
+		use ClassInit
+		static constant real maxProgress = 10.015
+		static string array initOrder
+		static real progress = 0
+		static int preloadStatus = 1
+		static SimpleEvent preloadEnd = new SimpleEvent()
+		static boolean showProgress = true
+		static int loopCounter = 0
+		
+		override static function classInit()
+			initOrder[1] = "Abilitys"
+			initOrder[2] = "Units"
+			initOrder[3] = "Items"
+			initOrder[4] = "Destructables"
+			initOrder[5] = "Buffs"
+			initOrder[6] = "Trackables"
+			initOrder[7] = "Menu"
+		
+		static function startPreload()
+			getTimer().start(1.0, function Preload.preload)
+		
+		static function preload()
+			print("1")
+			if initOrder[preloadStatus] == null
+				ClearTextMessages()
+				print("Preload done in " + progress.toString() + " sec!")
+				preloadEnd.callActions(0)
+				GetExpiredTimer().release()
+				return
+			print("2")
+			real check = preloadAction(initOrder[preloadStatus], loopCounter)
+			print("3")
+			loopCounter++
+			print("4")
+			if check == -2
+				printError("An error while Preloading has ocurred")
+				return
+			else if check == -1
+				print("5")
+				loopCounter = 0
+				preloadStatus++
+				GetExpiredTimer().start(0.05, function preload)
+				progress += 0.05
+			else 
+				GetExpiredTimer().start(check, function preload)
+				progress += check
+			if showProgress
+				ClearTextMessages()
+				print("Loading " + initOrder[preloadStatus] + ": " + (100 * (progress / maxProgress)).toString() + "%")
+				
+					
+	init
+		Preload.preloadEnd.addAction((int i) -> afterPreload())
+		Button shopB = null
+		Button scoreB = null
+		Button guideB = null
+		Button statsB = null
+		
+		TextBox shopT1 = null
+		TextBox shopT2 = null
+		TextBox shopT3 = null
+		TextBox shopT7 = null
+		TextBox shopT8 = null
+		TextBox shopT9 = null
+		
+		Observable shopOb = null
+		Observable scoreOb  = null
+		Observable guideOb  = null
+		Observable statsOb = null
+		
+		Pane shopPleft = null
+		Pane shopPmiddle = null
+		Pane shopPright = null
+		Pane shopPleftBot = null
+		Pane shopPleftBot2 = null
+		
+		Icon shop1 = null
+		ImageEx buttonLayerShop01 = null
+		Icon shop2 = null
+		ImageEx buttonLayerShop02 = null
+		Icon shop3 = null
+		ImageEx buttonLayerShop03 = null
+		Icon shop4 = null
+		ImageEx buttonLayerShop04 = null
+		Icon shop5 = null
+		ImageEx buttonLayerShop05 = null
+		Icon shop6 = null
+		ImageEx buttonLayerShop06 = null
+		Icon shop7 = null
+		ImageEx buttonLayerShop07 = null
+		Icon shop8 = null
+		ImageEx buttonLayerShop08 = null
+		Icon shop9 = null
+		ImageEx buttonLayerShop09 = null
+		Icon shop10 = null
+		ImageEx buttonLayerShop10 = null
+		Icon shop11 = null
+		ImageEx buttonLayerShop11 = null
+		Icon shop12 = null
+		ImageEx buttonLayerShop12 = null
+		Icon shop13 = null
+		ImageEx buttonLayerShop13 = null
+		Icon shop14 = null
+		ImageEx buttonLayerShop14 = null
+		Icon shop15 = null
+		ImageEx buttonLayerShop15 = null
+		Icon shop16 = null
+		ImageEx buttonLayerShop16 = null
+		Icon shop17 = null
+		ImageEx buttonLayerShop17 = null
+		Icon shop18 = null
+		ImageEx buttonLayerShop18 = null
+		Icon shop19 = null
+		ImageEx buttonLayerShop19 = null
+		Icon shop20 = null
+		ImageEx buttonLayerShop20 = null
+
+		ImageEx buttonLayerShopBuy = null
+		ImageEx buttonLayerShopSell = null
+
+		Icon shop24 = null
+		Icon shop25 = null
+		Icon shop26 = null
+		Icon shop27 = null
+		Icon shop28 = null
+		Icon shop29 = null
+		Icon shop30 = null
+		Icon shop31 = null
+
+		Icon shop32 = null
+		ImageEx buttonLayerShop32 = null
+		
+		ImageEx buttonLayerCateAgr = null
+		ImageEx buttonLayerCateDef = null
+		ImageEx buttonLayerCateUti = null
+		ImageEx buttonLayerCateUtiDis = null
+		
+		ImageEx arrow1 = null
+		ImageEx arrow2 = null
+		ImageEx arrow3 = null
+		ImageEx arrow4 = null
+		ImageEx arrow5 = null
+		ImageEx arrow6 = null
+		ImageEx arrow7 = null
+		ImageEx arrow8 = null
+		ImageEx arrow9 = null
+		ImageEx arrow10 = null
+		ImageEx arrow11 = null
+		ImageEx arrow12 = null
+		ImageEx arrow13 = null
+		ImageEx arrow14 = null
+		ImageEx arrow15 = null
+
+		
+		onPreload("Menu", (int i) -> begin
+			real ret = 0.01
+			switch i
+				case 0
+					int i2 = 11
+					shopB = new Button(element(i2, 22), 1, Layer.L1, "Shop")
+					i2 = i2 +5
+					scoreB = new Button(element(i2, 22), 1, Layer.L1, "Score")
+					i2 = i2 +5
+					guideB = new Button(element(i2, 22), 1, Layer.L1, "Guide")
+					i2 = i2 +5
+					statsB = new Button(element(i2, 22), 1, Layer.L1, "Stats")
+					
+					int row = 8
+					int colu = 18
+					
+					arrow1 = new ImageEx(element(row, colu), element(2,2),"Pfeil_Kacheln\\HotN_Top_Links.blp", Layer.L1)
+					colu = colu - 2
+					arrow2 = new ImageEx(element(row, colu), element(2,2),"Pfeil_Kacheln\\HotN_Vertikal.blp", Layer.L1)
+					colu = colu - 2
+					arrow3 = new ImageEx(element(row, colu), element(2,2),"Pfeil_Kacheln\\HotN_Vertikal.blp", Layer.L1)
+					colu = colu - 2
+					arrow4 = new ImageEx(element(row, colu), element(2,2),"Pfeil_Kacheln\\HotN_Vertikal.blp", Layer.L1)
+					colu = colu - 2
+					arrow5 = new ImageEx(element(row, colu), element(2,2),"Pfeil_Kacheln\\HotN_Bot_Rechts.blp", Layer.L1)
+					colu = colu
+					row = row + 4
+					arrow6 = new ImageEx(element(row, colu), element(2,2),"Pfeil_Kacheln\\HotN_Hrizontal.blp", Layer.L1)
+					colu = colu
+					row = row + 4
+					arrow7 = new ImageEx(element(row, colu), element(2,2),"Pfeil_Kacheln\\HotN_Bot_Links.blp", Layer.L1)
+					colu = colu + 2
+					arrow8 = new ImageEx(element(row, colu), element(2,2),"Pfeil_Kacheln\\HotN_Vertikal.blp", Layer.L1)
+					colu = colu + 2
+					arrow9 = new ImageEx(element(row, colu), element(2,2),"Pfeil_Kacheln\\HotN_Vertikal.blp", Layer.L1)
+					colu = colu + 2
+					arrow10 = new ImageEx(element(row, colu), element(2,2),"Pfeil_Kacheln\\HotN_Vertikal.blp", Layer.L1)
+					colu = colu + 2
+					arrow11 = new ImageEx(element(row, colu), element(2,2),"Pfeil_Kacheln\\HotN_Top_Rechts", Layer.L1)
+					colu = colu + 2
+
+				case 1
+
+					shopPleft = new Pane(element(4, 0), element(16, 20), Layer.L3, 4,false)		
+					shopPmiddle = new Pane(element(23, 14), element(4, 4), Layer.L3, false)	
+					shopPright = new Pane(element(30, 4), element(12, 4), Layer.L2, 4, false)
+					doAfter(10, () -> new Tooltip(element(36, 0), "test").showDirect(Player(0)))
+					shopPleftBot = new Pane(element(23, 8), element(4, 2), Layer.L3, false)
+					shopPleftBot2 = new Pane(element(23, 1), element(4,6), Layer.L3, false)
+//					
+					
+				case 2
+					
+					shopT1 = new TextBox(element(21, 17), element(16, 4), 65, Layer.L1)
+					shopT1.setColor(color(255, 201, 14))
+					shopT1.setText("Mighty Frog Sense", Player(0))
+					
+					shopT3 = new TextBox(element(32, 7), element(16, 1), 65, Layer.L1)
+					shopT3.setColor(color(50,255,50))
+					shopT3.setText("15000", Player(0))
+//		
+					shopT2 = new TextBox(element(5, 20), element(13, 1), 70, Layer.L1)
+					shopT2.setColor(color(255, 180, 220))
+					shopT2.setText("I", Player(0))
+					
+					shopT7 = new TextBox(element(9, 20), element(13, 1), 70, Layer.L1)
+					shopT7.setColor(color(0, 162, 232))
+					shopT7.setText("II", Player(0))					
+					
+					shopT8 = new TextBox(element(13, 20), element(13, 1), 70, Layer.L1)
+					shopT8.setColor(color(181, 230, 29))
+					shopT8.setText("III", Player(0))	
+					
+					shopT9 = new TextBox(element(17, 20), element(13, 1), 70, Layer.L1)
+					shopT9.setColor(color(255, 201, 14))
+					shopT9.setText("IV", Player(0))	
+		
+
+										
+					
+				case 3
+					
+					int row1 = 6
+					int blub = 18
+					
+					shop1 = new Icon("Hydra", element(row1, blub), 2)
+					blub = blub - 4
+					shop2 = new Icon("3M1", element(row1, blub), 2)
+					blub = blub - 4
+					shop3 = new Icon("3M1", element(row1, blub), 2)
+					blub = blub - 4
+					shop4 = new Icon("3M1", element(row1, blub), 2)
+					blub = blub - 4
+					shop5 = new Icon("Grunt", element(row1, blub), 2)	
+					
+
+					
+					blub = 18
+					
+					buttonLayerShop01 = new ImageEx(element(row1, blub), element(2,2),"64x64LayerShopIcon.blp", Layer.L1)
+					buttonLayerShop01.content.setColor(color(255, 180, 220))
+					blub = blub - 4
+					buttonLayerShop02 = new ImageEx(element(row1, blub), element(2,2),"64x64LayerShopIcon.blp", Layer.L1)
+					buttonLayerShop02.content.setColor(color(255, 180, 220))
+					blub = blub - 4
+					buttonLayerShop03 = new ImageEx(element(row1, blub), element(2,2),"64x64LayerShopIcon.blp", Layer.L1)
+					buttonLayerShop03.content.setColor(color(255, 180, 220))
+					blub = blub - 4
+					buttonLayerShop04 = new ImageEx(element(row1, blub), element(2,2),"64x64LayerShopIcon.blp", Layer.L1)
+					buttonLayerShop04.content.setColor(color(255, 180, 220))
+					blub = blub - 4
+					buttonLayerShop05 = new ImageEx(element(row1, blub), element(2,2),"64x64LayerShopIcon.blp", Layer.L1)
+					buttonLayerShop05.content.setColor(color(255, 180, 220))
+					
+															
+					row1 = row1 + 4
+					blub = 18
+					
+					shop6 = new Icon("Glove", element(row1, blub), 2)
+					blub = blub - 4
+					shop7 = new Icon("Grunt", element(row1, blub), 2)
+					blub = blub - 4
+					shop8 = new Icon("3M1", element(row1, blub), 2)
+					blub = blub - 4
+					shop9 = new Icon("3M1", element(row1, blub), 2)
+					blub = blub - 4
+					shop10 = new Icon("3M1", element(row1, blub), 2)
+					
+					blub = 18
+					
+					buttonLayerShop06 = new ImageEx(element(row1, blub), element(2,2),"64x64LayerShopIcon.blp", Layer.L1)
+					buttonLayerShop06.content.setColor(color(0, 162, 232))
+					blub = blub - 4
+					buttonLayerShop07 = new ImageEx(element(row1, blub), element(2,2),"64x64LayerShopIcon.blp", Layer.L1)
+					buttonLayerShop07.content.setColor(color(0, 162, 232))
+					blub = blub - 4
+					buttonLayerShop08 = new ImageEx(element(row1, blub), element(2,2),"64x64LayerShopIcon.blp", Layer.L1)
+					buttonLayerShop08.content.setColor(color(0, 162, 232))
+					blub = blub - 4
+					buttonLayerShop09 = new ImageEx(element(row1, blub), element(2,2),"64x64LayerShopIcon.blp", Layer.L1)
+					buttonLayerShop09.content.setColor(color(0, 162, 232))
+					blub = blub - 4
+					buttonLayerShop10 = new ImageEx(element(row1, blub), element(2,2),"64x64LayerShopIcon.blp", Layer.L1)
+					buttonLayerShop10.content.setColor(color(0, 162, 232))
+					
+					
+					row1 = row1 + 4
+					blub = 18
+					
+					shop11 = new Icon("HealingSpray", element(row1, blub), 2)
+					blub = blub - 4
+					shop12 = new Icon("HealingSpray", element(row1, blub), 2)
+					blub = blub - 4
+					shop13 = new Icon("Impale", element(row1, blub), 2)	
+					blub = blub - 4
+					shop14 = new Icon("Impale", element(row1, blub), 2)
+					blub = blub - 4
+					shop15 = new Icon("Impale", element(row1, blub), 2)
+					
+					blub = 18
+					
+					buttonLayerShop11 = new ImageEx(element(row1, blub), element(2,2),"64x64LayerShopIcon.blp", Layer.L1)
+					buttonLayerShop11.content.setColor(color(181, 230, 29))
+					blub = blub - 4
+					buttonLayerShop12 = new ImageEx(element(row1, blub), element(2,2),"64x64LayerShopIcon.blp", Layer.L1)
+					buttonLayerShop12.content.setColor(color(181, 230, 29))
+					blub = blub - 4
+					buttonLayerShop13 = new ImageEx(element(row1, blub), element(2,2),"64x64LayerShopIcon.blp", Layer.L1)
+					buttonLayerShop13.content.setColor(color(181, 230, 29))
+					blub = blub - 4
+					buttonLayerShop14 = new ImageEx(element(row1, blub), element(2,2),"64x64LayerShopIcon.blp", Layer.L1)
+					buttonLayerShop14.content.setColor(color(181, 230, 29))
+					blub = blub - 4
+					buttonLayerShop15 = new ImageEx(element(row1, blub), element(2,2),"64x64LayerShopIcon.blp", Layer.L1)
+					buttonLayerShop15.content.setColor(color(181, 230, 29))
+					
+					row1 = row1 + 4
+					blub = 18
+					
+					shop16 = new Icon("Hex", element(row1, blub), 2)
+					blub = blub - 4
+					shop17 = new Icon("Impale", element(row1, blub), 2)
+					blub = blub - 4
+					shop18 = new Icon("Impale", element(row1, blub), 2)
+					blub = blub - 4
+					shop19 = new Icon("Bash", element(row1, blub), 2)
+					blub = blub - 4
+					shop20 = new Icon("Bash", element(row1, blub), 2)	
+					blub = blub - 4
+					
+					
+					blub = 18
+					
+					buttonLayerShop16 = new ImageEx(element(row1, blub), element(2,2),"64x64LayerShopIcon.blp", Layer.L1)
+					buttonLayerShop16.content.setColor(color(255, 201, 14))
+					blub = blub - 4
+					buttonLayerShop17 = new ImageEx(element(row1, blub), element(2,2),"64x64LayerShopIcon.blp", Layer.L1)
+					buttonLayerShop17.content.setColor(color(255, 201, 14))
+					blub = blub - 4
+					buttonLayerShop18 = new ImageEx(element(row1, blub), element(2,2),"64x64LayerShopIcon.blp", Layer.L1)
+					buttonLayerShop18.content.setColor(color(255, 201, 14))
+					blub = blub - 4
+					buttonLayerShop19 = new ImageEx(element(row1, blub), element(2,2),"64x64LayerShopIcon.blp", Layer.L1)
+					buttonLayerShop19.content.setColor(color(255, 201, 14))
+					blub = blub - 4
+					buttonLayerShop20 = new ImageEx(element(row1, blub), element(2,2),"64x64LayerShopIcon.blp", Layer.L1)
+					buttonLayerShop20.content.setColor(color(255, 201, 14))
+					blub = blub - 4
+					
+					
+					
+					
+		
+
+
+					row1 = 24
+					blub = 9
+					
+					
+					shop24 = new Icon("Hex", element(row1, blub), 2)
+					shop25 = new Icon("Hex", element(row1+2, blub), 2)
+					blub = blub -3
+					shop26 = new Icon("Hex", element(row1, blub), 2)
+					shop27 = new Icon("Hex", element(row1+2, blub), 2)
+					blub = blub -2
+					shop28 = new Icon("Hex", element(row1, blub), 2)	
+					shop29 = new Icon("Hex", element(row1+2, blub), 2)
+					blub = blub -2
+					shop30 = new Icon("Hex", element(row1, blub), 2)
+					shop31 = new Icon("Hex", element(row1+2, blub), 2)
+
+
+					int cc = 24
+					int pp = 15
+					int tt = 4
+					
+					shop32 = new Icon("Hex", element(cc, pp), tt)
+					buttonLayerShop32 = new ImageEx(element(cc, pp), element(tt,tt),"64x64LayerShopIcon.blp", Layer.L1)
+					buttonLayerShop32.content.setColor(color(255, 201, 14))
+
+
+					buttonLayerShopSell = new ImageEx(element(31, 6), element(5,3),"UI\\Widgets\\EscMenu\\Human\\alliance-gold.blp", Layer.L2)
+//					buttonLayerShopSell.content.setColor(color(200,200,150))
+					buttonLayerShopBuy = new ImageEx(element(37, 6), element(6,3),"menuBuy.blp", Layer.L1)
+					
+					buttonLayerCateAgr = new ImageEx(element(2, 15), element(3,3),"cateAgr.blp", Layer.L1)
+					buttonLayerCateDef = new ImageEx(element(2, 10), element(3,3),"cateDef.blp", Layer.L1)
+					buttonLayerCateUti = new ImageEx(element(2, 5), element(3,3),"cateUtiDis.blp", Layer.L1)
+
+				case 4
+					shopOb = new Observable(shopB)
+					shopOb.setClickAction((player p) -> begin
+						print("Spieler " + p.getName() + " geht in den Shop")
+						WindowManager.closeTopWindow(p)
+						WindowManager.openWindow(shopWindow, p)
+					end)
+					scoreOb = new Observable(scoreB)
+					scoreOb.setClickAction((player p) -> begin
+						print("Spieler " + p.getName() + " geht in den Score")
+						WindowManager.closeTopWindow(p)
+						WindowManager.openWindow(scoreWindow, p)
+					end)
+					guideOb = new Observable(guideB)
+					guideOb.setClickAction((player p) -> begin
+						print("Spieler " + p.getName() + " geht in den Guide")
+						WindowManager.closeTopWindow(p)
+						WindowManager.openWindow(guideWindow, p)
+					end)
+					statsOb = new Observable(statsB)
+					statsOb.setClickAction((player p) -> begin
+						print("Spieler " + p.getName() + " geht in die Stats")
+						WindowManager.closeTopWindow(p)
+						WindowManager.openWindow(statsWindow, p)
+					end)
+				case 5
+					
+//					shopWindow.add(arrow1)
+//					shopWindow.add(arrow2)
+//					shopWindow.add(arrow3)
+//					shopWindow.add(arrow4)
+//					shopWindow.add(arrow5)
+//					shopWindow.add(arrow6)
+//					shopWindow.add(arrow7)
+//					shopWindow.add(arrow8)
+//					shopWindow.add(arrow9)
+//					shopWindow.add(arrow10)
+//					shopWindow.add(arrow11)
+					
+					
+					shopWindow.add(shopOb)
+					shopWindow.add(scoreOb)
+					shopWindow.add(guideOb)
+					shopWindow.add(statsOb)
+										
+//					shopWindow.add(shopPright)
+					shopWindow.add(shopPmiddle)
+					shopWindow.add(shopPleft)
+					
+					shopWindow.add(shopPleftBot)
+					shopWindow.add(shopPleftBot2)
+										
+					shopWindow.add(shop1)
+					shopWindow.add(shop2)
+					shopWindow.add(shop3)
+					shopWindow.add(shop4)
+					shopWindow.add(shop5)
+					shopWindow.add(shop6)
+					shopWindow.add(shop7)
+					shopWindow.add(shop8)
+					shopWindow.add(shop9)
+					shopWindow.add(shop10)
+					shopWindow.add(shop11)
+					shopWindow.add(shop12)
+					shopWindow.add(shop13)
+					shopWindow.add(shop14)
+					shopWindow.add(shop15)
+					shopWindow.add(shop16)
+					shopWindow.add(shop17)
+					shopWindow.add(shop18)
+					shopWindow.add(shop19)
+					shopWindow.add(shop20)
+
+					shopWindow.add(shop24)
+					shopWindow.add(shop25)
+					shopWindow.add(shop26)
+					shopWindow.add(shop27)
+					shopWindow.add(shop28)
+					shopWindow.add(shop29)
+					shopWindow.add(shop30)
+					shopWindow.add(shop31)
+					
+					shopWindow.add(shop32)
+					
+					shopWindow.add(shopT1)
+					shopWindow.add(shopT2)
+					shopWindow.add(shopT3)
+
+					shopWindow.add(shopT7)
+					shopWindow.add(shopT8)
+					shopWindow.add(shopT9)
+					
+					scoreWindow.add(shopOb)
+					scoreWindow.add(scoreOb)
+					scoreWindow.add(guideOb)
+					scoreWindow.add(statsOb)
+					
+					guideWindow.add(shopOb)
+					guideWindow.add(scoreOb)
+					guideWindow.add(guideOb)
+					guideWindow.add(statsOb)
+					
+					statsWindow.add(shopOb)
+					statsWindow.add(scoreOb)
+					statsWindow.add(guideOb)
+					statsWindow.add(statsOb)
+					
+					shopWindow.add(buttonLayerShop01)
+					shopWindow.add(buttonLayerShop02)
+					shopWindow.add(buttonLayerShop03)
+					shopWindow.add(buttonLayerShop04)
+					shopWindow.add(buttonLayerShop05)
+					shopWindow.add(buttonLayerShop06)
+					shopWindow.add(buttonLayerShop07)
+					shopWindow.add(buttonLayerShop08)
+					shopWindow.add(buttonLayerShop09)
+					shopWindow.add(buttonLayerShop10)
+					shopWindow.add(buttonLayerShop11)
+					shopWindow.add(buttonLayerShop12)
+					shopWindow.add(buttonLayerShop13)
+					shopWindow.add(buttonLayerShop14)
+					shopWindow.add(buttonLayerShop15)
+					shopWindow.add(buttonLayerShop16)
+					shopWindow.add(buttonLayerShop17)
+					shopWindow.add(buttonLayerShop18)
+					shopWindow.add(buttonLayerShop19)
+					shopWindow.add(buttonLayerShop20)
+
+					shopWindow.add(buttonLayerShop32)
+					
+					shopWindow.add(buttonLayerShopBuy)
+					shopWindow.add(buttonLayerShopSell)
+					
+					shopWindow.add(buttonLayerCateAgr)
+					shopWindow.add(buttonLayerCateDef)
+					shopWindow.add(buttonLayerCateUti)
+					
+					
+				default
+					ret = -1.
+		
+			return ret
+		end)
+					
+	//========================================================================================================================================================================================//
+	//========================================================================================================================================================================================//
+	//========================================================================================================================================================================================//
+		
+	function afterPreload()
+		WindowManager.openWindow(shopWindow, Player(0))
+		
+
+		
+
+		
+
+
+		
+		
+		
+		
+		
+		
+		
+
+		
+
+
+		
+		
+	function camTest()
+		last.manaTT(1)
+		last.dodgeTT()
+		last.goldTT(1, Player(0))
+		last.normalTT(1)
+		
+	function printRegen()
+		
+		real buffer = last.u.getState(UNIT_STATE_MANA)
+		print((buffer - hp).toString())
+		hp = buffer
+		
+	function leave()
+		testc--
+		print(testc.toString())
+		
+	function enter()
+		testc++
+		print(testc.toString())
+		
+	function setCallLimit()
+		string chatString = GetEventPlayerChatString()
+		if SubString(chatString, 0, 1) == "a"
+			string cuttet = SubString(chatString, 1, 5)
+			SetUnitAnimationByIndex(last.u, S2I(cuttet))
+		switch chatString
+			case "w1"
+				WindowManager.openWindow(shopWindow, Player(0))
+			case "w2"
+				var w = new Window()
+				WindowManager.openWindow(
+					w..add(
+					new Observable(
+					new Icon("RingDesCrigges", element(10, 5), 2)
+					..showDirect(Player(0)))), Player(0))
+				w.onVoidClick((player p) -> WindowManager.closeTopWindow(p))
+
+			case "w3"
+				var w = new Window()
+				WindowManager.openWindow(
+					w..add(
+					new Observable(
+					new Icon("RingDesCrigges", element(15, 5), 2)
+					..showDirect(Player(0)))), Player(0))
+				w.onVoidClick((player p) -> WindowManager.closeTopWindow(p))
+				//testImg.showFaded(Player(0))
+				//testImg.showFaded(Player(1))
+			case "hideF"
+				//testImg.hideFaded(Player(0))
+				//testImg.hideFaded(Player(1))
+			case "dis"
+				//ic.disable(Player(0))
+				//testImg.disable(Player(0))
+			case "en"
+				//ic.enable(Player(0))
+				//testImg.enable(Player(0))
+			case "click"
+				//ic.clickAnimation(Player(0))
+				//testImg.grow(Player(0))
+			case "dclick"
+				//ic.doubleClickAnimation(Player(0))
+				//testImg.srink(Player(0))
+			case "hoover"
+				//ic.trackAnimation(Player(0))
+			case "unhoover"
+				//ic.untrackAnimation(Player(0))
+			case "size+"
+				//testImg.setRealSize(testImg.realSize + (testImg.size * 1.05), Player(0))
+			case "size-"
+				//testImg.setRealSize(testImg.realSize + (testImg.size * 0.95), Player(0))
+			case "drag t t"
+				EnableDragSelect(true, true)
+			case "drag t f"
+				EnableDragSelect(true, false)
+			case "drag f t"
+				EnableDragSelect(false, true)
+			case "drag f f"
+				EnableDragSelect(false, false)
+			case "pre t t"
+				EnablePreSelect(true, true)
+			case "pre t f"
+				EnablePreSelect(true, false)
+			case "pre f t"
+				EnablePreSelect(false, true)
+			case "pre f f"
+				EnablePreSelect(false, false)
+			case "sel t t"
+				EnableSelect(true, true)
+			case "sel t f"
+				EnableSelect(true, false)
+			case "sel f t"
+				EnableSelect(false, true)
+			case "sel f f"
+				EnableSelect(false, false)
+			case "last"
+				SelectUnitForPlayerSingle(last.u, Player(0))
+			case "hp+"
+				last.bonusLife(10)
+			case "hp++"
+				last.bonusLife(100)
+			case "hp+++"
+				last.bonusLife(1000)
+			case "hp-"
+				last.bonusLife(-10)
+			case "hp--"
+				last.bonusLife(-100)
+			case "hp---"
+				last.bonusLife(-1000)
+			case "rev"
+				last castTo Hero.revive(vec2(100, 100))
+			case "shield1"
+				last.addShield(10, 10)
+			case "shield2"
+				last.addShield(100, 10)
+			case "shield3"
+				last.addShield(1000, 10)
+			case "canMove f"
+				last castTo Hero.acceptOrders = false
+			case "canMove t"
+				last castTo Hero.acceptOrders = true
+			case "swap"
+				SetPlayerAbilityAvailable(Player(0), 'A996', false)
+				SetPlayerAbilityAvailable(Player(0), 'A999', true)
+			case "bswap"
+				SetPlayerAbilityAvailable(Player(0), 'A996', true)
+				SetPlayerAbilityAvailable(Player(0), 'A999', false)
+			case "slot"
+				SetPlayerAbilityAvailable(Player(0), 'scor', false)
+			case "key"
+				print(GetLocalizedHotkey("ESC").toString())
+			case "abi"
+				print(GetUnitAbilityLevel(last.u, 'scor').toString())
+				SetUnitAbilityLevel(last.u, 'scor', 2)
+				print(GetUnitAbilityLevel(last.u, 'scor').toString())
+			case "cast"
+				IssueInstantPointOrder(last.u, "ancestralspirit", 0, 0, null)
+				
+		//SetUnitTimeScalePercent(last.u, S2R(GetEventPlayerChatString()))
+		//testr = S2R(GetEventPlayerChatString())
+		
+	function onEsc()
+		print("onEsc")
+		createImage("ecke.blp", vec2(1010, 10), 10, 10).show()
+		
+	function stopAnimation()
+		SetUnitTimeScalePercent(last.u, 0)
+		
+	function setCallLimit1()
+		callLimit = S2I(GetEventPlayerChatString())
+		
+endpackage

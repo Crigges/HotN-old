@@ -1,0 +1,118 @@
+package Pane
+
+import StandardImports
+import Menu
+import ImageEx
+import ImageList
+import ClassInit
+import LinkedList
+
+public class Pane extends Widget
+	static int tileSize = 2 //alt 2
+	static element tileDimensions = element(tileSize, tileSize)
+	static string horizontalSide = "Seite1.blp" 
+	static string verticalSide = "Seite2.blp"
+	static string leftBotCorner = "Steinecke1.blp"
+	static string rightBotCorner = "Steinecke4.blp"
+	static string rightTopCorner = "Steinecke3.blp"
+	static string leftTopCorner = "Steinecke2.blp"
+	static vec2 sizeFix = vec2(2., 2)
+	static vec2 posFixBot = vec2(-0.5 / (4 / tileSize), -26 / (4 / tileSize))
+	static vec2 posFixTop = vec2(-0.5 / (4 / tileSize), 40 / (4 / tileSize))
+	static vec2 posFixRight = vec2(32 / (4 / tileSize), 0 / (4 / tileSize))
+	static vec2 posFixLeft = vec2(-32 / (4 / tileSize), 0)
+	
+	
+	PlayerAction onExit = null
+	ImageList list = new ImageList()
+	LinkedList<Widget> content = new LinkedList<Widget>()
+	
+	construct(element pos, element size, Layer l, boolean exitable)
+		super(pos, size)
+		list.add(createImage(leftBotCorner, pos, tileDimensions, sizeFix, l))
+		list.add(createImage(leftTopCorner, pos + element(0, size.y), tileDimensions, sizeFix, l))
+		list.add(createImage(rightBotCorner, pos + element(size.x, 0), tileDimensions, sizeFix, l))
+		list.add(createImage(rightTopCorner, pos + element(size.x, size.y), tileDimensions, sizeFix, l))
+		for int i = pos.x + tileSize to pos.x + size.x - tileSize step tileSize
+			list.add(createImage(horizontalSide, element(i, pos.y), posFixBot,tileDimensions, sizeFix, l))
+			list.add(createImage(horizontalSide, element(i, pos.y + size.y), posFixTop,tileDimensions, sizeFix, l))
+		for int i = pos.y + tileSize to pos.y + size.y - tileSize step tileSize
+			list.add(createImage(verticalSide, element(pos.x, i), posFixLeft,tileDimensions, sizeFix, l))
+			list.add(createImage(verticalSide, element(pos.x + size.x, i), posFixRight,tileDimensions, sizeFix, l))
+		if exitable
+			content.add(new Observable(new ImageEx(pos + size - element(1, 1), element(1, 1), vec2(20, 20), "menuExit.blp",l))..setClickAction((player p) -> begin
+				this.hideDirect(p)
+				if onExit != null
+					onExit.run(p)
+			end))
+			
+	construct(element pos, element size, Layer l, int backgroundScale, boolean exitable)
+		super(pos, size)
+		vec2 backgroundOffset = element(backgroundScale, backgroundScale).toVec()
+		backgroundOffset.x /= 2
+		backgroundOffset.y /= 2
+		backgroundOffset -= vec2(64, 64)
+		vec2 backgroundSizeFix = element(backgroundScale, backgroundScale).toVec() * 0.01
+		for int i = pos.x to pos.x + size.x - backgroundScale step backgroundScale
+			for int i2 = pos.y to pos.y + size.y - backgroundScale step backgroundScale
+				list.add(createImage(backgroundTexture[GetRandomInt(1, 8)], element(i, i2), backgroundOffset, element(backgroundScale, backgroundScale), backgroundSizeFix,l))
+		list.add(createImage(leftBotCorner, pos, tileDimensions, sizeFix, l))
+		list.add(createImage(leftTopCorner, pos + element(0, size.y), tileDimensions, sizeFix, l))
+		list.add(createImage(rightBotCorner, pos + element(size.x, 0), tileDimensions, sizeFix, l))
+		list.add(createImage(rightTopCorner, pos + element(size.x, size.y), tileDimensions, sizeFix, l))
+		for int i = pos.x + tileSize to pos.x + size.x - tileSize step tileSize
+			list.add(createImage(horizontalSide, element(i, pos.y), posFixBot,tileDimensions, sizeFix, l))
+			list.add(createImage(horizontalSide, element(i, pos.y + size.y), posFixTop,tileDimensions, sizeFix, l))
+			print(element(i, pos.y).toVec().toString())
+		for int i = pos.y + tileSize to pos.y + size.y - tileSize step tileSize
+			list.add(createImage(verticalSide, element(pos.x, i), posFixLeft,tileDimensions, sizeFix, l))
+			list.add(createImage(verticalSide, element(pos.x + size.x, i), posFixRight,tileDimensions, sizeFix, l))
+		if exitable
+			content.add(new Observable(new ImageEx(pos + size - element(1, 1), element(1, 1), vec2(20, 20), "menuExit.blp",l))..setClickAction((player p) -> begin
+				this.hideDirect(p)
+				if onExit != null
+					onExit.run(p)
+			end))
+		
+			
+	function add(Widget toAdd)
+		content.add(toAdd)
+		
+	function setExitAction(PlayerAction action)
+			onExit = action
+			
+	override function onAdd(Window w)
+		for Widget wi in content 
+			w.add(wi)
+		
+	override function showDirect(player p)
+		if GetLocalPlayer() == p
+			for image img in list
+				img.show()
+			for Widget w in content 
+				w.showDirect(p)
+	
+	override function hideDirect(player p)
+		if GetLocalPlayer() == p
+			for image img in list
+				img.hide()
+			for Widget w in content 
+				w.hideDirect(p)
+	
+	override function enable(player p)
+		if GetLocalPlayer() == p
+			for Widget wi in content
+				wi.enable(p)
+		
+	override function disable(player p)
+		if GetLocalPlayer() == p
+			for Widget wi in content
+				wi.disable(p)
+				
+	ondestroy
+		destroy list
+		for Widget w in content
+			destroy w
+
+
+

@@ -1,0 +1,48 @@
+package Dot
+	import LinkedListModule
+	import UnitClass
+	
+	public class Dot
+		use LinkedListModule
+		Action<Units> a
+		Unit u
+		Unit source
+		real damage
+		timer t
+		
+		construct(Unit u, Unit source, real damage, real time)
+			if time % 0.5 != 0
+				printError("Die Dauer des Dots ist nicht zulässig")
+				destroy this
+			else
+				this.u = u
+				this.source = source
+				this.damage = damage / (time / 0.5)
+				u.allDots.add(this)
+				a = u.registerDeath((Units data) -> begin
+					destroy this
+				end)
+				t = getTimer()
+				t.setData(this castTo int)
+				t.start(time, function timerDestroyDot)
+				
+		static function timerDestroyDot()
+			destroy GetExpiredTimer().getData() castTo Dot
+				
+		static function loopList()
+			var d = getFirst()
+			while d != null
+				var buffer = d
+				d = d.getNext()
+				buffer.u.damageDot(buffer.source, buffer.damage)
+				
+		ondestroy
+			destroy a
+			t.release()
+			u.allDots.remove(this)
+
+endpackage
+
+
+
+

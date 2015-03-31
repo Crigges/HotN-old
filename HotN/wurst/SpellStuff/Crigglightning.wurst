@@ -1,0 +1,167 @@
+package Crigglightning
+
+/*
+
+	/////////////////////////////////////////////////////////////
+	//////////////////     Konstanten         ///////////////////
+	////////////////////////////////////////////////////////////
+
+
+	import UnitClass
+	import AreaMarker
+	import Filter
+	import Buff
+	import Fx
+	import Stun
+	import Missle
+	import CustomEvent
+	import Lightning
+	import Helper
+	
+	constant int spellID = 'A999'
+	constant real initialBlitzSpeed = 5
+	constant real secondBlitzSpeed = 10
+	constant real initianlBlitzDist = 400
+	constant real chainGroupRadius = 64
+	constant real chainGroupRangeNext = 600
+	constant int chainJumpNumber = 10
+	constant real chainSlowPer = 50
+	constant real chainSlowDur = 5
+	constant real chainStunDur = 3
+	constant real baseDmg = 1000
+	constant string blitzString = FINGER_OF_DEATH
+	
+	
+	/////////////////////////////////////////////////////////////
+	///////////////////      Init         ///////////////////////
+	////////////////////////////////////////////////////////////
+	
+		
+	init	
+		trigger t = CreateTrigger()
+		t.addAction(function spellStart)
+		t.registerAnyUnitEvent(EVENT_PLAYER_UNIT_SPELL_CAST)
+	
+	function spellStart()
+		if GetSpellAbilityId() == spellID
+			new ChainlighningInit(GetTriggerUnit(), vec2(GetSpellTargetX(),GetSpellTargetY()))
+			
+			
+	/////////////////////////////////////////////////////////////
+	///////////         SkillShot       /////////////////////////
+	////////////////////////////////////////////////////////////				
+	
+	class ChainlighningInit
+		
+		Unit u = null
+		int jumps
+		
+		private construct(unit u, vec2 pos)
+			this.u = u.getUserData() castTo Unit
+			vec2 posU = u.getPos()
+			angle spellAngle = posU.angleTo(pos)
+			jumps = chainJumpNumber
+			Missle missle = new Missle(posU, spellAngle, initialBlitzSpeed, chainGroupRadius, initianlBlitzDist, this.u, function allEnemys)
+			missle.setEffect("Abilities\\Weapons\\VengeanceMissile\\VengeanceMissile.mdl")
+			Action a = missle.registerHitEvent(function callOnHit)
+			a.setData(this castTo int)
+			
+			
+		private static function callOnHit()
+			getAction().getData() castTo ChainlighningInit.onHit(function callOnHit, getEvent().triggerUnit) 
+		
+		private function onHit(code callOnHit, Unit target)
+			target.damageMagic(u, baseDmg)
+			vec2 posU = target.u.getPos()
+			Unit newTarget = target.getNearestUnitInRange(600, function allAllysAndNotUnit)
+			if newTarget != null
+				Missle missle = new Missle(posU, newTarget.u.getPos(), initialBlitzSpeed, chainGroupRadius, initianlBlitzDist, target, function allAllysAndNotUnit)
+				missle.setEffect("Abilities\\Weapons\\VengeanceMissile\\VengeanceMissile.mdl")
+				jumps--
+				if jumps > 0
+					Action a = missle.registerHitEvent(callOnHit)
+					a.setData(this castTo int)
+				
+	/////////////////////////////////////////////////////////////
+	///////////         Flash           /////////////////////////
+	////////////////////////////////////////////////////////////
+	
+	class Flash	
+		timer t = getTimer()
+		lightning l
+		Unit u
+		Unit ut
+		Unit ut2
+		int jumps
+		int i
+		
+		construct(Unit u, Unit ut, Unit ut2, int jumps)	
+			this.u=u
+			this.ut=ut
+			this.ut2=ut2
+			this.jumps=jumps-1
+			i = R2I(1/0.03)
+			if jumps>0
+				vec2 pos = ut.u.getPos()
+				vec2 pos2 = ut2.u.getPos()
+				l = createLightning(blitzString, pos, pos2)
+				
+				t.setData(this castTo int)
+				t.startPeriodic(0.03, function callMove)
+			else
+				destroy this
+				
+		construct(Unit u, Unit ut, Unit ut2, int jumps, code callMove)	
+			this.u=u
+			this.ut=ut
+			this.ut2=ut2
+			this.jumps=jumps-1
+			i = R2I(1/0.03)
+			if jumps>0
+				vec2 pos = ut.u.getPos()
+				vec2 pos2 = ut2.u.getPos()
+				l = createLightning(blitzString, pos, pos2)
+				
+				t.setData(this castTo int)
+				t.startPeriodic(0.03, callMove)
+			else
+				destroy this
+				
+		ondestroy
+			t.release()
+
+		private static function callMove()
+			GetExpiredTimer().getData() castTo Flash.move(function callMove)
+		
+		private function move(code callMove)
+			vec2 pos = ut.u.getPos()
+			vec2 pos2 = ut2.u.getPos()
+			l.setPos(pos, pos2)
+			ut2.damageMagic(u, baseDmg)
+			i--
+			if i <= 0
+				l.destr()
+				t.release()
+				vec2 posU = ut2.u.getPos()
+				createAreaMarkerTimed(posU, chainGroupRangeNext, this.u.owner, 2.)
+			
+				group g = CreateGroup()
+				filterCheckUnit = u.u
+				GroupEnumUnitsInRange(g,posU.x,posU.y,chainGroupRangeNext, Condition(function allEnemys))
+				Unit ut3 = GroupPickRandomUnit(g).getUserData() castTo Unit
+			
+				if ut3 != null
+					new Flash(u, ut2, ut3, jumps, callMove)
+				else 
+					new Stun(ut2, chainStunDur)
+				
+				DestroyGroup(g)
+				
+		*/
+				
+		
+				
+				
+					
+			
+endpackage

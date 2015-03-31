@@ -1,0 +1,372 @@
+package UnitTypes
+
+import public UnitObjEditing
+import ObjectIdGenerator
+import ObjEditingNatives
+import StandardImports
+import PreloadSystem
+import StringList
+import ObjectIds
+import HashMap
+
+
+HashMap<int, UnitType> unitTypes = new HashMap<int, UnitType>()
+
+public module UnitInit
+	static UnitType t
+	
+	@dinit private static function initHelper() returns boolean
+		t = new UnitType(compiletime)
+		settings(t)
+		t.finalize()
+		return true
+
+	static abstract function settings(UnitType t)
+	
+public enum StatType
+	REQUIRED
+	OPTIONAL
+	FORBIDDEN
+	RANGED
+	SET
+			
+public function getUnitType(string name) returns UnitType
+	return unitTypes.get(StringHash(name))
+
+public tuple stringStat(string content, StatType info)
+public tuple intStat(int content, StatType info)
+public tuple realStat(real content, StatType info)
+public tuple boolStat(boolean content, StatType info)
+public tuple vec3Stat(vec3 content, StatType info)
+public tuple vec2Stat(vec2 content, StatType info)
+public tuple weaponSoundStat(WeaponSound content, StatType info)
+public tuple armorSoundTypeStat(ArmorSoundType content, StatType info)
+
+/**	
+*	Überblendzeit
+*	Ausrichtungs interpolation
+*	Fortbewegungs fenster
+*	Rückbewegungs und schadenpunkt
+*/
+public class UnitType
+	static constant int basicId = 'Hpal'
+	static constant int basicMovespeed = 350
+	static constant StringList basicSpells = new StringList()
+	static constant real castPoint = 0
+	static constant real castBackPoint = 0
+	static constant real animationSmoothingFactor = 0.2
+	static constant int moveInterpolation = 3
+	static constant real attackCooldown = 1
+	static constant string attackType = "normal"
+	static constant int basicAttack = -1
+	static constant int diceSides = 0
+	static constant int diceCount = 1
+	static constant boolean homingAttack = true
+	static constant int foodCost = 0
+	static constant real manaReg = 0
+	static constant real lifeReg = 0
+	static constant int sightRange = 1200
+	static constant int startMana = 10000
+	static constant int baseBounty = 100
+	static constant real baseMass = 1000
+	static constant real baseRadius = 50
+	static constant real baseHeight = 50
+	
+	private UnitDefinition def
+	private boolean compiletime
+	int id
+	intStat moveSpeed = intStat(basicMovespeed, StatType.FORBIDDEN)
+	StringList abis = new StringList()
+	realStat walkSpeed = realStat(0, StatType.OPTIONAL)
+	realStat runSpeed = realStat(0, StatType.OPTIONAL)
+	realStat selectionRadius = realStat(0, StatType.OPTIONAL)
+	boolStat ranged = boolStat(false, StatType.REQUIRED)
+	realStat missleTargetZ = realStat(0, StatType.RANGED)
+	vec3Stat missleStart = vec3Stat(vec3(0, 0, 0), StatType.RANGED)
+	stringStat model = stringStat("", StatType.REQUIRED)
+	vec2Stat shaddowSize = vec2Stat(vec2(0, 0), StatType.OPTIONAL)
+	vec2Stat shaddowPosFix = vec2Stat(vec2(0, 0), StatType.OPTIONAL)
+	realStat scale = realStat(0, StatType.OPTIONAL)
+	stringStat icon = stringStat("", StatType.REQUIRED)
+	realStat attackBackswingPoint = realStat(0, StatType.REQUIRED)
+	realStat attackDamagePoint = realStat(0, StatType.REQUIRED)
+	intStat attack = intStat(0, StatType.REQUIRED)
+	realStat missleArc = realStat(0, StatType.RANGED)
+	stringStat missleModel = stringStat("", StatType.RANGED)
+	intStat missleSpeed = intStat(0, StatType.RANGED)
+	intStat attackRange = intStat(0, StatType.REQUIRED)
+	realStat attackRangeBuffer = realStat(0, StatType.OPTIONAL)
+	weaponSoundStat weaponSound = weaponSoundStat(WeaponSound.Nothing, StatType.OPTIONAL)
+	intStat armor = intStat(0, StatType.REQUIRED)
+	armorSoundTypeStat armorType = armorSoundTypeStat(ArmorSoundType.Ethereal, StatType.OPTIONAL)
+	stringStat soundSet = stringStat("", StatType.OPTIONAL)
+	stringStat name = stringStat("", StatType.REQUIRED)
+	realStat collisionSize = realStat(0, StatType.OPTIONAL)
+	intStat mana = intStat(0, StatType.OPTIONAL)
+	intStat life = intStat(0, StatType.REQUIRED)
+	intStat tier = intStat(0, StatType.OPTIONAL)
+	intStat bounty = intStat(baseBounty, StatType.OPTIONAL)
+	realStat mass = realStat(baseMass, StatType.OPTIONAL)
+	realStat radius = realStat(baseRadius, StatType.OPTIONAL)
+	realStat height = realStat(baseHeight, StatType.OPTIONAL)
+	
+	construct(boolean compiletime)
+		this.compiletime = compiletime
+		id = genId()
+		def = new UnitDefinition(id, basicId)
+		
+	construct(int id, boolean compiletime)
+		this.compiletime = compiletime
+		this.id = id
+		def = new UnitDefinition(id, basicId)
+	
+	function getMovespeed() returns int
+		return moveSpeed.content
+	
+	function setMovespeed(int data)
+		if not moveSpeed.info == StatType.FORBIDDEN
+			moveSpeed = intStat(data, StatType.SET)
+		else
+			compileError("Forbidden: set movespeed")
+			
+	function getAbilityList() returns StringList
+		return abis
+			
+	function addAbility(int abiCode)
+		abis.add(idInteger2IdString(abiCode))
+		
+	function getWalkspeed() returns real
+		return walkSpeed.content
+	
+	function setWalkspeed(real data)
+		walkSpeed = realStat(data, StatType.SET)
+		
+	function getRunspeed() returns real
+		return runSpeed.content
+	
+	function setRunspeed(real data)
+		runSpeed = realStat(data, StatType.SET)
+		
+	function getSelectionradius() returns real
+		return selectionRadius.content
+		
+	function setSelectionRadius(real data)
+		selectionRadius = realStat(data, StatType.SET)
+		
+	function isRanged() returns boolean
+		return ranged.content
+		
+	function setIsRanged(boolean data)
+		ranged = boolStat(data, StatType.SET)
+		
+	function setMissleTargetZ(real data)
+		missleTargetZ = realStat(data, StatType.SET)
+		
+	function setMisseStart(vec3 data)
+		missleStart = vec3Stat(data, StatType.SET)
+		
+	function getModel() returns string
+		return model.content
+	
+	function setModel(string data)
+		model = stringStat(data, StatType.SET)
+		
+	function setShaddowPos(vec2 data)
+		shaddowPosFix = vec2Stat(data, StatType.SET)
+		
+	function setShaddowSize(vec2 data)
+		shaddowSize = vec2Stat(data, StatType.SET)
+		
+	function setScale(real data)
+		scale = realStat(data, StatType.SET)
+		
+	function setIcon(string data)
+		icon = stringStat(data, StatType.SET)
+		
+	function setAttackBackSwingPoint(real data)
+		attackBackswingPoint = realStat(data, StatType.SET)
+		
+	function setAttackDamagePoint(real data)
+		attackDamagePoint = realStat(data, StatType.SET)
+	
+	function getAttack() returns int
+		return attack.content
+		
+	function setAttack(int data)
+		attack = intStat(data, StatType.SET)
+	
+	function setMissleArc(real data)
+		missleArc = realStat(data, StatType.SET)
+		
+	function getMissleModel() returns string
+		return missleModel.content
+		
+	function setMissleModel(string data)
+		missleModel = stringStat(data, StatType.SET)
+	
+	function setMissleSpeed(int data)
+		missleSpeed = intStat(data, StatType.SET)
+		
+	function getAttackRange() returns int
+		return attackRange.content
+		
+	function setAttackRange(int data)
+		attackRange = intStat(data, StatType.SET)
+		
+	function setAttackRangeBuffer(real data)
+		attackRangeBuffer = realStat(data, StatType.SET)
+		
+	function setWeaptonSound(WeaponSound data)
+		weaponSound = weaponSoundStat(data, StatType.SET)
+		
+	function getArmor() returns int
+		return armor.content
+		
+	function setArmor(int data)
+		armor = intStat(data, StatType.SET)
+	
+	function setArmorSoundType(ArmorSoundType data)
+		armorType = armorSoundTypeStat(data, StatType.SET)
+		
+	function setSoundSet(string data)
+		soundSet = stringStat(data, StatType.SET)
+		
+	function setName(string data)
+		name = stringStat(data, StatType.SET)
+	
+	function setCollisionSize(real data)
+		collisionSize = realStat(data, StatType.SET)
+		
+	function setMana(int data)
+		mana = intStat(data, StatType.SET)
+		
+	function setLife(int data)
+		life = intStat(data, StatType.SET)
+	
+	function setTier(int data)
+		mana = intStat(data, StatType.SET)
+		
+	function getMass() returns real
+		return mass.content
+		
+	function setMass(real data)
+		mass = realStat(data, StatType.SET)
+		
+	function getBounty() returns int
+		return bounty.content
+		
+	function setBounty(int data)
+		bounty = intStat(data, StatType.SET)
+		
+	function getRadius() returns real
+		return radius.content
+		
+	function setRadius(real data)
+		radius = realStat(data, StatType.SET)
+		
+	function getHeight() returns real
+		return height.content
+	
+	function setHeight(real data)
+		height = realStat(data, StatType.SET)
+		
+	function finalize()
+		if compiletime
+			def.setSpeedBase(moveSpeed.content)
+			string builder = ""
+			for string s in abis
+				builder += s
+			def.setNormalAbilities(builder)
+			if walkSpeed.info == StatType.SET
+				def.setAnimationWalkSpeed(walkSpeed.content)
+			if runSpeed.info == StatType.SET
+				def.setAnimationRunSpeed(runSpeed.content) 
+			def.setAnimationCastPoint(castPoint)
+			def.setAnimationCastBackswing(castBackPoint)
+			def.setAnimationBlendTimeseconds(animationSmoothingFactor)
+			def.setOrientationInterpolation(moveInterpolation)
+			if selectionRadius.info == StatType.SET
+				def.setSelectionScale(selectionRadius.content)
+			if ranged.info == StatType.REQUIRED
+				compileError("Missing information: Is unit ranged?")
+				if ranged.content
+					if missleTargetZ.info == StatType.RANGED or missleStart.info == StatType.RANGED
+						compileError("Missing information: Missle taget or start?")
+					def.setProjectileImpactZ(missleTargetZ.content)
+					def.setProjectileLaunchX(missleStart.content.x)
+					def.setProjectileLaunchY(missleStart.content.y)
+					def.setProjectileLaunchZ(missleStart.content.z)
+			if model.info == StatType.REQUIRED
+				compileError("Missing information: Unit model?")
+			def.setModelFile(model.content)
+			if shaddowSize.info == StatType.SET
+				def.setShadowImageHeight(shaddowSize.content.x)
+				def.setShadowImageWidth(shaddowSize.content.y)
+			if shaddowPosFix.info == StatType.SET
+				def.setShadowImageCenterX(shaddowPosFix.content.x)
+				def.setShadowImageCenterY(shaddowPosFix.content.y)
+			if scale.info == StatType.SET
+				def.setScalingValue(scale.content)
+			if icon.info == StatType.REQUIRED
+				compileError("Missing information: Unit icon?")
+			def.setIconGameInterface(icon.content)
+			def.setAttack1CooldownTime(attackCooldown)
+			if attackBackswingPoint.info == StatType.REQUIRED
+				compileError("Missing information: Attack backswing point?")
+			def.setAttack1AnimationBackswingPoint(attackBackswingPoint.content)
+			if attackDamagePoint.info == StatType.REQUIRED
+				compileError("Missing information: Attack damage point?")
+			if attackDamagePoint.content > attackCooldown
+				compileError("Invaild information: To long attack damage point")
+			def.setAttack1AnimationDamagePoint(attackBackswingPoint.content)
+			def.setAttack1DamageBase(basicAttack)
+			if ranged.content
+				if missleArc.info == StatType.RANGED
+					compileError("Missing information: Missle arc?")
+				if missleModel.info == StatType.RANGED
+					compileError("Missing information: Missle model?")
+				if missleSpeed.info == StatType.RANGED
+					compileError("Missing information: Missle speed?")
+				def.setAttack1ProjectileArc(missleArc.content)
+				def.setAttack1ProjectileArt(missleModel.content)
+				def.setAttack1ProjectileSpeed(missleSpeed.content)
+			if attackRange.info == StatType.REQUIRED
+				compileError("Missing information: attackrange?")
+			def.setAttack1DamageSidesperDie(diceSides)
+			def.setAttack1DamageNumberofDice(diceCount)
+			if weaponSound.info == StatType.SET
+				def.setAttack1WeaponSound(weaponSound.content)
+			if ranged.content
+				def.setAttack1WeaponType("missile")
+				def.setAttack1ProjectileHomingEnabled(true)
+			if armor.info == StatType.REQUIRED
+				compileError("Missing information: Basic armor?")
+			if armorType.info == StatType.SET
+				def.setArmorSoundType(armorType.content)
+			def.setAcquisitionRange(attackRange.content * 1.)
+			if soundSet.info == StatType.SET
+				def.setUnitSoundSet(soundSet.content)
+			if name.info == StatType.REQUIRED
+				compileError("Missing information: Unit name?")
+			def.setName(name.content)
+			if collisionSize.info == StatType.REQUIRED
+				compileError("Missing information: Collision size?")
+			def.setCollisionSize(collisionSize.content)
+			def.setFoodCost(foodCost)
+			if life.info == StatType.REQUIRED
+				compileError("Missing information: unit life?")
+			def.setHitPointsMaximumBase(life.content)
+			if mana.info == StatType.SET
+				def.setManaMaximum(mana.content)
+				def.setManaInitialAmount(startMana)
+			def.setSightRadiusDay(sightRange)
+			def.setSightRadiusNight(sightRange)
+		else
+			unitTypes.put(StringHash(name.content), this)
+			addUnitToPreload(id)
+		
+		
+		
+				
+		
+		

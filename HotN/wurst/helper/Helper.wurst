@@ -1,0 +1,53 @@
+package Helper
+
+	import Terrain
+	import Filter
+	
+	public int array pow2
+	
+	init
+		for int i = 0 to 31
+			pow2[i] = R2I(Pow(2, I2R(i)))
+	
+	public function getPathingNormal(vec2 pos) returns vec2
+		int numberOfTests = 60
+		real radius = 128
+		vec2 addedVecs = vec2(0, 0)
+		for int i = 1 to numberOfTests
+			vec2 direction = vec2(0,0).polarOffset((i*2*bj_PI/numberOfTests).asAngleRadians(), radius)
+			vec2 testPoint = pos + direction
+			if isTerrainWalkable(testPoint.x, testPoint.y)
+				addedVecs += direction
+		return addedVecs.setLength(1.) * (-1.)
+		
+	public function getBounceVec(vec2 vel2, vec2 nor2) returns vec2
+			vec3 vel3 = vel2.toVec3()
+			vec3 nor3 = nor2.toVec3()
+			vec3 pv3 = vel3.project(nor3)
+			vec2 pv2 = pv3.toVec2()
+			pv2 *= (-2.)
+			vec2 nvel2 = vel2
+			nvel2 += pv2
+			return nvel2
+				
+	public function int.pow(int n) returns int
+		if n == 0
+			return 1
+		int result = this
+		for int i = 1 to n - 1
+			result = result * this
+		return result
+				
+	public function int.asFourchar() returns string
+		string charMap = ".................................!.#$%&'()*+,-./0123456789:;<=>.@ABCDEFGHIJKLMNOPQRSTUVWXYZ[.]^_`abcdefghijklmnopqrstuvwxyz{|}~................................................................................................................................."
+		string result = ""
+		int remainingValue = this
+		int charValue
+		for int byteno = 0 to 3
+			charValue = ModuloInteger(remainingValue, 256)
+			remainingValue = remainingValue div 256
+			result = SubString(charMap, charValue, charValue + 1) + result
+		return result
+		
+
+endpackage

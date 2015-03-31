@@ -1,0 +1,83 @@
+package ItemClass
+
+import HeroClass
+import LinkedList
+import ToolTipTypes
+import Bonus
+import HashMap
+import UnitEvents
+import StandardImports
+
+HashMap<int, ItemType> itemTypes = new HashMap<int, ItemType>()
+
+function types()
+	var typ = new ItemType("SuperAxe", 450, "ClawsOfAttack", 1)
+	typ.setDescription("Dies ist eine unglaublich coole beschreibung|nsie beinhaltet die frage auf die antwort 42")
+	typ.addBonus(new AttackBonus(20, false))
+	typ.addBonus(new AttackBonus(10, true))
+	typ.addBonus(new AttackspeedBonus(25))
+	typ.finalize()
+
+class ItemType
+	static boolean classInit = classInit()
+	static string array nameColor
+	static string bonusColor = "|c003366ff"
+	LinkedList<BonusType> bons = new LinkedList<BonusType>()
+	UnitEvent onAdd = null
+	int cost
+	string name
+	string description
+	string iconName
+	int tier
+	
+	static function classInit() returns boolean
+		nameColor[1] = "|c00ffff00"
+		nameColor[2] = "|c0000ff00"
+		nameColor[3] = "|cff000000"
+		nameColor[4] = ""
+		return true
+
+	construct(string name, int cost, string iconName, int tier)
+		this.name = name
+		this.cost = cost
+		this.iconName = iconName
+		this.tier = tier
+	
+	function setAddAction(UnitEvent ev)
+		onAdd = ev
+		
+	function setDescription(string s)
+		this.description = s
+	
+	function addBonus(BonusType t)
+		bons.add(t)
+		
+	function finalize()
+		if classInit
+			if compiletime
+				string bonsAsString = bonusColor
+				for BonusType t in bons
+					bonsAsString += t.getBonusAsString() + "|n"
+				string builder =	nameColor[tier] + name + "|r" + "|n" + 
+									bonsAsString + "|r" +
+									description
+				addTipType(name, builder)
+			else
+				itemTypes.put(StringHash(name), this)
+				
+class Item
+	ItemType t
+	LinkedList<Bonus> bons = new LinkedList<Bonus>()
+	
+	construct(string itemName, Hero h)
+		this.t = itemTypes.get(StringHash(itemName))
+		for BonusType bo in t.bons
+			bons.add(bo.applyToUnit(h))
+		
+	ondestroy
+		for Bonus b in bons
+			destroy b
+		
+	
+	
+

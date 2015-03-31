@@ -1,0 +1,41 @@
+package ToolTipTypes
+import HashMap
+import StandardImports
+import ObjEditingNatives
+import ObjectIdGenerator
+import PreloadSystem
+
+HashMap<int, int> tipMap = new HashMap<int, int>()
+
+@dinit function types()
+	addTipType("test", "|cffb9d1eaHarry Potter is a series of seven epic fantasy|nnovels written by the British author J. K.|nRowling.|n|n|cff98fb98+60 Movement Speed|n+50 Traction|n+2% Critical Hit Chance|n|n|cfff0e68cActive Ability:|nThe series was originally printed in English by|ntwo major publishers, Bloomsbury in the United|nKingdom and Scholastic Press in the United States.|nThe books have since been published by many|npublishers worldwide. The books, with the seventh|nbook split into two parts.|n|cff00ffffCooldown 30sec.|nBuy it or die!")
+//	addTipType("test", "1|n2|n3|n4|n5|n6|n7|n8|n9|n10|n11|n12|n13|n14|n15|n16|n17|n18")
+	
+	
+public function addTipType(string name, string content)
+	int tip = genId()
+	if not compiletime
+		tipMap.put(StringHash(name), tip)
+		addDestructableToPreload(tip)
+	else
+		var u = createObjectDefinition("w3b", tip, 'YTlb')
+		u.setReal("bgsc", 0.01)
+		u.setString("bshd", "")
+		u.setInt("bcpd", 0)
+		u.setString("bsuf", "Tip")
+		u.setUnreal("boch", 0.0)
+		u.setUnreal("bsel", 0.0)
+		u.setString("bfil", "war3mapImported\\ButtonC2.mdl")
+		u.setString("bnam", content)
+		u.setString("barm", "Ethereal")
+		u.setString("btar", "")
+		u.setInt("bcpr", 0)
+		u.setString("bptx", "")
+		u.setInt("btxi", 31)
+		u.setString("btxf", "Alphaicon.blp")
+		u.setBoolean("bgse", true)
+		u.setUnreal("bmas", 5.)
+		u.setUnreal("bmis", 5.)
+	
+public function getTipType(string s) returns int
+	return tipMap.get(StringHash(s))

@@ -1,0 +1,58 @@
+package ImageList
+
+public class ImageList
+	ListImage first = null
+	ListImage last = null
+	
+	function add(image img)
+		if first == null
+			first = new ListImage(img)
+			last = first
+		else
+			ListImage temp = new ListImage(img)
+			last.next = temp
+			last = temp
+			
+	function iterator() returns ImageIterator
+		return new ImageIterator(first)
+		
+	ondestroy
+		ListImage cur = first
+		while(cur != null)
+			destroy cur
+			cur = cur.next
+			
+public class ListImage
+	image img
+	thistype next
+	
+	construct(image img)
+		this.img = img
+		
+	ondestroy
+		if img != null
+			img.remove()
+			
+		
+public class ImageIterator
+	ListImage pos
+	
+	construct(ListImage start)
+		pos = start
+		
+	function hasNext() returns boolean
+		return pos != null
+		
+	function next() returns image
+		image img = pos.img
+		pos = pos.next
+		return img
+		
+	function close()
+		destroy this
+	
+		
+		
+		
+		
+		

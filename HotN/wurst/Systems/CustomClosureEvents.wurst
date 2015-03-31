@@ -1,0 +1,78 @@
+package CustomClosureEvents
+	/**
+	********	Info	********
+	* A litte package which allows you to create custom events which closures (a new wurst feature)
+	********* Usage ********
+	* To create a new eventtype working event follow this steps:
+	*	-Create a new class which inherits from the class Event and fill in the type parameter.
+	* 		The Type paramter specifies the datatype of the event response data.
+	* 	-Create a function fire which creates a new object of the desired event response data. Set the attributes of the object and
+	* 		call the function of the superclass: Event.callActions(Your event response object here) 
+	* Use the function Event.addAction(...) to add new actions to the event, and destroy the actions to remove them
+	* If you destroy the event all actions which refers to the event get destroyed 
+	*/
+	public class Event<T>
+		protected Action<T> first = null
+		protected Action<T> last = null
+		protected boolean checkData = false
+		
+		/** Adds a new action to the closure */
+		function addAction(Action<T> a) returns Action<T>
+			a.ev = this
+			if first == null
+				first = a
+				last = a
+				a.next = null
+				a.prev = null
+			else
+				first.prev = a
+				a.next = first
+				first = a
+			return a
+				
+		/** If this function returns true the event will be interupted. 
+			Override this function in your subclass if you wish to inspect the event data after each action*/
+		protected function stop(T d) returns boolean
+			return false
+			
+		/** Call this function in your underclass to run all actions which refer to this event */
+		function callActions(T d)
+			Action<T> buffer = first
+			if checkData 
+				while buffer != null
+					if stop(d)
+						return
+					buffer.fire(d)
+					buffer = buffer.next
+			else
+				while buffer != null
+					buffer.fire(d)
+					buffer = buffer.next
+				
+				
+		ondestroy
+			Action<T> buffer1 = first
+			while buffer1 != null
+				Action<T> buffer2 = buffer1.next
+				destroy buffer1
+				buffer1 = buffer2
+				
+				
+	public abstract class Action<T>
+		protected Action<T> next
+		protected Action<T> prev
+		protected Event<T> ev
+		
+		abstract function fire(T d)
+		
+		ondestroy
+			if ev.first != this
+				prev.next = next
+			else
+				ev.first = next
+			if ev.last != this
+				next.prev = prev
+			else
+				ev.last = prev
+	
+endpackage

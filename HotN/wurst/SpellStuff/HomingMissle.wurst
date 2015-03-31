@@ -1,0 +1,88 @@
+/* package HomingMissle
+
+	import Fx
+	import UnitClass
+
+	init
+		
+		trigger t = CreateTrigger()
+		t.addCondition(Condition(function spellCondition))
+		t.addAction(function spellStart)
+		t.registerAnyUnitEvent(EVENT_PLAYER_UNIT_SPELL_CAST)
+		
+	function spellCondition() returns boolean
+			if GetSpellAbilityId() == 'A999'
+				return true
+			else
+				return false
+	
+	
+	function spellStart()
+		new HomingMissle(GetTriggerUnit(), GetSpellTargetUnit())
+		
+	public class HomingMissle
+		
+		timer t
+		unit u
+		unit ut
+		real x2
+		real y2
+		real i
+		Fx fx
+		
+		
+		
+		construct(unit u, unit ut)
+			this.u=u
+			this.ut=ut
+
+			real ang = angleBetweenCoordsD(u.getX(), u.getY(), ut.getX(), ut.getY())
+
+			i = 100000
+			real x = u.getX()
+			real y = u.getY()
+			x2 = 0
+			y2 = 0
+			
+			fx = new Fx(u.getX(), u.getY(), ang, "Abilities\\Weapons\\IllidanMissile\\IllidanMissile.mdl")
+			fx.setOwner(GetOwningPlayer(u), true)
+			fx.setZ(50)
+			
+			t = getTimer()
+			t.setData(this castTo int)
+			t.startPeriodic(0.03, function blackHCall) 
+			
+		static function blackHCall()
+			GetExpiredTimer().getData() castTo HomingMissle.theSpell()
+		
+		function theSpell()
+			i--
+			
+			real ang = 1 //angleBetweenCoordsD(fx.getX(), fx.getY(), xt, yt)
+			
+			real x = polarProjectionXD(fx.getX(), 0.3, ang)
+			real y = polarProjectionYD(fx.getY(), 0.3, ang)
+			
+			x = x - fx.getX()
+			y = y - fx.getY()
+			
+			x2 = x2 + x
+			y2 = y2 + y
+			
+			x = fx.getX() + x2
+			y = fx.getY() + y2
+			
+			fx.setPos(x,y)
+			
+			x2 = x2 - (x2*0.005)
+			y2 = y2 - (y2*0.005)
+			
+			if i <= 0
+				t.release()
+				destroy fx
+				
+
+
+
+
+endpackage */

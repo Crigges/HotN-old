@@ -1,0 +1,23 @@
+package UnitIndexer
+
+	import CreationEvent
+
+	public function unit.index() returns integer
+		return new UnitIndex(this) castTo int
+		
+	public function unit.getIndex() returns integer
+		return this.getUserData()
+		
+	public function unit.deIndex()
+		destroy this.getUserData() castTo UnitIndex
+		
+	//Extend this class to add features to the Indexer
+	class UnitIndex
+		use CreationEvent
+		unit u
+		
+		construct(unit u)
+			this.u = u
+			u.setUserData(this castTo int)
+			
+endpackage

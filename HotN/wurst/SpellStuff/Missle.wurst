@@ -1,0 +1,120 @@
+package Missle
+
+	import Fx
+	import Setup
+	import Filter
+	import UnitClass
+	import Colors
+	
+	public class Missle
+		
+		timer t = getTimer()
+		Fx fx
+		real radius
+		vec2 vel
+		int dl
+		Unit2Event atHit = null
+		Unit2Event atEnd = null
+		Unit source
+		boolexpr filter
+		
+		
+		construct(vec2 pos, vec2 target, real speed, real radius, real distance, Unit source, code filter)
+			angle ang = pos.angleTo(target)
+			fx = new Fx(pos, ang)
+			vel = pos.polarOffset(ang, speed) - pos
+			dl = roundReal(distance / speed)
+			this.radius = radius
+			this.source = source
+			if filter != null
+				this.filter = Condition(filter)
+			t.setData(this castTo int)
+			t.startPeriodic(0.03, function callMove)
+			
+		construct(vec2 pos, angle ang, real speed, real radius, real distance, Unit source, code filter)
+			fx = new Fx(pos, ang)
+			vel = pos.polarOffset(ang, speed) - pos
+			dl = roundReal(distance / speed)
+			this.radius = radius
+			this.source = source
+			if filter != null
+				this.filter = Condition(filter)
+			t.setData(this castTo int)
+			t.startPeriodic(0.03, function callMove)
+
+		private static function callMove()
+			GetExpiredTimer().getData() castTo thistype.move()
+			
+		function setEffect(string effectPath)
+			fx.setFx(effectPath)
+			
+		function setColor(colorA col)
+			fx.recolor(col)
+			
+		function setScale(real scale)
+			fx.setScale(scale)
+			
+		function getPos() returns vec2
+			return fx.getPos2()
+			
+		function setZ(real height)
+			fx.setZ(height)
+			
+		function onHit(Action<Units> action) returns Action<Units>
+			if atHit == null
+				atHit = new Unit2Event()	
+			return atHit.addAction(action)
+			
+		function onEnd(Action<Units> action) returns Action<Units>
+			if atEnd == null
+				atEnd = new Unit2Event()	
+			return atEnd.addAction(action)
+
+			
+		private function move()
+			if dl <= 0
+				atEnd.fire(source, null)
+				destroy this
+			else
+				fx.setXY(fx.getPos2() + vel)
+				group g = CreateGroup()
+				filterCheckUnit = source.u
+				filterCheckPlayer = source.owner
+				GroupEnumUnitsInRange(g, fx.getX(), fx.getY(), radius, filter)
+				unit u = FirstOfGroup(g)
+				if u == null
+					dl--
+				else
+					GroupRemoveUnit(g, u)
+					if FirstOfGroup(g) == null
+						atHit.fire(source, u.getUserData() castTo Unit)
+						DestroyGroup(g)
+						destroy this
+						g = null
+						u = null
+					else
+						GroupAddUnit(g, u)
+						vec2 prePos = fx.getPos2() - vel
+						unit hitUnit = null
+						real minDist = 10000.
+						for unit lu from g
+							vec2 targetPos = lu.getPos()
+							real currentDist = targetPos.distToVec(prePos)
+							if currentDist > minDist
+								minDist = currentDist
+								hitUnit = lu
+						atHit.fire(source, hitUnit.getUserData() castTo Unit)
+						DestroyGroup(g)
+						u = null
+						g = null
+						hitUnit = null
+						destroy this
+						
+		ondestroy
+			destroy atHit
+			destroy atEnd
+			t.release()
+			destroy fx
+						
+						
+endpackage

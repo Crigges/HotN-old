@@ -1,0 +1,209 @@
+package TextSplat
+
+import Char
+import FontArial
+
+constant int DISABLE_COLOR_ALPHA = -1
+constant real DISABLE_MAX_WIDTH = 100000000.
+
+constant int spaceWidth = getFontWidth(char(' '))
+
+public function string.wrap(int width) returns string
+	string currWord = ""
+	string res = ""
+	string currChar
+	int charWidth
+	int wordWidth = 0
+	int lineWidth = 0
+	int length = this.length() - 1
+	
+	for int i = 0 to length
+		currChar = this.substring(i, i + 1)
+		charWidth = getFontWidth(currChar.toChar())
+		if currChar == "|" // colorcodes have no width.
+			if this.substring(i + 1, i + 2) == "c" // color code starts
+				currWord += this.substring(i, i + 10)
+				i += 9
+			else if this.substring(i + 1, i + 2) == "r" // color code ends
+				currWord += "|r"
+				i++
+			else // no color code, normal char
+				currWord += currChar
+				wordWidth += charWidth
+		else if currChar.isWhitespace() or i == length // word ends or string ends
+			if lineWidth + wordWidth > width and lineWidth != 0 // line is full, line break needed
+				res += "\n"
+				lineWidth = 0
+			lineWidth += wordWidth + charWidth
+			res += currWord + currChar
+			wordWidth = 0
+			currWord = ""
+			if currChar == "\n" // a manual line break
+				lineWidth = 0
+		else // word isn't complete yet
+			currWord += currChar
+			wordWidth += charWidth	
+	return res
+	
+public class TextSplat
+	private vec2 pos // absolute world coordinates
+	private vec2 dimensions // bottom right corner in world coordinates
+	private vec2 cursor // absolute world coordinates
+	private real maxWidth // absolute world x-coordinate
+	private ImageList images
+	private Layer layer
+	private real fontSize // in world coordinates
+   
+	/** Creates a TextSplat at specified position with the specified fontSize (in world coordinates). */
+	construct(vec2 pos, real fontSize)
+		this.pos = pos
+		this.fontSize = fontSize
+		images = new ImageList()
+		layer = Layer.L1
+		maxWidth = DISABLE_MAX_WIDTH
+		cursor = vec2(pos.x, pos.y - fontSize)
+		dimensions = pos
+		
+	/** Creates a TextSplat at specified position with the specified fontSize (in world coordinates) with the specified renderlayer. */
+	construct(vec2 pos, real fontSize, Layer l)
+		this.pos = pos
+		this.fontSize = fontSize
+		images = new ImageList()
+		layer = l
+		maxWidth = DISABLE_MAX_WIDTH
+		cursor = vec2(pos.x, pos.y - fontSize)
+		dimensions = pos
+		
+	function getCurrentLength() returns real
+		return cursor.x - pos.x
+   
+	/** Defines a maximum width after which a line break will be inserted. */
+	function setMaxWidth(real maxWidth)
+		this.maxWidth = pos.x + maxWidth
+   
+	/** Disables a previously set maximum width. */
+	function disableMaxWidth()
+		this.maxWidth = DISABLE_MAX_WIDTH
+   
+	/** Returns the dimensions (width, height) of the whole TextSplat. */
+	function getDimensions() returns vec2
+		return vec2(dimensions.x - pos.x, pos.y - dimensions.y)
+   
+	/** Clears the current text, if any, and displays the specified text. */
+	function setText(string text, player p)
+		clear(p)
+		append(text, p)
+   
+	/** Appends the specified text at the current cursor position. */
+	function append(string text, player p)
+		append(text, colorA(0, 0, 0, DISABLE_COLOR_ALPHA), p)
+   
+	/** Appends the specified text at the current cursor position and colorizes it .*/
+	function append(string text, colorA col, player p)
+		if GetLocalPlayer() == p
+			char c
+			real charWidth
+			for n = 0 to text.length()-1
+				c = char(text.charAt(n))
+				charWidth = fontSize * getFontWidth(c) / getFontResolution() // optimize: write fraction to array instead of width
+				if cursor.x + charWidth > maxWidth
+					newline()
+				if c != char(' ')
+					let img = CreateImage(getFontPath(c), fontSize, fontSize, 0, cursor.x, cursor.y, 0, 0, 0, 0, layer castTo int + 1)
+						..show()
+					if col.alpha != DISABLE_COLOR_ALPHA
+						img.setColor(col)
+					images.add(img)
+				cursor.x += charWidth
+				updateDimX()
+   
+	/** Inserts a line break. */
+	function newline()
+		cursor.x = pos.x
+		cursor.y -= fontSize * getFontHeight() / getFontResolution()
+		updateDimY()
+   
+	/** Moves the cursor horizontally. */
+	function hspace(real width)
+		cursor.x += width
+		updateDimX()
+   
+	/** Moves the cursor vertically. */
+	function vspace(real height)
+		cursor.y -= height
+		updateDimY()
+   
+	/** Sets the cursor x position (relative to the TextSplat position). */
+	function setCursorX(real x)
+		cursor.x = pos.x + x
+		updateDimX()
+   
+	/** Sets the cursor y position (relative to the TextSplat position). */
+	function setCursorY(real y)
+		cursor.y = pos.y - y
+		updateDimY()
+   
+	/** Returns the cursors position (relative to the TextSplat position). */
+	function getCursor() returns vec2
+		return vec2(cursor.x - pos.x, pos.y - cursor.y)
+   
+	/** Clears this TextSplat and removes all its images. */
+	function clear(player p)
+		if GetLocalPlayer() == p
+			images.eraseAll()
+			cursor = vec2(pos.x, pos.y - fontSize)
+			dimensions = pos
+
+	private function updateDimX()
+		if cursor.x > dimensions.x
+			dimensions.x = cursor.x
+   
+	private function updateDimY()
+		if cursor.y < dimensions.y
+			dimensions.y = cursor.y
+
+class ImageListEntry
+	image img
+	ImageListEntry prev
+   
+	construct(image img, ImageListEntry prev)
+		this.img = img
+		this.prev = prev
+
+class ImageList
+	ImageListEntry last
+   
+	construct()
+		last = null
+   
+	function add(image i)
+		last = new ImageListEntry(i, last)
+   
+	/** Removes all images from the list AND destroys them. */
+	function eraseAll()
+		var e = last
+		while e != null
+			e.img.remove()
+			destroy e
+			e = e.prev
+		last = null
+	   
+	function iterator() returns ImageListIterator
+		return new ImageListIterator(this)
+
+class ImageListIterator
+	ImageListEntry current
+   
+	construct(ImageList parent)
+		current = parent.last
+   
+	function hasNext() returns boolean
+		return current != null
+   
+	function next() returns image
+		let tmp = current
+		current = current.prev
+		return tmp.img
+   
+	function close()
+		destroy this

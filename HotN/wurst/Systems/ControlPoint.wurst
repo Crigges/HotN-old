@@ -1,0 +1,326 @@
+package ControlPoint
+	
+	import UnitClass
+	import Lightning
+	import Filter
+	import HeroClass
+	import Bonus
+	import CaptureAnimation
+	import Fx
+	import Colors
+	import TimedEffect
+	import Setup
+	import HashMap
+	
+	constant real range = 900
+	constant real captureRange = 800
+	constant int model = 'cptd'
+	constant int morphAbi = 'ctpm'
+	constant real height = 335
+	constant real baseDmg = 2
+	constant real dmgPerLvl = 1
+	constant real percentualDmg = 0.2
+	constant real heroDmgFactor = 0.1
+	constant real unitDmgFactor = 0.01
+	constant real creepDmg = 0.75
+	constant real captureSpeedPoint = 0.0125
+	constant real captureSpeedHero = 0.009
+	constant real baseSHeal = 2.0
+	constant real heroSHealFactor = 0.1
+	constant real unitSHealFactor = 0.025
+	
+	function handle.getId() returns int
+		return GetHandleId(this)
+		
+	public class CaptureData
+		Unit owner
+		lightning l1 = null
+		lightning l2 = null
+		real blitzPos = 0
+		boolean wantCapture = false
+		boolean captures = false
+		Action<Units> onDeath = null
+		//ControlPoint currentTarget = null
+		Fx fx = null
+		Bonus armor = null
+		Bonus attack = null
+		Bonus life = null
+		Bonus mana = null
+		Bonus spellpower = null
+		Bonus resistance = null
+		
+		construct(Unit u)
+			owner = u
+		
+		ondestroy
+			l1.destr()
+			l2.destr()
+			if onDeath != null
+				destroy onDeath
+			if fx != null
+				destroy fx
+			if armor != null
+				destroy armor
+				destroy attack
+				destroy life
+				destroy mana
+				destroy spellpower
+				destroy resistance
+		
+//	public class ControlPoint
+//		static HashMap<Unit, CaptureData> captureMap = new HashMap<Unit, CaptureData>()
+//		static constant Action<Unit> creationAction = Unit.onCreation((Unit u) -> captureMap.put(u, new CaptureData(u)))
+//		static constant Action<Unit> destructionAction = Unit.onDestroy((Unit u) -> destroy captureMap.get(u))
+//		vec3 pos
+//		unit clickDummy
+//		unit visualDummy
+//		group inRange = CreateGroup()
+//		int enemyHerosInGroup = 0
+//		int allyHerosInGroup = 0
+//		int enemysInGroup = 0
+//		int allysInGroup = 0
+//		player owner
+//		timer t1 = getTimer()
+//		timer t2 = getTimer()
+//		//==============//
+//		real hp = 1
+//		
+//		
+//		construct(vec2 pos, player owner)
+//			clickDummy = createUnit(owner, model, pos, angle(0))
+//			clickDummy.addAbility(morphAbi)
+//			clickDummy.setUserData(this castTo int)
+//			visualDummy = createUnit(owner, 'h003', pos, angle(0))
+//			this.pos = vec3(pos.x - 10, pos.y -25, height)
+//			this.owner = owner
+//			t1.setData(this castTo int)
+//			t1.startPeriodic(0.10, function callGroupCheck)
+//			t2.setData(this castTo int)
+//			t2.startPeriodic(0.03, function callInRangeActions)
+//			timer t3 = getTimer()
+//			t3.setData(this castTo int)
+//			t3.start(1, function hideDummy)
+//			
+//		static function hideDummy()
+//			GetExpiredTimer().getData() castTo thistype.clickDummy.setVertexColor(255, 255, 255, 0)
+//			
+//		private static function callGroupCheck()
+//			GetExpiredTimer().getData() castTo thistype.groupCheck()
+//			
+//		private function groupCheck()
+//			selfHeal()
+//			setColor()
+//			for unit gu in inRange
+//				Unit obj = gu.getUserData() castTo Unit
+//				if gu.getPos().distToVec(pos.toVec2()) > range
+//					if IsUnitAlly(gu, owner)
+//						if obj.isHero
+//							allyHerosInGroup--
+//						else
+//							allysInGroup--
+//					else
+//						if obj.isHero
+//							enemyHerosInGroup--
+//						else
+//							enemysInGroup--
+//					GroupRemoveUnit(inRange, gu)
+//							
+//			group tempGroup = CreateGroup()
+//			GroupEnumUnitsInRange(tempGroup, pos.x, pos.y, range, Condition(function notDead))
+//			for unit gu from tempGroup
+//				if not IsUnitInGroup(gu, inRange)
+//					//enter actions
+//					Unit obj = gu.getUserData() castTo Unit
+//					obj.ct = new CaptureData(this)
+//					Action<Units> a = obj.registerDeath((Units data) -> begin
+//						onDeath(data.target)
+//					end)
+//					obj.ct.onDeath = a
+//					GroupAddUnit(inRange, gu)
+//					if IsUnitAlly(gu, owner)
+//						addAllBons(obj)
+//						if obj.isHero
+//							allyHerosInGroup++
+//						else
+//							allysInGroup++
+//					else
+//						if obj.isHero
+//							enemyHerosInGroup++
+//							if obj castTo Hero.wantCapture
+//								startCapture(obj castTo Hero)
+//								
+//						else
+//							enemysInGroup++
+//						vec3 middle = obj.getMiddle()
+//						obj.ct.l1 = createLightning(FORKED_LIGHTNING, middle, pos)
+//						obj.ct.fx = new Fx(middle, 0..asAngleRadians(), "Abilities\\Spells\\Orc\\Bloodlust\\BloodlustTarget.mdl")
+//						obj.ct.fx.setScale(3.)
+//			DestroyGroup(tempGroup)
+//						
+//		private static function callInRangeActions()
+//			GetExpiredTimer().getData() castTo thistype.inRangeActions()
+//			
+//		private function inRangeActions()
+//			for unit gu in inRange
+//				Unit obj = gu.getUserData() castTo Unit
+//				CaptureData ct = obj.ct
+//				if IsUnitAlly(gu, owner)
+//					obj.healSystem(2.5)
+//				else
+//					if not ct.captures	
+//						if ct.blitzPos < 0
+//							vec3 middle = obj.getMiddle()
+//							ct.l1.setPos(vec3(pos.x, pos.y, height), middle)
+//							ct.fx.setPos(middle)
+//							obj.damageSystem(calcDamage(obj))
+//							if ct.l2 != null
+//								ct.l2.destr()
+//								ct.l2 = null
+//						else
+//							ct.blitzPos -= captureSpeedPoint
+//							vec3 pos1 = obj castTo Hero.getMiddle()
+//							vec3 mid = pos1*(1 - ct.blitzPos) + pos * ct.blitzPos
+//							ct.l1.setPos(pos, mid)
+//							ct.l2.setPos(pos1, mid)
+//							ct.fx.setPos(mid)
+//					else
+//						if ct.blitzPos < 1
+//							ct.blitzPos += captureSpeedHero
+//							vec3 pos1 = obj castTo Hero.getCaptureAttackPoint(pos)
+//							vec3 mid = pos1*(1 - ct.blitzPos) + pos * ct.blitzPos
+//							ct.l1.setPos(pos, mid)
+//							ct.l2.setPos(pos1, mid)
+//							ct.fx.setPos(mid)
+//						else
+//							damage(2, obj)
+//				
+//		function selfHeal()
+//			real heal = (baseSHeal + (heroSHealFactor * allyHerosInGroup) + (unitSHealFactor * allysInGroup))
+//			if hp + heal >= 1000
+//				hp = 1000
+//			else
+//				hp += heal
+//				
+//		function damage(real amount, Unit source)
+//			if hp - amount <= 0
+//				hp = 0
+//				if source.ct != null
+//					skip//source.ct.onDeath.fire()
+//				captured()
+//			else
+//				hp -= amount
+//				
+//		function captured()
+//			createTimedFx("war3mapImported\\BlizzardEruption.mdx", pos.toVec2(), 3).setScale(4)
+//			hp = 500
+//			for unit u from inRange
+//				Unit obj = u.getUserData() castTo Unit
+//				destroy obj.ct
+//				obj.ct = null
+//				SetUnitAnimationByIndex(u, 0)
+//				if IsUnitAlly(u, owner)
+//					if obj.isHero
+//						allyHerosInGroup--
+//					else
+//						allysInGroup--
+//				else
+//					if obj.isHero
+//						enemyHerosInGroup--
+//						obj castTo Hero.stopCaptureAnimation()
+//					else
+//						enemysInGroup--
+//			owner = Player(0)
+//				
+//		function setColor()
+//			real helpHP = hp
+//			if hp >= 500
+//				helpHP = 500
+//			if IsPlayerAlly(GetLocalPlayer(), owner)
+//				helpHP += 500
+//				real green = 30 + (helpHP / 1000) * 225
+//				real red = 255 - (helpHP / 1000) * 225
+//				visualDummy.setVertexColor(color(red.toInt(), green.toInt(), 30))
+//			else
+//				helpHP += 500
+//				real red = 30 + (helpHP / 1000) * 225
+//				real green = 255 - (helpHP / 1000) * 225
+//				visualDummy.setVertexColor(color(red.toInt(), green.toInt(), 30))
+//						
+//		function calcDamage(Unit u) returns real
+//			real damage = (baseDmg + (dmgPerLvl * u.level))
+//			if u.isHero
+//				damage += (GetUnitState(u.u, UNIT_STATE_MAX_LIFE) / 100) * percentualDmg
+//				damage += GetHeroLevel(u.u) * dmgPerLvl
+//			else
+//				damage *= creepDmg
+//			real damageModifer = ((allyHerosInGroup - enemyHerosInGroup) * heroDmgFactor) + ((allysInGroup - enemysInGroup) * unitDmgFactor)
+//			damage = damage * (1 + damageModifer)
+//			return damage
+//			
+//		private function addAllBons(Unit u)
+//			CaptureData ct = u.ct
+//			ct.armor = u.bonusArmorPer(10.)
+//			ct.attack = u.bonusAttackPer(10.)
+//			ct.life = u.bonusLifePer(10.)
+//			ct.mana = u.bonusManaPer(10.)
+//			ct.resistance = u.bonusResistancePer(10.)
+//			ct.spellpower = u.bonusSpellpowerPer(10.)
+//			
+//		private function onDeath(Unit triggerUnit)
+//			destroy triggerUnit.ct
+//			triggerUnit.ct = null
+//			if IsUnitAlly(triggerUnit.u, owner)
+//				if triggerUnit.isHero
+//					allyHerosInGroup--
+//				else
+//					allysInGroup--
+//			else
+//				if triggerUnit.isHero
+//					enemyHerosInGroup--
+//				else	
+//					enemysInGroup--
+//			GroupRemoveUnit(inRange, triggerUnit.u)
+//			
+//		function startCapture(Hero h)
+//			print("start")
+//			Hero.orderDetect.disable()
+//			IssueImmediateOrder(h.u, "stop")
+//			Hero.orderDetect.enable()
+//			h.ct.captures = true
+//			h.registerChannelCancel((Unit u) -> begin
+//				h.ct.captures = false
+//				h.stopCaptureAnimation()
+//			end)
+//			h.u.setFacing(h.u.getPos().angleTo(pos.toVec2()))
+//			h.playCaptureAnimation()
+//			vec3 hpos = h.getCaptureAttackPoint(pos)
+//			if h.ct.l2 == null
+//				h.ct.l2 = createLightning(FORKED_LIGHTNING, hpos, hpos)
+//				SetLightningColor(h.ct.l2, 1., 0.5, 0.1, 1)
+//			
+//
+//			
+//		function stopCapture(Hero h)
+//			h.ct.captures = false
+//			h.stopCaptureAnimation()
+//			
+//		function conquerOrderGet(Hero h)
+//			if not IsUnitAlly(h.u, owner)
+//				var obj = h.ct
+//				if obj != null and obj.target == this
+//					if not obj.captures
+//						startCapture(h)
+//					else
+//						Hero.orderDetect.disable()
+//						IssueImmediateOrder(h.u, "stop")
+//						Hero.orderDetect.enable()
+//				else
+//					Hero.orderDetect.disable()
+//					IssuePointOrder(h.u, "move", visualDummy.getX(), visualDummy.getY())
+//					Hero.orderDetect.enable()
+//					h.wantCapture = true
+				
+		
+		
+			
+endpackage

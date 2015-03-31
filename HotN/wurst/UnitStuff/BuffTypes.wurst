@@ -1,0 +1,37 @@
+package BuffTypes
+
+import HashMap
+import BuffObjEditing
+import AbilityObjEditing
+import ObjectIds
+import PreloadSystem
+import StandardImports
+	
+//======================================================================================================//
+	
+HashMap<int, int> buffMap = new HashMap<int, int>()
+int buffCount = '!000'
+	
+function addBuffType(string buffName, string iconPath, string tooltip, string tooltipEx)
+	if not compiletime
+		buffMap.put(StringHash(buffName), buffCount)
+		addBuffToPreload(buffCount)
+		addAbilityToPreload(buffCount + 1, 1)
+	else
+		BuffDefinition bf = new BuffDefinition(buffCount, 'BNso')
+		bf.setIconNormal(1, iconPath)
+		bf.setTooltipNormal(1, tooltip)
+		bf.setTooltipNormalExtended(1, tooltipEx)
+		AbilityDefinitionAuraSlow af = new AbilityDefinitionAuraSlow(buffCount + 1)
+		af.setName(buffName)
+		af.setMovementSpeedFactor(1, 0)
+		af.setAttackSpeedFactor(1, 0)
+		af.setTargetsAllowed(1, "invulnerable,self,vulnerable")
+		af.setBuffs(1, idInteger2IdString(buffCount))
+	buffCount += 2
+	
+public function getBuffType(string name) returns bufftype
+	int i = buffMap.get(StringHash(name))
+	return bufftype(i + 1, i)
+	
+public tuple bufftype(int abiId, int buffId)

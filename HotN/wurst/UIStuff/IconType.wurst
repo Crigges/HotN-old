@@ -1,0 +1,96 @@
+package IconType
+
+import HashMap
+import AbilityObjEditing
+import ObjectIds
+import ObjectIdGenerator
+import PreloadSystem
+import StandardImports
+
+//add buffs here
+@dinit function types()
+	//schwert des buhsta ist weg und jetzt wurde der chat übernommen okay das wars für heute :D bin mal raus
+	addIconType("RingDesCrigges", "ReplaceableTextures\\CommandButtons\\BTNSlow.blp")
+	addIconType("3M1", "ReplaceableTextures\\CommandButtons\\BTN3M1.blp")
+//	
+	addIconType("Bash", "ReplaceableTextures\\CommandButtons\\BTNBash.blp")
+//	
+	addIconType("Glove", "ReplaceableTextures\\CommandButtons\\BTNGlove.blp")
+//	
+	addIconType("Buy", "menuBuy.blp")
+	
+@dinit function types2()
+//	
+	addIconType("Grunt", "ReplaceableTextures\\CommandButtons\\BTNGrunt.blp")
+
+	addIconType("HealingSpray", "ReplaceableTextures\\CommandButtons\\BTNHealingSpray.blp")
+
+	addIconType("Hex", "ReplaceableTextures\\CommandButtons\\BTNHex.blp")
+
+	addIconType("Hydra", "ReplaceableTextures\\CommandButtons\\BTNHydra.blp")
+//	
+	addIconType("Impale", "ReplaceableTextures\\CommandButtons\\BTNImpale.blp")
+//	
+	addIconType("ManaStone", "ReplaceableTextures\\CommandButtons\\BTNManaStone.blp")
+
+
+
+
+
+
+
+//======================================================================================================//
+HashMap<int, int> iconMap1 = new HashMap<int, int>()
+HashMap<int, int> iconMap2 = new HashMap<int, int>()
+constant real restColor = 0.3
+	
+function addIconType(string name, string iconPath)
+	int icon1 = genId()
+	int icon2 = genId()
+	if not compiletime
+		iconMap1.put(StringHash(name), icon1)
+		iconMap2.put(StringHash(name), icon2)
+		addDestructableToPreload(icon1)
+		addDestructableToPreload(icon2)
+	else
+		var u = createObjectDefinition("w3b", icon1, 'YTlb')
+		u.setReal("bgsc", 0.0)
+		u.setString("bshd", "")
+		u.setInt("bcpd", 0)
+		u.setString("bsuf", "Icon")
+		u.setUnreal("boch", 0.0)
+		u.setUnreal("bsel", 0.0)
+		u.setString("bfil", "war3mapImported\\ButtonC.mdl")
+		u.setString("bnam", name)
+		u.setString("barm", "Ethereal")
+		u.setString("btar", "")
+		u.setInt("bcpr", 0)
+		u.setString("bptx", "")
+		u.setInt("btxi", 31)
+		u.setString("btxf", iconPath)
+		u = createObjectDefinition("w3b", icon2, 'YTlb')
+		u.setReal("bgsc", 0.0)
+		u.setString("bshd", "")
+		u.setInt("bcpd", 0)
+		u.setString("bsuf", "Icon")
+		u.setUnreal("boch", 0.0)
+		u.setUnreal("bsel", 0.0)
+		u.setString("bfil", "war3mapImported\\ButtonC.mdl")
+		u.setString("bnam", name)
+		u.setString("barm", "Ethereal")
+		u.setString("btar", "")
+		u.setInt("bcpr", 0)
+		u.setString("bptx", "")
+		u.setInt("btxi", 31)
+		u.setString("btxf", iconPath)
+		u.setInt("bvcr", (255 * restColor).toInt())
+		u.setInt("bvcg", (255 * restColor).toInt())
+		u.setInt("bvcb", (255 * restColor).toInt())
+	
+	
+public function getIconType(string name) returns iconType
+	int i = iconMap1.get(StringHash(name)) 
+	int i2 = iconMap2.get(StringHash(name)) 
+	return iconType(i, i2)
+
+public tuple iconType(int normalId, int diableId)

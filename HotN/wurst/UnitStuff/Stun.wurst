@@ -1,0 +1,35 @@
+package Stun
+
+	import UnitClass
+	
+	public class Stun
+		Unit u
+		timer t
+		
+		construct(Unit u, real duration)
+			this.u = u
+			unit dummy = CreateUnit(DUMMY_PLAYER, DUMMY_UNIT_ID, u.u.getX(), u.u.getY(),0)
+			UnitAddAbility(dummy,'stun')
+			IssueTargetOrder(dummy,"thunderbolt", u.u)
+			UnitApplyTimedLife(dummy,'BTLF',.27)
+			t = getTimer()
+			t.setData(this castTo int)
+			t.start(duration, function destroyStun)
+		
+		function updateStun(real newDuration) returns Stun
+			if TimerGetRemaining(t) < newDuration
+				t.release()
+				t = getTimer()
+				t.setData(this castTo int)
+				t.start(newDuration, function destroyStun)
+			return this
+				
+		static function destroyStun()
+			destroy GetExpiredTimer().getData() castTo Stun
+	
+		ondestroy
+			UnitRemoveAbility(u.u,'BPSE')
+			u.stun = null
+			t.release()
+
+endpackage

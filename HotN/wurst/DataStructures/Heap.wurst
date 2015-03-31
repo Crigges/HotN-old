@@ -1,0 +1,8 @@
+package Heap
+
+public module Heap<T>
+	static T array content
+	
+	abstract function compare(T a, T b) returns int
+		
+	

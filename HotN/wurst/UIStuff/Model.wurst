@@ -1,0 +1,91 @@
+package Model
+
+import UnitObjEditing
+import StandardImports
+import ArrayList
+import Menu
+
+constant dummyID = 'uidu'
+
+@compiletime function generateDummyUnit()
+	let u = new UnitDefinition(dummyID, 'ewsp')
+	u.setName("Effect Dummy Unit")
+	u.setUpgradesUsed("")
+	u.setStructuresBuilt("")
+	u.setNormalAbilities("Aloc")
+	u.setManaRegeneration(0.1)
+	u.setManaInitialAmount(1000)
+	u.setManaMaximum(1000)
+	u.setCollisionSize(0.0)
+	u.setRace(Race.Commoner)
+	u.setFoodCost(0)
+	u.setIconGameInterface("ReplaceableTextures\\CommandButtons\\BTNtemp.blp")
+	u.setSpeedBase(522)
+	u.setModelFile("dummy.mdl")
+	u.setAnimationBlendTimeseconds(0.0)
+	u.setAnimationCastBackswing(0.0)
+	u.setMaximumPitchAngledegrees(0.0)
+	u.setMaximumRollAngledegrees(0.0)
+	u.setSpecial("")
+	u.setProjectileImpactZ(0.0)
+	u.setProjectileLaunchZ(0.0)
+	u.setNameEditorSuffix("(Caster System?)")
+	u.setSightRadiusDay(1)
+	u.setSightRadiusNight(1)
+	u.setUnitClassification("_")
+	u.setPropulsionWindowdegrees(1.0)
+	u.setTooltipBasic("")
+	u.setMaximumPitchAngledegrees(-270)
+	u.setMaximumRollAngledegrees(-270)
+	u.setMovementHeight(50)
+	
+public class Model extends Widget
+	unit u
+	color col = color(255, 255, 255)
+
+	/**
+	*	Easy constructor without clickbounds, so don't use this as content in observables
+	*/
+	construct(element center, string modelPath, real scale)
+		super(center, element(1, 1))
+		u = createUnit(DUMMY_PLAYER, dummyID, menuStart + center.toVec(), 0..asAngleDegrees())
+		u.setVertexColor(colorA(255, 255, 255, 0))
+		u.addEffect(modelPath, "origin")
+		u.setScale(scale)
+		
+	/**
+	*	Uses a normal rect as clickbounds 
+	*/
+	construct(element start, element size, string modelPath, real scale)
+		super(start, size)
+		vec2 sizeAsVec = vec2(size.x / 2, size.y / 2)
+		u = createUnit(DUMMY_PLAYER, dummyID, menuStart + start.toVec()  + sizeAsVec, 0..asAngleDegrees())
+		u.setVertexColor(colorA(255, 255, 255, 0))
+		u.addEffect(modelPath, "origin")
+		u.setScale(scale)
+		
+	function setScacle(real scale)
+		u.setScale(scale)
+		
+	function fixPos(vec2 fix)
+		u.setXY(fix)
+		
+	function setHeight(real h)
+		u.setFlyHeight(h, 0)
+		
+	function setColor(color c)
+		col = c
+	
+	override function showDirect(player p)
+		u.setVertexColor(col.withAlpha(255))
+	
+	override function hideDirect(player p)
+		u.setVertexColor(col.withAlpha(0))
+	
+	override function enable(player p)
+		
+	override function disable(player p)
+		
+	
+	
+

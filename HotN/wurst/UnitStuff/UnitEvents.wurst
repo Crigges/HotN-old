@@ -1,0 +1,141 @@
+package UnitEvents
+
+	import public CustomClosureEvents
+	import UnitClass
+	import LinkedList
+
+	//=============================================================================//
+
+	public class PreDamageData
+		Unit source
+		Unit target
+		LinkedList<Bonus> tempBons
+		
+	//=============================================================================//
+		
+	public class PreDamageEvent extends Event<PreDamageData>
+		Unit target
+				
+		construct(Unit target)
+			this.target = target
+			
+		function fire(Unit source)
+			let data = new PreDamageData()
+			data.source = source
+			data.target = target
+			super.callActions(data)
+			destroy data
+			
+	//=============================================================================//
+
+	public class OnDamageData
+		Unit source
+		Unit target
+		real damage
+		boolean stop = false
+		
+	//=============================================================================//
+		
+	public class OnDamageEvent extends Event<OnDamageData>
+		Unit target
+				
+		construct(Unit target)
+			this.target = target
+			checkData = true
+			
+		function fire(Unit source, real dmg) returns real
+			let data = new OnDamageData()
+			data.source = source
+			data.target = target
+			data.damage = dmg
+			super.callActions(data)
+			real finalDmg = data.damage
+			destroy data
+			return finalDmg
+		
+		override function stop(OnDamageData data) returns boolean
+			return data.stop
+			
+	//=============================================================================//
+
+	public class SpellData
+		Unit source
+		Unit target
+		boolean spellSuccess = false
+		
+	//=============================================================================//
+		
+	public class SpellEvent extends Event<SpellData>
+		Unit target
+				
+		construct(Unit target)
+			this.target = target
+			checkData = true
+			
+		function fire(Unit source) returns boolean
+			let data = new SpellData()
+			data.source = source
+			data.target = target
+			super.callActions(data)
+			boolean success = data.spellSuccess
+			destroy data
+			return success
+		
+		override function stop(SpellData data) returns boolean
+			return not data.spellSuccess
+
+
+	//=============================================================================//
+	
+	public class UnitEvent extends Event<Unit>
+
+		function fire(Unit whichUnit)
+			super.callActions(whichUnit)
+			
+	public UnitEvent pullOnCreate = new UnitEvent()	
+			
+	//=============================================================================//
+	
+	public class Units
+		Unit source
+		Unit target
+	
+	//=============================================================================//
+		
+	public class Unit2Event extends Event<Units>
+			
+		function fire(Unit source, Unit target)
+			let data = new Units()
+			data.source = source
+			data.target = target
+			super.callActions(data)
+			destroy data
+			
+	//=============================================================================//
+		
+//	public class CaptureEventData
+//		Unit u
+//		ControlPoint cp
+//	
+//	//=============================================================================//
+//		
+//	public class CaptureEvent extends Event<CaptureEventData>
+//			
+//		function fire(Unit u, ControlPoint target)
+//			let data = new CaptureEventData()
+//			data.u = u
+//			data.cp = target
+//			super.callActions(data)
+//			destroy data
+			
+	//=============================================================================//
+		
+	public class SimpleEvent extends Event<int>
+			
+		function fire()
+			super.callActions(0)
+			
+		
+			
+		
+endpackage

@@ -1,0 +1,73 @@
+package TextBox
+
+import StandardImports
+import Image
+import Menu
+import TextSplat
+	
+public class TextBox extends Widget
+	real maxSpace = 0
+	string content = ""
+	TextSplat splat
+	real fontsize
+	color col = color(0, 0, 0)
+	
+	construct(element pos, element size, real fontsize, Layer l)
+		super(pos, size)
+		this.fontsize = fontsize
+		vec2 posFix = vec2(30, size.toVec().y - 30)
+		splat = new TextSplat(pos.toVec() + posFix + menuStart, fontsize, l)..setMaxWidth(size.toVec().x - 60)
+		
+	function setColor(color c)
+		col = c
+		
+	function write(string s, player p)
+		if GetLocalPlayer() == p
+			content += s
+			
+	function setText(string s, player p)
+		if GetLocalPlayer() == p
+			content = s
+		
+	override function showDirect(player p)
+		splat.clear(p)
+		splat.append(content, col.withAlpha(255), p)
+		
+	override function hideDirect(player p)
+		splat.clear(p)
+		
+	override function enable(player p)
+		splat.clear(p)
+		splat.append(content, colorA(90, 90, 90, 255), p)
+	
+	override function disable(player p)
+		splat.clear(p)
+		splat.append(content, col.withAlpha(255), p)
+		
+	ondestroy
+		destroy splat
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+		
+			
+		
+		

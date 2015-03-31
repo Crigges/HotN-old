@@ -1,0 +1,138 @@
+package PreloadSystem
+
+import HashMap
+import HashList
+import ClosureTimers
+import ObjectIds
+
+HashMap<int, PreloadAction> preloadActions = new HashMap<int, PreloadAction>()
+HashList<Ability> abilitysToPreload = new HashList<Ability>()
+HashList<int> unitsToPreload = new HashList<int>()
+HashList<int> buffsToPreload = new HashList<int>()
+HashList<int> itemsToPreload = new HashList<int>()
+HashList<int> destructablesToPreload = new HashList<int>()
+real totalTime = 0
+
+
+
+constant unit preloadDummy = CreateUnit(DUMMY_PLAYER, DUMMY_UNIT_ID, 0, 0, 0)
+constant real abilityLoadTime= 0.003
+constant real abilityLoadTimeLvlBonus = 0.003 
+constant real unitLoadTime= 0.003
+constant real buffLoadTime= 0.003
+constant real itemLoadTime= 0.003
+constant real destructableLoadTime = 0.003
+
+public abstract class PreloadAction
+	
+	abstract function run(int i) returns real
+	
+public function onPreload(string name, PreloadAction action)
+	preloadActions.put(StringHash(name), action)
+	
+public function preloadAction(string name, int i) returns real
+	return preloadActions.get(StringHash(name)).run(i)
+	
+public function getTotalLoadTime() returns real
+	return totalTime
+	
+public function addAbilityToPreload(int id, int lvl)
+	abilitysToPreload.add(new Ability(id, lvl))
+	
+public function addUnitToPreload(int id)
+	unitsToPreload.add(id)
+	
+public function addBuffToPreload(int id)
+	buffsToPreload.add(id)
+	
+public function addItemToPreload(int id)
+	itemsToPreload.add(id)
+	
+public function addDestructableToPreload(int id)
+	destructablesToPreload.add(id)
+	
+class Ability
+	int id
+	int lvl
+	
+	construct(int id, int lvl)
+		this.id = id
+		this.lvl = lvl
+	
+init
+	onPreload("Abilitys", (int i) -> begin
+		real ret = 0
+		if i >= abilitysToPreload.getSize()
+			preloadDummy.remove()
+			ret = -1
+		else
+			Ability a = abilitysToPreload.get(i)
+			preloadDummy.addAbility(a.id)
+			if preloadDummy.getAbilityLevel(a.id) == 0
+				printError("Could not load the ability " + idInteger2IdString(a.id))
+				ret = -2
+			else
+				ret = abilityLoadTime + abilityLoadTimeLvlBonus * (a.lvl - 1)
+		return ret
+	end)
+	onPreload("Units", (int i) -> begin
+		real ret = 0
+		if i >= unitsToPreload.getSize()
+			preloadDummy.remove()
+			ret = -1
+		else
+			int id = unitsToPreload.get(i)
+			unit u = CreateUnit(DUMMY_PLAYER, id, 0, 0, 0)
+			if u.getName() == "" or u.getName() == null
+				ret = -2
+			else
+				doAfter(1., () -> u.remove())
+				ret = unitLoadTime
+		return ret
+	end)
+	onPreload("Buffs", (int i) -> begin
+		real ret = 0
+		if i >= buffsToPreload.getSize()
+			ret = -1
+		else
+			int id = buffsToPreload.get(i)
+			if GetObjectName(id) == null or GetObjectName(id) == ""
+				ret = -2
+			else
+				ret = buffLoadTime
+		return ret
+	end)
+	onPreload("Items", (int i) -> begin
+		real ret = 0
+		if i >= itemsToPreload.getSize()
+			ret = -1
+		else
+			int id = itemsToPreload.get(i)
+			item ite = CreateItem(id, 0 , 0)
+			if ite.getName() == null or ite.getName() == ""
+				ret = -2
+			else
+				ite.remove()
+				ret = itemLoadTime
+		return ret
+	end)
+	onPreload("Destructables", (int i) -> begin
+		real ret = 0
+		if i >= destructablesToPreload.getSize()
+			ret = -1
+		else
+			int id = destructablesToPreload.get(i)
+			destructable d = CreateDestructable(id, 0, 0, 0, 0, 0)
+			if GetDestructableName(d) == null or GetDestructableName(d) == ""
+				printError("Following destructable is missing or invaild and could not be loaded: " + idInteger2IdString(id))
+				ret = -2
+			else
+				doAfter(1, () -> RemoveDestructable(d))
+				ret = destructableLoadTime
+		return ret
+	end)
+
+	
+	
+
+	

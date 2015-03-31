@@ -1,0 +1,220 @@
+package Menu
+
+	import StandardImports
+	import Stack
+	import LinkedList
+	import HashMap
+	import PreloadSystem
+	import Trackable
+	import ClassInit
+
+	public abstract class Widget
+		use ClassInit
+		static string array backgroundTexture
+		element pos
+		element size
+		
+		override static function classInit()
+			for int i = 1 to 8
+				backgroundTexture[i] = "Hintergrund" + i.toString() + ".blp"
+		
+		construct(element pos, element size)
+			this.pos = pos
+			this.size = size
+			
+		function onAdd(Window _w)
+		
+		abstract function showDirect(player p)
+		
+		abstract function hideDirect(player p)
+		
+		abstract function disable(player p)
+		
+		abstract function enable(player p)
+		
+		function clickAnimation(player _p)
+			
+		function trackAnimation(player _p)
+			
+		function untrackAnimation(player _p)
+	
+	public class Observable extends Widget
+		Widget content
+		PlayerAction click = null
+		PlayerAction dClick = null
+		PlayerAction track = null
+		PlayerAction unTrack = null
+		boolean playClickAnimation = true
+		boolean playDoubleClickAnimation = true
+		boolean playHoverAnimation = true	
+		
+		override function onAdd(Window w)
+			w.addClickDetection(this)
+			
+		override function showDirect(player p)
+			content.showDirect(p)
+			
+		override function hideDirect(player p)
+			content.hideDirect(p)
+			
+		override function disable(player p)
+			content.disable(p)
+			
+		override function enable(player p)
+			content.enable(p)
+			
+		function playClickAnimation(boolean value)
+			playClickAnimation = value
+			
+		function playDoubleClickAnimation(boolean value)
+			playHoverAnimation = value
+			
+		function playHoverAnimation(boolean value)
+			playHoverAnimation = value
+			
+		function setClickAction(PlayerAction p)
+			click = p
+		
+		function setDoubleClickAction(PlayerAction p)
+			dClick = p
+			
+		function setTrackAction(PlayerAction p)
+			track = p
+			
+		function setUnTrackAction(PlayerAction p)
+			unTrack = p
+		
+		function onClick(player p)
+			if click != null
+				click.run(p)
+			if playClickAnimation
+				content.clickAnimation(p)
+
+		function onDoubleClick(player p)
+			if dClick != null
+				dClick.run(p)
+			if not playClickAnimation and playDoubleClickAnimation
+				content.clickAnimation(p)
+		
+		function onTrack(player p)
+			if track != null
+				track.run(p)
+			if playHoverAnimation
+				content.trackAnimation(p)
+			
+		function onUnTrack(player p)
+			if unTrack != null
+				unTrack.run(p)
+			if playHoverAnimation
+				content.untrackAnimation(p)
+		
+		construct(Widget w)
+			super(w.pos, w.size)
+			content = w
+			
+	public abstract class PlayerAction
+	
+		abstract function run(player p)
+		
+			
+	public class WindowManager
+		static Stack<Window> array currentWindow
+		static Observable array currentObservable
+		
+		static function openWindow(Window w, player p)
+			w.wantToClose.put(p, false)
+			w.showContent(p)
+			currentWindow[GetPlayerId(p)].push(w)
+			
+		static function closeTopWindow(player p)
+			currentWindow[GetPlayerId(p)].pop().hideContent(p)
+			while true
+				if currentWindow[GetPlayerId(p)].peek().wantToClose.get(p)
+					currentWindow[GetPlayerId(p)].pop().hideContent(p)
+				else
+					break
+			
+		static function closeWindowForPlayer(Window w, player p)
+			w.wantToClose.put(p, true)
+		
+		static function trackableHit(TrackableEx tr, player p)
+			let t = currentWindow[GetPlayerId(p)].peek().getObservableAt(tr)
+			if t != null
+				t.onClick(p)
+			else
+				currentWindow[GetPlayerId(p)].peek().voidClick(p)
+			
+		static function trackableDoubleHit(TrackableEx tr, player p)
+			let t = currentWindow[GetPlayerId(p)].peek().getObservableAt(tr)
+			if t != null
+				t.onDoubleClick(p)
+		
+		static function trackableTrack(TrackableEx tr, player p)
+			var ob = currentWindow[GetPlayerId(p)].peek().getObservableAt(tr)
+			var curr = currentObservable[GetPlayerId(p)]
+			if ob != curr
+				if ob != null
+					ob.onTrack(p)
+				if curr != null
+					curr.onUnTrack(p)
+				currentObservable[GetPlayerId(p)] = ob
+	
+	public class Window
+		LinkedList<Widget> content = new LinkedList<Widget>()
+		HashMap<TrackableEx, Observable> trackMap = new HashMap<TrackableEx, Observable>()
+		HashMap<player, boolean> wantToClose = new HashMap<player, boolean>()
+		PlayerAction voidClick = null
+		
+		function showContent(player p)
+			for Widget g in content
+				g.showDirect(p)
+				
+		function hideContent(player p)
+			for Widget g in content
+				g.hideDirect(p)
+		
+		function add(Widget g)
+			content.add(g)
+			g.onAdd(this)
+				
+		function addClickDetection(Observable o)
+			for element e in new ElementLoop(o.pos, o.pos + o.size - element(1, 1))
+				trackMap.put(getTrackableAt(e), o)
+						
+		function getObservableAt(TrackableEx tr) returns Observable
+			return trackMap.get(tr)
+			
+		function voidClick(player p)
+			if voidClick != null
+				voidClick.run(p)
+			
+		function onVoidClick(PlayerAction a)
+			voidClick = a
+			
+			
+	init
+		for int i = 0 to 11
+			WindowManager.currentWindow[i] = new Stack<Window>()
+		var w = new ElementLoop(element(1, 1), element(menuWidth, menuHeight))
+		onPreload("Trackables", (int i) -> begin
+			real ret = 0.02
+			for int dum = 1 to 10
+				element e
+				if w.hasNext()
+					e = w.next()
+				else
+					Window win = new Window()
+					for int i2 = 0 to 11
+						WindowManager.openWindow(win, Player(i2))
+					ret = -1
+					break
+				var tr = new TrackableEx(e.toVec() + menuStart, "track2.mdx")
+				setTrackableAt(e, tr)
+				tr.onClick((TrackableEx track, player p) -> WindowManager.trackableHit(track, p))
+				tr.onDoubleClick((TrackableEx track, player p) -> WindowManager.trackableDoubleHit(track, p))
+				tr.onTrack((TrackableEx track, player p) -> WindowManager.trackableTrack(track, p))
+			return ret
+		end)
+		
+
+endpackage  

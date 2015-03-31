@@ -1,0 +1,39 @@
+package Button
+
+import StandardImports
+import Menu
+import ImageEx
+import TextSplat
+
+public class Button extends Observable
+	static string buttonTexture = "SorvButton.blp"
+	static vec2 sizeFix = vec2(20, 20)
+	static vec2 posFix = vec2(10, 10)
+	TextSplat splat
+	string name
+	
+	
+	construct(element pos, int scale, Layer l, string name)
+		super(new ImageEx(pos, posFix, element(scale * 4, scale), sizeFix, buttonTexture, l))
+		this.name = name
+		real textsize = 32. + scale * 20
+		vec2 vecSize = size.toVec()
+		splat = new TextSplat(pos.toVec() + vec2((vecSize.x / 4) -(name.length() * (textsize / 2)), vecSize.y / 2) + menuStart, textsize, l)..setMaxWidth(1000)
+		
+		
+	override function showDirect(player p)
+		splat.append(name, p)
+		super.showDirect(p)
+		
+	override function hideDirect(player p)
+		splat.clear(p)
+		super.hideDirect(p)
+		
+	override function enable(player p)
+		super.enable(p)
+		
+	override function disable(player p)
+		super.disable(p)
+		
+	override function trackAnimation(player p)
+	
