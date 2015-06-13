@@ -73,6 +73,8 @@ package GameStart
 	Window scoreWindow = new Window()
 	Window guideWindow = new Window()
 	Window statsWindow = new Window()
+	
+	Window pickWindow = new Window()
 
 	
 	init
@@ -95,11 +97,11 @@ package GameStart
 		
 		//EnablePreSelect(false, false)
 
-		new ControlPoint(vec2(2000,0), Team.Everliving)
-		doAfter(2, () -> begin
-			for int i = 1 to 2
-				new Hero("testhero", vec2(0, 0), Player(0))
-		end)
+//		new ControlPoint(vec2(2000,0), Team.Everliving)
+//		doAfter(2, () -> begin
+//			for int i = 1 to 2
+//				new Hero("testhero", vec2(0, 0), Player(0))
+//		end)
 //		for int k = 1 to 10
 //			doAfter(2, () -> begin
 //				for int i = 1 to 500
@@ -216,6 +218,10 @@ package GameStart
 		Pane shopPleftBot = null
 		Pane shopPleftBot2 = null
 		
+		Pane pickablesPane = null
+		Pane pickedHeroPane = null
+		Pane pickedAbilityPane = null
+		
 		Icon shop1 = null
 		ImageEx buttonLayerShop01 = null
 		Icon shop2 = null
@@ -256,7 +262,59 @@ package GameStart
 		ImageEx buttonLayerShop19 = null
 		Icon shop20 = null
 		ImageEx buttonLayerShop20 = null
-
+		
+		Icon picked1 = null
+		Icon picked2 = null
+		Icon picked3 = null
+		Icon picked4 = null
+		Icon picked5 = null
+		Icon picked6 = null
+		Icon picked7 = null
+		Icon picked8 = null
+		Icon picked9 = null
+		Icon picked10 = null
+		Icon picked11 = null
+		Icon picked12 = null
+		
+		Icon pickable1 = null
+		Icon pickable2 = null
+		Icon pickable3 = null
+		Icon pickable4 = null
+		Icon pickable5 = null
+		Icon pickable6 = null
+		Icon pickable7 = null
+		Icon pickable8 = null
+		Icon pickable9 = null
+		Icon pickable10 = null
+		Icon pickable11 = null
+		Icon pickable12 = null
+//		Icon pickable13 = null
+//		Icon pickable14 = null
+//		Icon pickable15 = null
+//		Icon pickable16 = null
+//		Icon pickable17 = null
+//		Icon pickable18 = null
+//		Icon pickable19 = null
+//		Icon pickable20 = null
+//		Icon pickable21 = null
+//		Icon pickable22 = null
+//		Icon pickable23 = null
+//		Icon pickable24 = null
+		
+		Icon pickability1 = null
+		Icon pickability2 = null
+		Icon pickability3 = null
+		Icon pickability4 = null
+		Icon pickability5 = null
+		Icon pickability6 = null
+		
+		Icon abilityUpgrade1 = null
+		Icon abilityUpgrade3 = null
+		Icon abilityUpgrade6 = null
+		Icon abilityUpgrade9 = null
+		Icon abilityUpgradeU = null
+		
+		
 		ImageEx buttonLayerShopBuy = null
 		ImageEx buttonLayerShopSell = null
 
@@ -292,7 +350,21 @@ package GameStart
 		ImageEx arrow13 = null
 		ImageEx arrow14 = null
 		ImageEx arrow15 = null
-
+		
+		Model model1 = null
+		
+		TextBox playerName1 = null
+		TextBox playerName2 = null
+		TextBox playerName3 = null
+		TextBox playerName4 = null
+		TextBox playerName5 = null
+		TextBox playerName6 = null
+		TextBox playerName7 = null
+		TextBox playerName8 = null
+		TextBox playerName9 = null
+		TextBox playerName10 = null
+		TextBox playerName11 = null
+		TextBox playerName12 = null
 		
 		onPreload("Menu", (int i) -> begin
 			real ret = 0.01
@@ -340,7 +412,9 @@ package GameStart
 					shopPleft = new Pane(element(4, 0), element(16, 20), Layer.L3, 4,false)		
 					shopPmiddle = new Pane(element(23, 14), element(4, 4), Layer.L3, false)	
 					shopPright = new Pane(element(30, 4), element(12, 4), Layer.L2, 4, false)
-					doAfter(10, () -> new Tooltip(element(36, 0), "test").showDirect(Player(0)))
+					//////////////////////////////////////////////////////////////////////////////////
+					doAfter(10, () -> new Tooltip(element(27, 0), "test2").showDirect(Player(0))) //////////////////////////////////////////////////////////////////////////////////
+					//////////////////////////////////////////////////////////////////////////////////
 					shopPleftBot = new Pane(element(23, 8), element(4, 2), Layer.L3, false)
 					shopPleftBot2 = new Pane(element(23, 1), element(4,6), Layer.L3, false)
 //					
@@ -542,6 +616,9 @@ package GameStart
 					buttonLayerCateAgr = new ImageEx(element(2, 15), element(3,3),"cateAgr.blp", Layer.L1)
 					buttonLayerCateDef = new ImageEx(element(2, 10), element(3,3),"cateDef.blp", Layer.L1)
 					buttonLayerCateUti = new ImageEx(element(2, 5), element(3,3),"cateUtiDis.blp", Layer.L1)
+					
+					
+					
 
 				case 4
 					shopOb = new Observable(shopB)
@@ -570,17 +647,17 @@ package GameStart
 					end)
 				case 5
 					
-//					shopWindow.add(arrow1)
-//					shopWindow.add(arrow2)
-//					shopWindow.add(arrow3)
-//					shopWindow.add(arrow4)
-//					shopWindow.add(arrow5)
-//					shopWindow.add(arrow6)
-//					shopWindow.add(arrow7)
-//					shopWindow.add(arrow8)
-//					shopWindow.add(arrow9)
-//					shopWindow.add(arrow10)
-//					shopWindow.add(arrow11)
+					shopWindow.add(arrow1)
+					shopWindow.add(arrow2)
+					shopWindow.add(arrow3)
+					shopWindow.add(arrow4)
+					shopWindow.add(arrow5)
+					shopWindow.add(arrow6)
+					shopWindow.add(arrow7)
+					shopWindow.add(arrow8)
+					shopWindow.add(arrow9)
+					shopWindow.add(arrow10)
+					shopWindow.add(arrow11)
 					
 					
 					shopWindow.add(shopOb)
@@ -635,10 +712,10 @@ package GameStart
 					shopWindow.add(shopT8)
 					shopWindow.add(shopT9)
 					
-					scoreWindow.add(shopOb)
-					scoreWindow.add(scoreOb)
-					scoreWindow.add(guideOb)
-					scoreWindow.add(statsOb)
+//					scoreWindow.add(shopOb)
+//					scoreWindow.add(scoreOb)
+//					scoreWindow.add(guideOb)
+//					scoreWindow.add(statsOb)
 					
 					guideWindow.add(shopOb)
 					guideWindow.add(scoreOb)
@@ -680,6 +757,193 @@ package GameStart
 					shopWindow.add(buttonLayerCateDef)
 					shopWindow.add(buttonLayerCateUti)
 					
+				case 6
+					picked1 = new Icon("Hydra", element(2, 20), 2)
+					picked2 = new Icon("Hydra", element(2, 17), 2)
+					picked3 = new Icon("Hydra", element(2, 14), 2)
+					picked4 = new Icon("Hydra", element(2, 11), 2)
+					picked5 = new Icon("Hydra", element(2, 8), 2)
+					picked6 = new Icon("Hydra", element(2, 5), 2)
+					picked7 = new Icon("Hydra", element(42, 20), 2)
+					picked8 = new Icon("Hydra", element(42, 17), 2)
+					picked9 = new Icon("Hydra", element(42, 14), 2)
+					picked10 = new Icon("Hydra", element(42, 11), 2)
+					picked11 = new Icon("Hydra", element(42, 8), 2)
+					picked12 = new Icon("Hydra", element(42, 5), 2)
+					
+					pickable1 = new Icon("Hex", element(10, 19), 3)
+					pickable2 = new Icon("Hex", element(13, 19), 3)
+					pickable3 = new Icon("Hex", element(16, 19), 3)
+					pickable4 = new Icon("Hex", element(19, 19), 3)
+					pickable5 = new Icon("Hex", element(10, 16), 3)
+					pickable6 = new Icon("Hex", element(13, 16), 3)
+					pickable7 = new Icon("Hex", element(16, 16), 3)
+					pickable8 = new Icon("Hex", element(19, 16), 3)
+					pickable9 = new Icon("Hex", element(10, 13), 3)
+					pickable10 = new Icon("Hex", element(13, 13), 3)
+					pickable11 = new Icon("Hex", element(16, 13), 3)
+					pickable12 = new Icon("Hex", element(19, 13), 3)
+//					pickable13 = new Icon("Hex", element(12, 10), 2)
+//					pickable14 = new Icon("Hex", element(15, 10), 2)
+//					pickable15 = new Icon("Hex", element(18, 10), 2)
+//					pickable16 = new Icon("Hex", element(21, 10), 2)
+//					pickable17 = new Icon("Hex", element(12, 7), 2)
+//					pickable18 = new Icon("Hex", element(15, 7), 2)
+//					pickable19 = new Icon("Hex", element(18, 7), 2)
+//					pickable20 = new Icon("Hex", element(21, 7), 2)
+//					pickable21 = new Icon("Hex", element(12, 4), 2)
+//					pickable22 = new Icon("Hex", element(15, 4), 2)
+//					pickable23 = new Icon("Hex", element(18, 4), 2)
+//					pickable24 = new Icon("Hex", element(21, 4), 2)
+					
+					pickability1 = new Icon("HealingSpray", element(11, 7), 2)
+					pickability2 = new Icon("HealingSpray", element(13, 7), 2)
+					pickability3 = new Icon("HealingSpray", element(15, 7), 2)
+					pickability4 = new Icon("HealingSpray", element(11, 5), 2)
+					pickability5 = new Icon("HealingSpray", element(13, 5), 2)
+					pickability6 = new Icon("HealingSpray", element(15, 5), 2)
+					
+					
+					abilityUpgrade1 = new Icon("impale", element(18, 9), 1)
+					abilityUpgrade3 = new Icon("impale", element(18, 8), 1)
+					abilityUpgrade6 = new Icon("impale", element(18, 7), 1)
+					abilityUpgrade9 = new Icon("impale", element(18, 6), 1)
+					abilityUpgradeU = new Icon("impale", element(18, 4), 1)
+				
+				case 7
+					
+					scoreWindow.add(picked1)
+					scoreWindow.add(picked2)
+					scoreWindow.add(picked3)
+					scoreWindow.add(picked4)
+					scoreWindow.add(picked5)
+					scoreWindow.add(picked6)
+					scoreWindow.add(picked7)
+					scoreWindow.add(picked8)
+					scoreWindow.add(picked9)
+					scoreWindow.add(picked10)
+					scoreWindow.add(picked11)
+					scoreWindow.add(picked12)
+					
+					scoreWindow.add(pickable1)
+					scoreWindow.add(pickable2)
+					scoreWindow.add(pickable3)
+					scoreWindow.add(pickable4)
+					scoreWindow.add(pickable5)
+					scoreWindow.add(pickable6)
+					scoreWindow.add(pickable7)
+					scoreWindow.add(pickable8)
+					scoreWindow.add(pickable9)
+					scoreWindow.add(pickable10)
+					scoreWindow.add(pickable11)
+					scoreWindow.add(pickable12)
+//					scoreWindow.add(pickable13)
+//					scoreWindow.add(pickable14)
+//					scoreWindow.add(pickable15)
+//					scoreWindow.add(pickable16)
+//					scoreWindow.add(pickable17)
+//					scoreWindow.add(pickable18)
+//					scoreWindow.add(pickable19)
+//					scoreWindow.add(pickable20)
+//					scoreWindow.add(pickable21)
+//					scoreWindow.add(pickable22)
+//					scoreWindow.add(pickable23)
+//					scoreWindow.add(pickable24)
+					
+					scoreWindow.add(pickability1)
+					scoreWindow.add(pickability2)
+					scoreWindow.add(pickability3)
+					scoreWindow.add(pickability4)
+					scoreWindow.add(pickability5)
+					scoreWindow.add(pickability6)
+					
+					scoreWindow.add(abilityUpgrade1)
+					scoreWindow.add(abilityUpgrade3)
+					scoreWindow.add(abilityUpgrade6)
+					scoreWindow.add(abilityUpgrade9)
+					scoreWindow.add(abilityUpgradeU)
+					
+					
+					
+				case 8
+					
+//					pickablesPane = new Pane(element(1, 1), element(12, 12), Layer.L3, 2,false)	
+//					pickedHeroPane = new Pane(element(24, 10), element(12, 12), Layer.L3, 2,false)	
+//					pickedAbilityPane = new Pane(element(24, 2), element(8, 8), Layer.L3, 2,false)	
+										
+					pickablesPane = new Pane(element(0, 0), element(44, 22), Layer.L3, false)		
+					pickedHeroPane = new Pane(element(23, 9), element(8, 12), Layer.L3, 4, false)	
+					pickedAbilityPane = new Pane(element(10, 4), element(6, 4), Layer.L3, false)
+					
+					model1 = new Model(element(28,12), element(6,6), "units\\human\\HeroPaladin\\HeroPaladin.mdx", 4)
+					
+//					shopPleft = new Pane(element(4, 0), element(16, 20), Layer.L3, 4,false)		
+//					shopPmiddle = new Pane(element(23, 14), element(4, 4), Layer.L3, false)	
+//					shopPright = new Pane(element(30, 4), element(12, 4), Layer.L2, 4, false)
+//					doAfter(10, () -> new Tooltip(element(36, 0), "test").showDirect(Player(0)))
+//					shopPleftBot = new Pane(element(23, 8), element(4, 2), Layer.L3, false)
+//					shopPleftBot2 = new Pane(element(23, 1), element(4,6), Layer.L3, false)
+					
+					
+				case 9	
+					scoreWindow.add(pickablesPane)	
+					scoreWindow.add(pickedHeroPane)	
+					scoreWindow.add(pickedAbilityPane)	
+					
+					scoreWindow.add(model1)	
+					
+				case 10
+					playerName1 = new TextBox(element(3, 19), element(10, 2), 65, Layer.L1)
+					playerName1.setText("bhusta", Player(0))
+					playerName1.setColor(color(255, 255, 255))
+					playerName2 = new TextBox(element(3, 16), element(10, 2), 65, Layer.L1)
+					playerName2.setText("Criggels", Player(0))
+					playerName2.setColor(color(255, 255, 255))	
+					playerName3 = new TextBox(element(3, 13), element(10, 2), 65, Layer.L1)
+					playerName3.setText("Jopi", Player(0))
+					playerName3.setColor(color(255, 255, 255))	
+					playerName4 = new TextBox(element(3, 10), element(10, 2), 65, Layer.L1)
+					playerName4.setText("Timi", Player(0))	
+					playerName4.setColor(color(255, 255, 255))
+					playerName5 = new TextBox(element(3, 7), element(10, 2), 65, Layer.L1)
+					playerName5.setText("Curryking", Player(0))	
+					playerName5.setColor(color(255, 255, 255))
+					playerName6 = new TextBox(element(3, 4), element(10, 2), 65, Layer.L1)
+					playerName6.setText("StaticMonkey", Player(0))	
+					playerName6.setColor(color(255, 255, 255))
+					
+					playerName7 = new TextBox(element(35, 19), element(10, 2), 65, Layer.L1)
+					playerName7.setText("WaterKnight", Player(0))	
+					playerName7.setColor(color(255, 255, 255))
+					playerName8 = new TextBox(element(35, 16), element(10, 2), 65, Layer.L1)
+					playerName8.setText("Frottzy", Player(0))	
+					playerName8.setColor(color(255, 255, 255))
+					playerName9 = new TextBox(element(35, 13), element(10, 2), 65, Layer.L1)
+					playerName9.setText("Menag", Player(0))	
+					playerName9.setColor(color(255, 255, 255))
+					playerName10 = new TextBox(element(35, 10), element(10, 2), 65, Layer.L1)
+					playerName10.setText("Pikatchu", Player(0))	
+					playerName10.setColor(color(255, 255, 255))
+					playerName11 = new TextBox(element(35, 7), element(10, 2), 65, Layer.L1)
+					playerName11.setText("Gesundheit", Player(0))	
+					playerName11.setColor(color(255, 255, 255))
+					playerName12 = new TextBox(element(35, 4), element(10, 2), 65, Layer.L1)
+					playerName12.setText("Heiniverse", Player(0))		
+					playerName12.setColor(color(255, 255, 255))
+					
+				case 11
+					scoreWindow.add(playerName1)
+					scoreWindow.add(playerName2)
+					scoreWindow.add(playerName3)
+					scoreWindow.add(playerName4)
+					scoreWindow.add(playerName5)
+					scoreWindow.add(playerName6)
+					scoreWindow.add(playerName7)
+					scoreWindow.add(playerName8)
+					scoreWindow.add(playerName9)
+					scoreWindow.add(playerName10)
+					scoreWindow.add(playerName11)
+					scoreWindow.add(playerName12)
 					
 				default
 					ret = -1.
@@ -854,7 +1118,8 @@ package GameStart
 		
 	function onEsc()
 		print("onEsc")
-		createImage("ecke.blp", vec2(1010, 10), 10, 10).show()
+		WindowManager.closeTopWindow(Player(0))
+		WindowManager.openWindow(shopWindow, Player(0))
 		
 	function stopAnimation()
 		SetUnitTimeScalePercent(last.u, 0)
