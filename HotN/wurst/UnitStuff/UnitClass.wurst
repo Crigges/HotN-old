@@ -247,7 +247,7 @@ package UnitClass
 			real speed2central = otherUnit.knockSpeed.dot(deltaNorm)
 			// geprüft, ob sich objekte wirklich treffen
 			let futurePos1 = pos1 + knockSpeed*0.01
-			let futurePos2 = pos2 + otherUnit.knockSpeed*0.01
+			let futurePos2 = pos2 + otherUnit.knockSpeed*0.05
 			let futureDelta = (futurePos2 - futurePos1)
 			if futureDelta.length() < deltaLen
 				// Skalarprodukt wird mit orthogonale multipliziert

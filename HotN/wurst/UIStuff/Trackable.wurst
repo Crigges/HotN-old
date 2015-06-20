@@ -22,7 +22,7 @@ package Trackable
 		private static constant real doubleClickSpeed = 0.5
 	
 		private static timer array playerDoubleClickTimer
-		private static boolean array playerClickBefore
+		private static thistype array playerClickBefore
 		private static HashMap<trackable, player> trackableOwner= new HashMap<trackable, player>()
 		private static HashMap<trackable, thistype> trackableObjects = new HashMap<trackable, thistype>()
 		private static trigger trackTrigger = CreateTrigger()..addAction(() -> trackableObjects.get(GetTriggeringTrackable()).trackHandler(trackableOwner.get(GetTriggeringTrackable())))
@@ -51,15 +51,15 @@ package Trackable
 		
 		private function clickHandler(player p)
 			if onDoubleClick != null
-				if playerClickBefore[p.getId()]
+				if playerClickBefore[p.getId()] == this
 					onDoubleClick.run(this, p)
-					playerClickBefore[p.getId()] = false
+					playerClickBefore[p.getId()] = null
 					playerDoubleClickTimer[p.getId()].pause()
 				else
 					playerDoubleClickTimer[p.getId()].start(doubleClickSpeed, () -> begin
-						playerClickBefore[GetExpiredTimer().getData()] = false
+						playerClickBefore[GetExpiredTimer().getData()] = null
 					end)
-					playerClickBefore[p.getId()] = true
+					playerClickBefore[p.getId()] = this
 					onClick.run(this, p)
 			else
 				if onClick != null

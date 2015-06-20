@@ -7,8 +7,8 @@ import TextSplat
 
 public class Button extends Observable
 	static string buttonTexture = "SorvButton.blp"
-	static vec2 sizeFix = vec2(20, 20)
-	static vec2 posFix = vec2(10, 10)
+	static vec2 sizeFix = vec2(20, 10)
+	static vec2 posFix = vec2(-10, -5)
 	TextSplat splat
 	string name
 	
