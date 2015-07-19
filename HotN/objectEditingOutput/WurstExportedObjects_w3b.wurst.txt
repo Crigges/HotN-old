@@ -480,3 +480,25 @@ import ObjEditingNatives
 	u.setUnreal("bmis", 5.0)
 
 
+@compiletime function create_w3b_%00J()
+	let u = createObjectDefinition("w3b", '%00J', 'YTlb')
+	u.setInt("wurs", 42)
+	u.setReal("bgsc", 0.01)
+	u.setString("bshd", "")
+	u.setInt("bcpd", 0)
+	u.setString("bsuf", "Tip")
+	u.setUnreal("boch", 0.0)
+	u.setUnreal("bsel", 0.0)
+	u.setString("bfil", "war3mapImported\\ButtonC2.mdl")
+	u.setString("bnam", "|cffffa500[Q]|r |cff7cfc00Poinson Shot|r |cff696969(Skillshot, Point Target)|r|n|n|cfff0f8ff[Level 1]|r|nThe Pathfinder shoots a poisonous arrow.|nIf it hits an enemy unit, this units gets|na damage over time effect and movement slow.|n")
+	u.setString("barm", "Ethereal")
+	u.setString("btar", "")
+	u.setInt("bcpr", 0)
+	u.setString("bptx", "")
+	u.setInt("btxi", 31)
+	u.setString("btxf", "Alphaicon.blp")
+	u.setInt("bgse", 1)
+	u.setUnreal("bmas", 5.0)
+	u.setUnreal("bmis", 5.0)
+
+

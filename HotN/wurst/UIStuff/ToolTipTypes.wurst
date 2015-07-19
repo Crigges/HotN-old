@@ -10,7 +10,7 @@ HashMap<int, int> tipMap = new HashMap<int, int>()
 @dinit function types()
 
 	addTipType("test", "|cffb9d1eaHarry Potter is a series of seven epic fantasy|nnovels written by the British author J. K.|nRowling.|n|n|cff98fb98+60 Movement Speed|n+50 Traction|n+2% Critical Hit Chance|n|n|cfff0e68cActive Ability:|nThe series was originally printed in English by|ntwo major publishers, Bloomsbury in the United|nKingdom and Scholastic Press in the United States.|nThe books have since been published by many|npublishers worldwide. The books, with the seventh|nbook split into two parts.|n|cff00ffffCooldown 30sec.|nBuy it or die!")
-//	addTipType("test", "1|n2|n3|n4|n5|n6|n7|n8|n9|n10|n11|n12|n13|n14|n15|n16|n17|n18")
+	addTipType("test2", "|cffffa500[Q]|r |cff7cfc00Poinson Shot|r |cff696969(Skillshot, Point Target)|r|n|n|cfff0f8ff[Level 1]|r|nThe Pathfinder shoots a poisonous arrow.|nIf it hits an enemy unit, this units gets|na damage over time effect and movement slow.|n")
 	
 	
 public function addTipType(string name, string content)

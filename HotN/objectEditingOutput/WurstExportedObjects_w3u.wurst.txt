@@ -228,8 +228,8 @@ import ObjEditingNatives
 	u.setString("uabi", "Avul")
 
 
-@compiletime function create_w3u_W00J()
-	let u = createObjectDefinition("w3u", 'W00J', 'Hpal')
+@compiletime function create_w3u_W00K()
+	let u = createObjectDefinition("w3u", 'W00K', 'Hpal')
 	u.setInt("wurs", 42)
 	u.setInt("umvs", 350)
 	u.setString("uabi", "")
@@ -277,8 +277,8 @@ import ObjEditingNatives
 	u.setString("upro", "CriggesMasterOfDesaster")
 
 
-@compiletime function create_w3u_W00K()
-	let u = createObjectDefinition("w3u", 'W00K', 'Hpal')
+@compiletime function create_w3u_W00L()
+	let u = createObjectDefinition("w3u", 'W00L', 'Hpal')
 	u.setInt("wurs", 42)
 	u.setString("uhab", "")
 	u.setString("uabi", "AInv,rclk")
