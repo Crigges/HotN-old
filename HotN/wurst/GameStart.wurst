@@ -95,13 +95,13 @@ package GameStart
 		trigger blub = CreateTrigger()
 		blub.addAction(function camTest)
 		
-		//EnablePreSelect(false, false)
+		EnablePreSelect(false, false)
 
-//		new ControlPoint(vec2(2000,0), Team.Everliving)
-//		doAfter(2, () -> begin
-//			for int i = 1 to 2
-//				new Hero("testhero", vec2(0, 0), Player(0))
-//		end)
+		new ControlPoint(vec2(2000,0), Team.Everliving)
+		doAfter(2, () -> begin
+			for int i = 1 to 2
+				new Hero("testhero", vec2(0, 0), Player(0))
+		end)
 //		for int k = 1 to 10
 //			doAfter(2, () -> begin
 //				for int i = 1 to 500
