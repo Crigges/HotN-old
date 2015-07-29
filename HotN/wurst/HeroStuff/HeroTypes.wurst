@@ -125,6 +125,8 @@ public class HeroType extends UnitType
 			dummyDef.setSightRadiusNight(1)
 			dummyDef.setHitPointsRegenerationRate(0)
 			dummyDef.setManaRegeneration(0)
+			dummyDef.def.setBoolean("uhhb", true) //hide icon
+			dummyDef.def.setBoolean("uhhd", true)
 		else
 			heros.put(StringHash(name.content), this)
 		super.finalize()

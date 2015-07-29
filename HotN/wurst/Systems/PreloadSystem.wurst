@@ -1,5 +1,6 @@
 package PreloadSystem
 
+import Setup
 import HashMap
 import HashList
 import ClosureTimers
@@ -131,6 +132,14 @@ init
 				ret = destructableLoadTime
 		return ret
 	end)
+	onPreload("CreateDummyItems", (int i) -> begin
+		real ret = -1
+		for int k = 'a' to 'a' + 8
+			permAttackTome[k - 'a'] = CreateItem(permAttackItemRaw + k, recycleGraveyard.x, recycleGraveyard.y)
+		permAttackNegTome = CreateItem(permAttackItemRaw + '-', recycleGraveyard.x, recycleGraveyard.y)
+		return ret
+	end)
+	
 
 	
 	

@@ -2,29 +2,30 @@ package CaptureAnimation
 	
 	import HeroClass
 	import Table
+	import HeroTypes
 	
 	Table captureTimer = new Table()
 //	public function Hero.playCaptureAnimation()
-//		if this.hasPeriodicAnimation
+//		if this.htyp.hasPeriodicAnimation()
 //			timer t = getTimer()
 //			t.setData(this castTo int)
-//			t.startPeriodic(this.animationIntervall, function playAnimation)
+//			t.startPeriodic(this.htyp.getCaptureAnimationIntervall(), function playAnimation)
 //			captureTimer.saveTimer(this castTo int, t)
-//			SetUnitAnimationByIndex(this.u, this.animationIndex)
+//			SetUnitAnimationByIndex(this.u, this.htyp.getCaptureAnimationIndex())
 //		else
-//			SetUnitAnimationByIndex(this.u, this.animationIndex)
-//		if this.captureEffect != null
-//			this.currentEffect = this.u.addEffect(this.captureEffect, this.captureEffectAttachmentPoint)
-//		SetUnitTimeScale(this.u, this.animationSpeed / 100)
+//			SetUnitAnimationByIndex(this.u, this.htyp.getCaptureAnimationIndex())
+////		if this.captureEffect != null
+////			this.currentEffect = this.u.addEffect(this.captureEffect, this.captureEffectAttachmentPoint)
+//		SetUnitTimeScale(this.u, this.htyp.getCaptureAnimationSpeed())
 //			
 //	public function Hero.stopCaptureAnimation()
 //		if captureTimer.loadTimer(this castTo int) != null
 //			captureTimer.loadTimer(this castTo int).release()
-//		if this.currentEffect != null
-//			this.currentEffect.destr()
+////		if this.currentEffect != null
+////			this.currentEffect.destr()
 //			
 //	function playAnimation()
 //		Hero h = GetExpiredTimer().getData() castTo Hero
-//		SetUnitAnimationByIndex(h.u, h.animationIndex)
+//		SetUnitAnimationByIndex(h.u, h.htyp.getCaptureAnimationIndex())
 
 endpackage

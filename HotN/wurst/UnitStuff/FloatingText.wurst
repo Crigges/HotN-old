@@ -34,7 +34,7 @@ package FloatingText
 			SetTextTagLifespan(tt, 1.)
 			SetTextTagFadepoint(tt, 0.80)
 			SetTextTagVelocity(tt, 0., 0.08)
-			SetTextTagVisibility(tt, true)
+			SetTextTagVisibility(tt, IsVisibleToPlayer(x, y, GetLocalPlayer()))
 			if tType == TextType.DODGE
 				SetTextTagText(tt, "Dodge", size * 0.023 / 10)
 			else if tType == TextType.MISS

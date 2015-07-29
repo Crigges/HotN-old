@@ -247,7 +247,7 @@ public class UnitType
 		life = intStat(data, StatType.SET)
 	
 	function setTier(int data)
-		mana = intStat(data, StatType.SET)
+		tier = intStat(data, StatType.SET)
 		
 	function getMass() returns real
 		return mass.content
@@ -364,10 +364,10 @@ public class UnitType
 				def.setManaInitialAmount(startMana)
 			def.setSightRadiusDay(sightRange)
 			def.setSightRadiusNight(sightRange)
-
 			def.setHitPointsRegenerationRate(0)
 			def.setManaRegeneration(0)
-
+			def.def.setBoolean("uhhb", true) //hide icon
+			def.def.setBoolean("uhhd", true) //hide death notification
 		else
 			unitTypes.put(StringHash(name.content), this)
 			addUnitToPreload(id)

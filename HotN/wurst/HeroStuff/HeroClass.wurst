@@ -11,6 +11,7 @@ package HeroClass
 	import LinkedListModule
 	import LinkedList
 	import HeroTypes
+	import Terrain
 	
 	public int heroCount = 0
 	
@@ -52,17 +53,6 @@ package HeroClass
 		SmartEvent smartEvent = null
 		//Animation handling
 		boolean playsAnimation = false
-		// CaptureAnimation
-		int animationIndex = 0
-		boolean hasPeriodicAnimation = false
-		real animationIntervall = 0
-		real animationSpeed = 100
-		real captureOffsetZ = 0
-		real captureOffsetDistance = 0
-		string captureEffect = null
-		string captureEffectAttachmentPoint = ""
-		effect currentEffect = null
-		angle captureOffsetAngle = 0..asAngleDegrees()
 		// HeroBar
 		Bar hb
 		//OrderHandling
@@ -169,8 +159,8 @@ package HeroClass
 			return super.causeHeal(amount)
 				
 		function getBarPos() returns vec3
-			return vec3(u.getX() - 55, u.getY(), GetUnitFlyHeight(u) + height)
-				
+			return vec3(u.getX() - 80, u.getY(), GetUnitFlyHeight(u) + 200)
+							
 		function getCaptureAttackPoint(vec2 cpPos) returns vec3
 			vec3 pos = getMiddle()
 			vec3 offset = htyp.getCaptureOffset()

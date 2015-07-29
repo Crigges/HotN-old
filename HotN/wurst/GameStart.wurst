@@ -97,10 +97,10 @@ package GameStart
 		
 		EnablePreSelect(false, false)
 
-		new ControlPoint(vec2(2000,0), Team.Everliving)
-		doAfter(2, () -> begin
+		nullTimer(() -> new ControlPoint(vec2(5190,9660), Team.Everliving))
+		doAfter(5, () -> begin
 			for int i = 1 to 2
-				new Hero("testhero", vec2(0, 0), Player(0))
+				new Hero("testhero", vec2(3000, 9660), Player(0))
 		end)
 //		for int k = 1 to 10
 //			doAfter(2, () -> begin
@@ -158,29 +158,27 @@ package GameStart
 			initOrder[4] = "Destructables"
 			initOrder[5] = "Buffs"
 			initOrder[6] = "Trackables"
-			initOrder[7] = "Menu"
+			initOrder[7] = "CreateDummyItems"
+			//initOrder[7] = "Menu"
 		
 		static function startPreload()
 			getTimer().start(1.0, function Preload.preload)
 		
 		static function preload()
-			print("1")
 			if initOrder[preloadStatus] == null
 				ClearTextMessages()
 				print("Preload done in " + progress.toString() + " sec!")
 				preloadEnd.callActions(0)
 				GetExpiredTimer().release()
 				return
-			print("2")
+			debugFile.writeln(initOrder[preloadStatus])
+			debugFile.save()
 			real check = preloadAction(initOrder[preloadStatus], loopCounter)
-			print("3")
 			loopCounter++
-			print("4")
 			if check == -2
 				printError("An error while Preloading has ocurred")
 				return
 			else if check == -1
-				print("5")
 				loopCounter = 0
 				preloadStatus++
 				GetExpiredTimer().start(0.05, function preload)
@@ -370,6 +368,7 @@ package GameStart
 			real ret = 0.01
 			switch i
 				case 0
+					debugFile.save()
 					int i2 = 11
 					shopB = new Button(element(i2, 22), 1, Layer.L1, "Shop")
 					i2 = i2 +5
@@ -378,7 +377,7 @@ package GameStart
 					guideB = new Button(element(i2, 22), 1, Layer.L1, "Guide")
 					i2 = i2 +5
 					statsB = new Button(element(i2, 22), 1, Layer.L1, "Stats")
-					
+					debugFile.save()
 					int row = 8
 					int colu = 18
 					
@@ -392,6 +391,7 @@ package GameStart
 					colu = colu - 2
 					arrow5 = new ImageEx(element(row, colu), element(2,2),"Pfeil_Kacheln\\HotN_Bot_Rechts.blp", Layer.L1)
 					colu = colu
+					debugFile.save()
 					row = row + 4
 					arrow6 = new ImageEx(element(row, colu), element(2,2),"Pfeil_Kacheln\\HotN_Hrizontal.blp", Layer.L1)
 					colu = colu
@@ -404,11 +404,11 @@ package GameStart
 					colu = colu + 2
 					arrow10 = new ImageEx(element(row, colu), element(2,2),"Pfeil_Kacheln\\HotN_Vertikal.blp", Layer.L1)
 					colu = colu + 2
-					arrow11 = new ImageEx(element(row, colu), element(2,2),"Pfeil_Kacheln\\HotN_Top_Rechts", Layer.L1)
+					arrow11 = new ImageEx(element(row, colu), element(2,2),"Pfeil_Kacheln\\HotN_Top_Rechts.blp", Layer.L1)
 					colu = colu + 2
+					debugFile.save()
 
 				case 1
-
 					shopPleft = new Pane(element(4, 0), element(16, 20), Layer.L3, 4,false)		
 					shopPmiddle = new Pane(element(23, 14), element(4, 4), Layer.L3, false)	
 					shopPright = new Pane(element(30, 4), element(12, 4), Layer.L2, 4, false)

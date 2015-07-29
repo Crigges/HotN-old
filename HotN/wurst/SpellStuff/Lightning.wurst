@@ -1,6 +1,7 @@
 package Lightning
 	
 	import Colors
+	import Terrain
 
 	public constant string CHAIN_LIGHTNING_PRIMARY = "CLPB"
 	public constant string CHAIN_LIGHTNING_SECONDARY = "CLSB"
@@ -19,13 +20,13 @@ package Lightning
 		
 	/** Creates a 3D Lightning between two specific 3D positions*/
 	public function createLightning(string typ, vec3 pos1, vec3 pos2) returns lightning
-		return AddLightningEx(typ, true, pos1.x, pos1.y, pos1.z, pos2.x, pos2.y, pos2.z)
+		return AddLightningEx(typ, true, pos1.x, pos1.y, pos1.z + getTerrainZ(pos1.x, pos1.y), pos2.x, pos2.y, pos2.z + getTerrainZ(pos2.x, pos2.y))
 		
 	public function createLightning(string typ, vec2 pos1, vec2 pos2) returns lightning
 		return AddLightning(typ, true, pos1.x, pos1.y, pos2.x, pos2.y)
 		
 	public function lightning.setPos(vec3 pos1, vec3 pos2)
-		MoveLightningEx(this, true, pos1.x, pos1.y, pos1.z, pos2.x, pos2.y, pos2.z)
+		MoveLightningEx(this, true, pos1.x, pos1.y, pos1.z + getTerrainZ(pos1.x, pos1.y), pos2.x, pos2.y, pos2.z + getTerrainZ(pos2.x, pos2.y))
 		
 	public function lightning.setPos(vec2 pos1, vec2 pos2)
 		MoveLightning(this, true, pos1.x, pos1.y, pos2.x, pos2.y)

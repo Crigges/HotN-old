@@ -1,20 +1,20 @@
-package TestHero
+package SampleHero
 
 import StandardImports
 import HeroTypes
 
-class TestHero
+class SampleHero
 	use HeroInit
 	
 	override static function settings(HeroType t)
-		t.setAttack(10)
+		t.setAttack(20)
 		t.setArmor(5)
 		t.setAttackBackSwingPoint(0.2)
 		t.setAttackDamagePoint(0.2)
 		t.setAttackRange(200)
 		t.setAttackRangeBuffer(100)
 		t.setBounty(100)
-		t.setCollisionSize(0)
+		t.setCollisionSize(100)
 		t.setHeight(100)
 		t.setIsRanged(false)
 		t.setIcon("")
@@ -32,9 +32,9 @@ class TestHero
 		t.setSoundSet("none")
 		t.setTier(1)
 		t.setCaptureAnimationIndex(7)
-		t.setCaptureAnimationSpeed(1)
+		t.setCaptureAnimationSpeed(1.5)
 		t.setHashPeriodicAnimation(false)
-		t.setCaptureOffset(vec3(0, 200, 0))
+		t.setCaptureOffset(vec3(25, 8, 85))
 		t.setWeaptonSound(WeaponSound.MetalHeavyBash)
 		t.setArmorSoundType(ArmorSoundType.Flesh)
 		t.setHeroProperName("CriggesMasterOfDesaster")

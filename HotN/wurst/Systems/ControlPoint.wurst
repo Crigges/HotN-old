@@ -2,24 +2,19 @@ package ControlPoint
 	
 	import UnitClass
 	import Lightning
-	import Filter
 	import HeroClass
-	import Bonus
-	import CaptureAnimation
 	import Fx
 	import Colors
-	import TimedEffect
 	import Setup
+	import ClosureTimers
 	import HashMap
 
 	import ObjEditingNatives
 	
-	constant real range = 900
-	constant real captureRange = 800
 	public constant int model = 'cptd'
 	public constant int modelMorphed = 'cpth'
 	constant int morphAbi = 'ctpm'
-	constant real height = 335
+	constant real height = 400
 	constant real baseDmg = 2
 	constant real dmgPerLvl = 1
 	constant real percentualDmg = 0.2
@@ -61,27 +56,31 @@ package ControlPoint
 		static HashMap<Unit, CaptureData> captureData = new HashMap<Unit, CaptureData>()
 		static constant creationAction = Unit.onCreation((Unit u) -> captureData.put(u, new CaptureData(u)))
 		static constant destructionAction = Unit.onDestroy((Unit u) -> destroy captureData.get(u))
-		static constant maxDistance = 900.
+		static constant maxDistance = 990.
 		vec3 pos3
 		vec2 pos2
 		unit clickDummy
 		unit visualDummy
 		group inRange = CreateGroup()
+		int animationCounter = 0
 		Team owner
 		
 		
 		construct(vec2 pos, Team owner)
-			clickDummy = createUnit(Player(1), model, pos, angle(0))
+			clickDummy = CreateUnit(Player(1), model, pos.x + 10, pos.y, 0)
 			clickDummy.addAbility(morphAbi)
 			clickDummy.setUserData(this castTo int)
-			clickDummy.setVertexColor(colorA(0, 0, 0, 0))
+			doAfter(1, () -> clickDummy.setVertexColor(colorA(0, 0, 0, 1)))
+			clickDummy.addAbility('Arav')
+			clickDummy.setFlyHeight(height + 40, 0)
 			this.owner = owner
 			pos2 = pos
-			pos3 = pos.withZ(height)
+			pos3 = pos.withZ(height) 
 			getTimer()..setData(this castTo int).startPeriodic(0.1, () -> GetExpiredTimer().getData() castTo thistype.inRangeCheck())
 			getTimer()..setData(this castTo int).startPeriodic(0.03, () -> GetExpiredTimer().getData() castTo thistype.inRangeActions())
-			for int i = 1 to 360 step 2
-				new Fx(pos2.polarOffset(i.toReal().asAngleDegrees(), getRadius(i.toReal().asAngleDegrees())), 0..asAngleDegrees(), "Abilities\\Weapons\\BoatMissile\\BoatMissile.mdl")
+			//doPeriodically(10, (CallbackPeriodic cb) -> playCapturedAnimation())
+//			for int i = 1 to 360 step 2
+//				new Fx(pos2.polarOffset(i.toReal().asAngleDegrees(), getRadius(i.toReal().asAngleDegrees())), 0..asAngleDegrees(), "Abilities\\Weapons\\BoatMissile\\BoatMissile.mdl")
 			
 		private function getRadius(angle ang) returns real
 			return maxDistance * Sin(60 * DEGTORAD) / (Sin((120 - (ang.degrees() + 30) % 60) * DEGTORAD))
@@ -138,27 +137,27 @@ package ControlPoint
 				else
 					leave(u)
 					
-		function captures(Hero h, CaptureData data)
+		private function captures(Hero h, CaptureData data)
 			if data.wantCapture
 				vec3 pos = h.getCaptureAttackPoint(pos2)
 				if data.blitzPos < 1
 					data.blitzPos += captureSpeed
-					data.fx.setXYZ(getBlitzPos(pos, data.blitzPos))
+					data.fx.setXYZ(getBlitzPos(pos, data.blitzPos), true)
 				data.l1.setPos(data.fx.getPos3d(), pos3)
 				data.l2.setPos(pos, data.fx.getPos3d())
 			else
 				vec3 pos = h.getMiddle()
 				if data.blitzPos > 0
 					data.blitzPos -= captureSpeed
-					data.fx.setXYZ(getBlitzPos(pos, data.blitzPos))
+					data.fx.setXYZ(getBlitzPos(pos, data.blitzPos), true)
 					data.l1.setPos(data.fx.getPos3d(), pos3)
 					data.l2.setPos(pos, data.fx.getPos3d())
 				else
 					data.l2.destr()
 					data.l2 = null
-					data.fx.setXYZ(pos)
+					data.fx.setXYZ(pos, true)
 					
-		function getBlitzPos(vec3 pos, real progress) returns vec3
+		private function getBlitzPos(vec3 pos, real progress) returns vec3
 			vec3 dif = pos3 - pos
 			return pos + dif * progress
 			
@@ -177,17 +176,26 @@ package ControlPoint
 				end)
 			return not inRange.contains(h.u)
 				
-		function startCapture(Hero h)
+		private function startCapture(Hero h)
 			IssueImmediateOrder(h.u, "stop")
 			h.enableAutoAttack(false)
+			h.u.setFacing(h.u.getPos().angleTo(pos2))
+			h.playCaptureAnimation()
 			var data = captureData.get(h)
 			if data.l2 == null
 				data.l2 = createLightning(FINGER_OF_DEATH, h.getMiddle(), data.fx.getPos3d())
 			
-		function stopCapture(Hero h)
+		private function stopCapture(Hero h)
+			h.stopAnimation()
 			
-			
-			
+		private function playCapturedAnimation()
+			getTimer()..setData(this castTo int).startPeriodic(0.01, () -> GetExpiredTimer().getData() castTo thistype.playCaptureAnimationCallback())		
+
+		
+		private function playCaptureAnimationCallback()
+			Fx fx = new Fx(pos2.polarOffset(animationCounter.toReal().asAngleDegrees(), getRadius(animationCounter.toReal().asAngleDegrees())), 0..asAngleDegrees(), "Abilities\\Spells\\NightElf\\Blink\\BlinkTarget.mdl")
+			doAfter(1, () -> destroy fx)
+			animationCounter++
 			
 			
 					
@@ -210,7 +218,7 @@ package ControlPoint
 		u.setString("upgr", "")
 		u.setString("ubui", "")
 		u.setString("umvt", "hover")
-		u.setReal("usca", 3.0)
+		u.setReal("usca", 6.0)
 		u.setInt("uaen", 0)
 		
 	@compiletime function create_w3u_cptd()
@@ -226,5 +234,5 @@ package ControlPoint
 		u.setString("upgr", "")
 		u.setString("ubui", "")
 		u.setString("umvt", "hover")
-		u.setReal("usca", 3.0)
+		u.setReal("usca", 6.0)
 		u.setInt("uaen", 0)
