@@ -268,6 +268,58 @@ import ObjEditingNatives
 	u.setString("bptx", "war3mapImported\\sightBlock4x4.tga")
 
 
+@compiletime function create_w3b_B00A()
+	let u = createObjectDefinition("w3b", 'B00A', 'YTab')
+	u.setString("bnam", "ControlPoint_LinearGlow_Red")
+	u.setString("bptx", "")
+	u.setString("bshd", "")
+	u.setString("bfil", "war3mapImported\\Linear_Glow2.mdl")
+	u.setInt("bvcb", 0)
+	u.setUnreal("bmas", 10.0)
+	u.setInt("bcpd", 0)
+	u.setInt("bvcg", 0)
+	u.setUnreal("bfxr", -1.0)
+
+
+@compiletime function create_w3b_B00K()
+	let u = createObjectDefinition("w3b", 'B00K', 'YTab')
+	u.setString("bnam", "ControlPoint_LinearGlow_Green")
+	u.setString("bptx", "")
+	u.setString("bshd", "")
+	u.setString("bfil", "war3mapImported\\Linear_Glow2.mdl")
+	u.setInt("bvcb", 0)
+	u.setUnreal("bmas", 10.0)
+	u.setInt("bcpd", 0)
+	u.setUnreal("bfxr", -1.0)
+	u.setInt("bvcr", 0)
+
+
+@compiletime function create_w3b_B00L()
+	let u = createObjectDefinition("w3b", 'B00L', 'YTab')
+	u.setString("bnam", "ControlPoint_Crystal_Red")
+	u.setString("bptx", "")
+	u.setString("bshd", "")
+	u.setString("bfil", "CenterCrystal.mdl")
+	u.setUnreal("bmas", 10.0)
+	u.setInt("bcpd", 0)
+	u.setUnreal("bfxr", -1.0)
+	u.setInt("buch", 0)
+	u.setUnreal("bmis", 0.1)
+
+
+@compiletime function create_w3b_B00M()
+	let u = createObjectDefinition("w3b", 'B00M', 'YTab')
+	u.setString("bnam", "ControlPoint_Crystal_Green")
+	u.setString("bptx", "")
+	u.setString("bshd", "")
+	u.setString("bfil", "CenterCrystal_Green.mdl")
+	u.setUnreal("bmas", 10.0)
+	u.setInt("bcpd", 0)
+	u.setUnreal("bfxr", -1.0)
+	u.setInt("buch", 0)
+	u.setUnreal("bmis", 0.1)
+
+
 @compiletime function create_w3b_%003()
 	let u = createObjectDefinition("w3b", '%003', 'YTlb')
 	u.setInt("wurs", 42)

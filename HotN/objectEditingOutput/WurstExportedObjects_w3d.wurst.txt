@@ -3236,3 +3236,20 @@ import ObjEditingNatives
 	u.setLvlDataInt("dvb1", 3, 0, 15)
 
 
+@compiletime function create_w3d_D007()
+	let u = createObjectDefinition("w3d", 'D007', 'YOks')
+	u.setLvlDataUnreal("dmas", 0, 0, 10.0)
+	u.setLvlDataUnreal("dmis", 0, 0, 0.010000001)
+	u.setLvlDataString("dptx", 0, 0, "")
+	u.setLvlDataString("dnam", 0, 0, "City_MonkStatue")
+	u.setLvlDataString("dtil", 0, 0, "I")
+	u.setLvlDataString("dfil", 0, 0, "MonkStatue.mdl")
+	u.setLvlDataInt("dvr1", 1, 0, 50)
+	u.setLvlDataInt("dvg1", 1, 0, 50)
+	u.setLvlDataInt("dvb1", 1, 0, 50)
+	u.setLvlDataInt("dvar", 0, 0, 2)
+	u.setLvlDataInt("dvr1", 2, 0, 100)
+	u.setLvlDataInt("dvg1", 2, 0, 50)
+	u.setLvlDataInt("dvb1", 2, 0, 20)
+
+
