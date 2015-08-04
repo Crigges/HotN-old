@@ -1,0 +1,109 @@
+package CrigBar
+
+import Image
+import Terrain
+import Colors
+
+public class CrigBar
+	private constant string borderPath = "UI\\Widgets\\Glues\\Loading-NameBackground.blp"
+	private constant string barPath = "white128.blp"
+	private constant real barUpdateTimeout = 0.02
+	private constant real barScaleFactor = 0.85
+	private color barColor = color(255, 70, 70)
+	private unit bind
+	private timer updateTimer
+	private vec2 pos
+	private vec3 offset
+	private vec3 basicOffset
+	private vec3 basicBarOffset
+	private image border
+	private image bar
+	private image barBackground = null
+	private real percent = 1
+	private real height
+	private real width
+	
+	construct(vec2 pos, real width, real height)
+		this.pos = pos
+		this.height = height
+		this.width = width
+		basicOffset = vec3(-width / 2, -height / 2, 0)
+		barBackground = createImage(barPath, pos + basicBarOffset.toVec2(), percent * width * barScaleFactor, height * barScaleFactor)
+		barBackground.setLevel(Layer.L1)
+		barBackground.setColor(colorA(0,0,0,0))
+		barBackground.show()
+		basicBarOffset = vec3(-width / 2, -height / 2, 0) * barScaleFactor
+		bar = createImage(barPath, pos + basicBarOffset.toVec2(), percent * width * barScaleFactor, height * barScaleFactor)
+		bar.setLevel(Layer.L1)
+		bar.setColor(barColor)
+		bar.show()
+		border = createImage(borderPath, this.pos + basicOffset.toVec2(), width, height)
+		border.setLevel(Layer.L1)
+		border.show()
+		
+	construct(unit bind, real width, real height)
+		this.pos = bind.getPos()
+		this.height = height
+		this.width = width
+		basicOffset = vec3(-width / 2, -height / 2, 0)
+		basicBarOffset = vec3(-width / 2, -height / 2, 0) * barScaleFactor
+		bar = createImage(barPath, pos + basicBarOffset.toVec2(), percent * width * barScaleFactor, height * barScaleFactor)
+		bar.setLevel(Layer.L1)
+		bar.setColor(barColor)
+		bar.show()
+		border = createImage(borderPath, this.pos + basicOffset.toVec2(), width, height)
+		border.setLevel(Layer.L1)
+		border.show()
+		bindToUnit(bind)
+		
+	function setBarColor(color col)
+		barColor = col
+		bar.setColor(col)
+		
+	/** 1 == 100% */
+	function setPercentage(real per)
+		this.percent = per
+		bar.remove()
+		bar = createImage(barPath, pos + basicBarOffset.toVec2(), percent * width * barScaleFactor, height * barScaleFactor)
+		bar.setLevel(Layer.L1)
+		bar.setColor(barColor)
+		bar.show()
+		setOffset(offset)
+		border.setLevel(Layer.L1)
+		
+	function setBackground(color col)
+		if barBackground != null
+			barBackground.setColor(col)
+		else
+			barBackground = createImage(barPath, pos + basicBarOffset.toVec2(), percent * width * barScaleFactor, height * barScaleFactor)
+			barBackground.setLevel(Layer.L1)
+			barBackground.setColor(col)
+			barBackground.show()
+			setOffset(offset)
+			bar.setLevel(Layer.L1)
+			border.setLevel(Layer.L1)
+		
+		
+	function setOffset(vec3 offset)
+		this.offset = offset
+		border.setPos(pos.withZ(getTerrainZ(pos)) + offset + basicOffset)
+		bar.setPos(pos.withZ(getTerrainZ(pos)) + offset + basicBarOffset)
+		if barBackground != null
+			barBackground.setPos(pos.withZ(getTerrainZ(pos)) + offset + basicBarOffset)
+		
+	function bindToUnit(unit u)
+		if u != null
+			bind = u
+			updateTimer = getTimer()..setData(this castTo int)..startPeriodic(barUpdateTimeout, () -> GetExpiredTimer().getData() castTo thistype.update())
+		else
+			updateTimer.release()
+		
+	private function update()
+		pos = bind.getPos()
+		border.setPos(pos.withZ(getTerrainZ(pos)) + offset + basicOffset)
+		bar.setPos(pos.withZ(getTerrainZ(pos)) + offset + basicBarOffset)
+		if barBackground != null
+			barBackground.setPos(pos.withZ(getTerrainZ(pos)) + offset + basicBarOffset)
+		
+	function unbind()
+		updateTimer.release()

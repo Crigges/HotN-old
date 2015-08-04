@@ -1,0 +1,203 @@
+package ProgressBar
+import ProgressBarConfig
+/**************************************************************
+*   For WurstScript
+*   Original vJass version: v2.0.1 by TriggerHappy
+*
+*   This library allows you to easily create and modify progress bars.
+*   It works by creating a dummy unit with a special model and changing
+*   the animation speed to increase or reduce the bar speed. It is more than
+*   just a wrapper as it recycles each progress bar, meaning it will avoid
+*   costly CreateUnit calls whenever possible which also leak.
+*
+*   Options:
+*       x            - set X coordinate
+*       y            - set Y coordinate
+*       xOffset      - offset of the target unit, if any.
+*       yOffset      - offset of the target unit, if any.
+*       zOffset      - how high the bar is from the ground.
+*       color        - allows you to tint the bar or add transparency
+*       targetUnit   - pick which unit the bar should hover over
+*       size         - set model scale
+*
+*   Usage:
+*       local ProgressBar bar = ProgressBar.create()
+*       set bar.zOffset       = 150
+*       set bar.color         = PLAYER_COLOR_RED
+*       set bar.targetUnit    = CreateUnit(Player(0), 'hfoo', 0, 0, 0)
+*       call bar.setPercentage(30)
+*
+*   Installation:
+*       1. Copy the dummy unit over to your map
+*       2. Change the DUMMY constant to fit the Raw code of the dummy.
+*       3. Copy this and all required libraries over to your map.
+*
+*   Thanks to JesusHipster for the Progress Bar models
+*   and to Vexorian for TimerUtils & BoundSentinel
+*
+**************************************************************/
+
+public class ProgressBar
+	unit bar
+	unit target
+	vec2 offset = vec2(0., 0.)
+	
+	timer tmr
+	timer tmr2
+	
+	boolean t_enabled = false
+	real endVal
+	real curVal = 0
+	real pspeed = 0
+	boolean reverse
+	boolean done
+	boolean recycle
+	
+	static unit array dummy
+	static int lastDummyIndex = -1
+	
+	function setX(real x)
+		bar.setX(x)
+		
+	function setY(real y)
+		bar.setY(y)
+	
+	function getXY() returns vec2
+		return bar.getPos()
+	
+	function setOffsetZ(real z)
+		bar.setFlyHeight(z, 0)
+
+	function getOffsetZ() returns real
+		return bar.getFlyHeight()
+
+	function setSize(real size)
+		bar.setScale(size)
+
+	function setColor(playercolor col) 
+		bar.setColor(col)
+
+	function show(boolean flag)
+		bar.removeAbility(LOCUST_ID)
+		ShowUnit(bar, flag)
+		bar.addAbility(LOCUST_ID)
+	
+	function reset()
+		SetUnitAnimationByIndex(bar, 1)
+
+	function setRGBA(int r, int g, int b, int a)
+		bar.setVertexColor(r, g, b, a)
+	
+	ondestroy
+		if recycle
+			lastDummyIndex++
+			dummy[lastDummyIndex] = bar
+			SetUnitAnimationByIndex(bar, 0)
+			bar.setTimeScale(1)
+		
+		bar = null
+		target = null
+		t_enabled = false
+		endVal = 0
+		curVal = 0
+		
+		if tmr != null
+			tmr.release()
+			tmr = null
+		if tmr2 != null
+			tmr2.release()
+			tmr2 = null	
+
+	private static function updatePercentage()
+		let expired = GetExpiredTimer()
+		let obj = expired.getData() castTo thistype
+		if obj.reverse
+			if obj.curVal > obj.endVal
+				obj.bar.setTimeScale(-obj.pspeed)
+				obj.curVal = (obj.curVal - obj.pspeed)
+			else if obj.curVal <= obj.endVal
+				obj.tmr2.pause()
+				obj.bar.setTimeScale(0)
+				obj.curVal = obj.endVal
+				obj.done = true
+		else
+			if obj.curVal < obj.endVal
+				obj.bar.setTimeScale(obj.pspeed)
+				obj.curVal = (obj.curVal + obj.pspeed)
+			else if obj.curVal >= obj.endVal
+				obj.tmr2.pause()
+				obj.bar.setTimeScale(0)
+				obj.curVal = obj.endVal
+				obj.done = true
+	
+	private static function updatePosition()
+		let obj = GetExpiredTimer().getData() castTo thistype
+		if obj.target != null
+			obj.bar.setXY(obj.target.getPos() + obj.offset)
+		else
+			GetExpiredTimer().release()
+	
+	private static function getDummy() returns unit
+		if lastDummyIndex <= -1
+			let u = CreateUnit(DEFAULT_BAR_OWNER, DEFAULT_BAR_DUMMY, 0., 0., 270)
+				..pause()
+			return u
+		SetUnitAnimationByIndex(dummy[lastDummyIndex], 1)
+		lastDummyIndex--
+		return dummy[lastDummyIndex+1]
+	
+	static function release(int count)
+		var nmax = lastDummyIndex
+		if count > lastDummyIndex
+			nmax = lastDummyIndex
+		for n = 1 to nmax
+			dummy[n].remove()
+			dummy[n] = null
+		lastDummyIndex = 1
+	
+	construct()
+		bar = getDummy()
+		done = true
+		recycle = true
+		SetUnitAnimationByIndex(bar, 1)
+		bar.setTimeScale(0)
+		
+	construct(int raw)
+		bar = CreateUnit(DEFAULT_BAR_OWNER, raw, 0., 0., 0.)
+		done = true
+		recycle = false
+		SetUnitAnimationByIndex(bar, 1)
+		bar.setTimeScale(0)
+	
+	construct(unit u, playercolor col)
+		bar = getDummy()
+		done = true
+		recycle = true
+		SetUnitAnimationByIndex(bar, 1)
+		bar.setTimeScale(0)
+		setTargetUnit(u)
+		setColor(col)
+		setOffsetZ(DEFAULT_OFFSET_Z)
+	
+	function setPercentage(int percent, real speed)
+		endVal = percent.toReal()
+		pspeed = speed
+		reverse = curVal > endVal
+		if done
+			if tmr2 == null
+				tmr2 = getTimer()..setData(this castTo int)
+			tmr2.startPeriodic(0.01, function updatePercentage)
+			done = false
+		
+	function setTargetUnit(unit u)
+		target = u
+		if u != null
+			if tmr == null
+				tmr = getTimer()..setData(this castTo int)
+			tmr.startPeriodic(UPDATE_POSITION_PERIOD, function updatePosition)
+			bar.setXY(target.getPos() - offset)
+			t_enabled = true
+		else
+			if tmr != null
+				tmr.release()
+			t_enabled = false

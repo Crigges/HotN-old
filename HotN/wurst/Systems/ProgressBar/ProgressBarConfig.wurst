@@ -1,0 +1,12 @@
+package ProgressBarConfig
+import ProgressBarObjectGen
+
+
+public constant integer DEFAULT_BAR_DUMMY = 'hbar' // the default one
+public constant player DEFAULT_BAR_OWNER = Player(PLAYER_NEUTRAL_PASSIVE) // owner of the dummy
+public constant real UPDATE_POSITION_PERIOD = 0.03 // the timer period used with .targetUnit
+public constant real DEFAULT_OFFSET_Z = 150
+
+@compiletime function genObjects()
+	genBarDummy('hbar', "Progressbar.mdx")
+//
