@@ -457,9 +457,11 @@ package UnitClass
 			int statHelper = roundReal(amount)
 			addAbility('Aihn')
 			print("added " + amount.toString())
+			print(permAttackTome[1].getName())
 			if statHelper >= 0
 				for int i = 8 downto 0
 					if statHelper >= bonus
+						permAttackTome[i].setPos(u.getPos())
 						UnitAddItem(u, permAttackTome[i])
 						permAttackTome[i].setPos(recycleGraveyard)
 						statHelper -= bonus
@@ -1156,11 +1158,8 @@ package UnitClass
 					ev -= (source.hitchance - 100)
 				if rand > ev
 
-					//Unit got hit
-					//Dice damage
 					real amount = source.getAttack(true) + GetRandomReal(-source.getAttack(true) / 10, source.getAttack(true) / 10)
 					print(amount.toString())
-					//Dice crit
 					boolean crit = false
 					rand = GetRandomReal(0., 100.)
 					if rand <= source.critchance

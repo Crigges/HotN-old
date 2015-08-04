@@ -8,11 +8,19 @@ package ControlPoint
 	import Setup
 	import ClosureTimers
 	import HashMap
-
+	import Terrain
 	import ObjEditingNatives
+	import CrigBar
+	import LinkedList
 	
-	public constant int model = 'cptd'
-	public constant int modelMorphed = 'cpth'
+	public constant model = 'cptd'
+	public constant modelMorphed = 'cpth'
+	constant decoCystalGreenId = 'B00M'
+	constant decoCystalRedId = 'B00L'
+	constant decoLightGreenId = 'B00K'
+	constant decoLightRedId = 'B00A'
+	constant real decoCrystalOusideScale = 0.4
+	constant real decoCrystalInsideScale = 0.8
 	constant int morphAbi = 'ctpm'
 	constant real height = 400
 	constant real baseDmg = 2
@@ -26,6 +34,9 @@ package ControlPoint
 	constant real baseSHeal = 2.0
 	constant real heroSHealFactor = 0.1
 	constant real unitSHealFactor = 0.025
+	constant maxDistance = 990.
+	constant captureDamage = 0.001
+	constant regenerationSpeed = 0.00005
 	
 	function handle.getId() returns int
 		return GetHandleId(this)
@@ -56,15 +67,21 @@ package ControlPoint
 		static HashMap<Unit, CaptureData> captureData = new HashMap<Unit, CaptureData>()
 		static constant creationAction = Unit.onCreation((Unit u) -> captureData.put(u, new CaptureData(u)))
 		static constant destructionAction = Unit.onDestroy((Unit u) -> destroy captureData.get(u))
-		static constant maxDistance = 990.
+		timer rangeCheckTimer
+		timer inRangeTimer
 		vec3 pos3
 		vec2 pos2
 		unit clickDummy
 		unit visualDummy
 		group inRange = CreateGroup()
 		int animationCounter = 0
+		CrigBar bar
 		Team owner
-		
+		real hp = 0.05
+		//decovars
+		destructable mainCrystal
+		LinkedList<destructable> outsideCrystals = new LinkedList<destructable>()
+		LinkedList<destructable> glowMarkers = new LinkedList<destructable>()
 		
 		construct(vec2 pos, Team owner)
 			clickDummy = CreateUnit(Player(1), model, pos.x + 10, pos.y, 0)
@@ -76,9 +93,17 @@ package ControlPoint
 			this.owner = owner
 			pos2 = pos
 			pos3 = pos.withZ(height) 
-			getTimer()..setData(this castTo int).startPeriodic(0.1, () -> GetExpiredTimer().getData() castTo thistype.inRangeCheck())
-			getTimer()..setData(this castTo int).startPeriodic(0.03, () -> GetExpiredTimer().getData() castTo thistype.inRangeActions())
-			//doPeriodically(10, (CallbackPeriodic cb) -> playCapturedAnimation())
+			createDeco()
+			rangeCheckTimer =getTimer()..setData(this castTo int)..startPeriodic(0.1, () -> GetExpiredTimer().getData() castTo thistype.inRangeCheck())
+			inRangeTimer = getTimer()..setData(this castTo int)..startPeriodic(0.03, () -> GetExpiredTimer().getData() castTo thistype.inRangeActions())
+			bar = new CrigBar(pos2, 250, 50)
+			if(owner == Team.Everliving)
+				bar.setBarColor(color(40, 255, 40))
+				bar.setBackground(color(255, 40, 40))
+			else
+				bar.setBarColor(color(255, 40, 40))
+				bar.setBackground(color(40, 255, 40))
+			bar.setOffset(vec3(0, 70, height + 150))
 //			for int i = 1 to 360 step 2
 //				new Fx(pos2.polarOffset(i.toReal().asAngleDegrees(), getRadius(i.toReal().asAngleDegrees())), 0..asAngleDegrees(), "Abilities\\Weapons\\BoatMissile\\BoatMissile.mdl")
 			
@@ -117,10 +142,21 @@ package ControlPoint
 					data.l2.destr()
 					data.l2 = null
 					data.blitzPos = 0
+				if data.wantCapture
+					stopCapture(u castTo Hero)
+				if data.captureCancel != null
+					destroy data.captureCancel
+					data.captureCancel = null
 			destroy data.onDeath
 			data.onDeath = null
 			
 		private function inRangeActions()
+			hp += regenerationSpeed
+			if hp > 1
+				hp = 1
+			if hp <=0
+				changeOwner()
+			bar.setPercentage(1 - hp)
 			for unit temp in inRange 
 				Unit u = temp.getUserData() castTo Unit
 				if temp.getPos().distToVec(pos2) < getRadius(temp.getPos().angleTo(pos2))
@@ -143,6 +179,8 @@ package ControlPoint
 				if data.blitzPos < 1
 					data.blitzPos += captureSpeed
 					data.fx.setXYZ(getBlitzPos(pos, data.blitzPos), true)
+				else
+					hp -= captureDamage
 				data.l1.setPos(data.fx.getPos3d(), pos3)
 				data.l2.setPos(pos, data.fx.getPos3d())
 			else
@@ -169,16 +207,19 @@ package ControlPoint
 					startCapture(h)
 				data.captureCancel = h.registerCaptureCancel((ControlPoint cp) -> begin
 					if cp != this
+						print("wurst")
+						h.enableAutoAttack(true)
 						data.wantCapture = false
 						if inRange.contains(h.u)
 							stopCapture(h)
 						destroy data.captureCancel
+						data.captureCancel = null
 				end)
 			return not inRange.contains(h.u)
 				
 		private function startCapture(Hero h)
-			IssueImmediateOrder(h.u, "stop")
 			h.enableAutoAttack(false)
+			IssueImmediateOrder(h.u, "stop")
 			h.u.setFacing(h.u.getPos().angleTo(pos2))
 			h.playCaptureAnimation()
 			var data = captureData.get(h)
@@ -197,7 +238,100 @@ package ControlPoint
 			doAfter(1, () -> destroy fx)
 			animationCounter++
 			
+		private function changeOwner()
+			print("ownerchange")
+			real z = getTerrainZ(pos2)
+			for unit u from inRange
+				leave(u.getUserData() castTo Unit)
+			if owner == Team.Everliving
+				owner = Team.Wargrin
+			else
+				owner = Team.Everliving
+			inRangeTimer.release()
+			rangeCheckTimer.release()
+			int newCrystalId
+			string lightningId
+			string effectPath
+			string mainEffectPath
+			int newDecoId
+			var tempOutsideCrystals = outsideCrystals
+			outsideCrystals = new LinkedList<destructable>()
+			var tempGlowMarkers = glowMarkers
+			glowMarkers = new LinkedList<destructable>()
+			if owner == Team.Everliving
+				newCrystalId = decoCystalRedId
+				lightningId = FINGER_OF_DEATH
+				newDecoId = decoLightRedId
+				effectPath = "Abilities\\Spells\\Human\\MarkOfChaos\\MarkOfChaosDone.mdl"
+				mainEffectPath = "CaptureEffect_Coil_Red.mdl"
+			else
+				newCrystalId = decoCystalGreenId
+				lightningId = DRAIN_LIFE
+				newDecoId = decoLightGreenId
+				effectPath = "CaptureEffect_Green.mdl"
+				mainEffectPath = "Abilities\\Spells\\Undead\\DeathCoil\\DeathCoilSpecialArt.mdl"
+			Fx mainCrystalFx = new Fx(pos2.withZ(height - 135), 0..asAngleDegrees(), mainEffectPath)
+			mainCrystalFx.setScale(3.2)
+			doAfter(1, () -> begin
+				destroy mainCrystalFx
+				for destructable des in tempOutsideCrystals
+					vec3 desPos = vec3(des.getX(), des.getY(), 110)
+					lightning ls = createLightning(lightningId, desPos, pos3)
+					Fx sideCrystalFx = new Fx(desPos, 0..asAngleDegrees(), effectPath)
+					doAfter(0.5, () -> begin
+						RemoveDestructable(des)
+						outsideCrystals.add(CreateDestructableZ(newCrystalId, desPos.x, desPos.y, z + 100, 0, decoCrystalOusideScale, 0))
+						real ang = 0
+						for destructable marker in tempGlowMarkers
+							vec3 markerPos = vec3(marker.getX(), marker.getY(), z)
+							RemoveDestructable(marker)
+							glowMarkers.add(CreateDestructableZ(newDecoId, markerPos.x, markerPos.y, z, ang + 270, 7.80, 0))
+							ang += 60
+					end)
+					doAfter(1, () -> begin
+						ls.destr()
+						destroy sideCrystalFx			
+					end)
+				doAfter(1, () -> begin
+					rangeCheckTimer =getTimer()..setData(this castTo int)..startPeriodic(0.1, () -> GetExpiredTimer().getData() castTo thistype.inRangeCheck())
+					inRangeTimer = getTimer()..setData(this castTo int)..startPeriodic(0.03, () -> GetExpiredTimer().getData() castTo thistype.inRangeActions())
+					hp = 0.5
+					if(owner == Team.Everliving)
+						bar.setBarColor(color(40, 255, 40))
+						bar.setBackground(color(255, 40, 40))
+					else
+						bar.setBarColor(color(255, 40, 40))
+						bar.setBackground(color(40, 255, 40))
+				end)
+			end)
+			doAfter(0.5, () -> begin
+				RemoveDestructable(mainCrystal)
+				mainCrystal = CreateDestructableZ(newCrystalId, pos2.x - 10, pos2.y, z + height - 35, 0, decoCrystalInsideScale, 0)
+			end)
 			
+			
+			
+			
+			
+			
+		private function createDeco()
+			real z = getTerrainZ(pos2)
+			if owner == Team.Everliving
+				mainCrystal = CreateDestructableZ(decoCystalRedId, pos2.x - 10, pos2.y, z + height - 35, 0, decoCrystalInsideScale, 0)
+				for int i = 30 to 360 step 60
+					vec2 tempPos = pos2.polarOffset(i.toReal().asAngleDegrees(), getRadius(i.toReal().asAngleDegrees()) - 160)
+					outsideCrystals.add(CreateDestructableZ(decoCystalRedId, tempPos.x, tempPos.y, z + 100,i.toReal(), decoCrystalOusideScale, 0))
+				for int i = 0 to 300 step 60
+					vec2 tempPos = pos2.polarOffset(i.toReal().asAngleDegrees(), getRadius(i.toReal().asAngleDegrees()))
+					glowMarkers.add(CreateDestructableZ(decoLightRedId, tempPos.x, tempPos.y, z, i.toReal() + 270, 7.80, 0))
+			else
+				mainCrystal = CreateDestructableZ(decoCystalGreenId, pos2.x - 10, pos2.y, z + height - 35, 0, decoCrystalInsideScale, 0)
+				for int i = 30 to 360 step 60
+					vec2 tempPos = pos2.polarOffset(i.toReal().asAngleDegrees(), getRadius(i.toReal().asAngleDegrees()) - 160)
+					outsideCrystals.add(CreateDestructableZ(decoCystalGreenId, tempPos.x, tempPos.y, z + 100,i.toReal(), decoCrystalOusideScale, 0))
+				for int i = 0 to 300 step 60
+					vec2 tempPos = pos2.polarOffset(i.toReal().asAngleDegrees(), getRadius(i.toReal().asAngleDegrees()))
+					glowMarkers.add(CreateDestructableZ(decoLightGreenId, tempPos.x, tempPos.y, z, i.toReal() + 270, 7.80, 0))
 					
 					
 	@compiletime function create_w3a_ctpm()

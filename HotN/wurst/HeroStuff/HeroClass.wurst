@@ -296,7 +296,7 @@ package HeroClass
 			SetUnitAnimationByIndex(u, htyp.getStandAnimationIndex())
 						
 		function enableAutoAttack(boolean enable)
-			if enable
+			if not enable
 				UnitAddType(u, UNIT_TYPE_PEON)
 			else
 				UnitRemoveType(u, UNIT_TYPE_PEON)
