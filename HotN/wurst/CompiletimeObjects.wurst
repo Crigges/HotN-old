@@ -1,0 +1,40 @@
+package CompiletimeObjects
+
+import Setup
+import PreloadSystem
+import ObjEditingNatives
+
+
+@compiletime function create_w3a_invi()
+	let u = createObjectDefinition("w3a", 'invi', 'Aihn')
+	u.setLvlDataInt("inv1", 1, 1, 6)
+	u.setLvlDataInt("inv2", 1, 2, 0)
+	u.setLvlDataInt("inv3", 1, 3, 1)
+	u.setLvlDataInt("inv5", 1, 5, 0)
+	u.setLvlDataString("areq", 0, 0, "")
+	
+@compiletime function create_w3a_noat()
+	let u = createObjectDefinition("w3a", 'noat', 'AHtb')
+	u.setLvlDataString("aani", 0, 0, "")
+	u.setLvlDataInt("alev", 0, 0, 1)
+	u.setLvlDataString("anam", 0, 0, "Antiattackstun")
+	u.setLvlDataInt("amcs", 1, 0, 0)
+	u.setLvlDataUnreal("adur", 1, 0, 3600.0)
+	u.setLvlDataUnreal("ahdu", 1, 0, 3600.0)
+	u.setLvlDataUnreal("acdn", 1, 0, 0.0)
+	u.setLvlDataInt("aher", 0, 0, 0)
+	u.setLvlDataString("atar", 1, 0, "ground,enemies,friend,air,neutral,organic,debris")
+	u.setLvlDataUnreal("Htb1", 1, 1, 0.0)
+	u.setLvlDataString("amat", 0, 0, "")
+	u.setLvlDataInt("amsp", 0, 0, 10000)
+	u.setLvlDataString("abuf", 1, 0, "sthe")
+	u.setLvlDataUnreal("aran", 1, 0, 99999.0)
+	
+@compiletime function create_w3h_sthe()
+	let u = createObjectDefinition("w3h", 'sthe', 'BPSE')
+	u.setString("fart", "Alphaicon.blp")
+	u.setString("ftat", "")
+	u.setString("fta0", "")
+	u.setString("fube", "")
+	u.setString("ftip", "Casting")
+	u.setString("fnsf", "")

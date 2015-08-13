@@ -214,8 +214,6 @@ package ControlPoint
 					startCapture(h)
 				data.captureCancel = h.registerCaptureCancel((ControlPoint cp) -> begin
 					if cp != this
-						print("wurst")
-						h.enableAutoAttack(true)
 						data.wantCapture = false
 						if inRange.contains(h.u)
 							stopCapture(h)
@@ -239,6 +237,7 @@ package ControlPoint
 				data.l2 = createLightning(tempLightning, h.getMiddle(), data.fx.getPos3d())
 			
 		private function stopCapture(Hero h)
+			h.enableAutoAttack(true)
 			h.stopAnimation()
 			
 		private function playCapturedAnimation()

@@ -12,6 +12,7 @@ package HeroClass
 	import LinkedList
 	import HeroTypes
 	import Terrain
+	import InstantDummyCaster
 	
 	public int heroCount = 0
 	
@@ -19,7 +20,6 @@ package HeroClass
 		use GetOrders
 		use LinkedListModule
 //		static constant HashMap<int, Spell> abiIdToSpell = new HashMap<int, Spell>()
-		static constant timer checkOrders  = getTimer()//..startPeriodic(0.01, function checkOrders)
 		static constant LinkedList<Hero> toMove = new LinkedList<Hero>()
 		static constant HashMap<player, Hero> heroOfPlayer = new HashMap<player, Hero>()
 		static constant timer movespeedX = getTimer()..startPeriodic(0.01, () -> begin
@@ -44,6 +44,7 @@ package HeroClass
 		int morphAbi
 		boolean onAdd = false
 		//Order Spell and Capture handling
+		boolean canAttack = true
 		boolean isCasting = false
 //		Spell castingSpell = null
 		Order nextOrder = null
@@ -76,6 +77,7 @@ package HeroClass
 			cdum.setUserData(this castTo int)
 			addOrderDetection(cdum)
 			heroOfPlayer.put(p, this)
+		
 			
 		override function kill(Unit source)
 			hb.disable()
@@ -297,9 +299,9 @@ package HeroClass
 						
 		function enableAutoAttack(boolean enable)
 			if not enable
-				UnitAddType(u, UNIT_TYPE_PEON)
+				InstantDummyCaster.castTarget(DUMMY_PLAYER, 'noat', 1, "thunderbolt", u)
 			else
-				UnitRemoveType(u, UNIT_TYPE_PEON)
+				u.removeAbility('sthe')
 		
 		function registerChannelCancel(Action<Unit> action) returns Action<Unit>
 			if channelCancel == null
@@ -334,10 +336,12 @@ package HeroClass
 //				error("new cast started before the old ended")
 ////			castingSpell = casted
 //			isCasting = true
+//			enableAutoAttack(false)
 //			getTimer()..setData(this castTo int).start(time, () -> begin
 //				Hero h = GetExpiredTimer().getData() castTo thistype
 //				h.isCasting = false
 ////				h.castingSpell = null
+//				h.enableAutoAttack(true)
 //				if h.nextOrder != null
 //					h.nextOrder.issue()
 //				else if h.lastOrder != null

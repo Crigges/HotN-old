@@ -19,8 +19,8 @@ package Buff
 		construct(Unit u, string buffname, real duration)
 			this.u = u
 			btyp = getBuffType(buffname)
-			print(idInteger2IdString(btyp.abiId))
-			print(idInteger2IdString(btyp.buffId))
+//			print(idInteger2IdString(btyp.abiId))
+//			print(idInteger2IdString(btyp.buffId))
 			u.allBuffs.add(this)
 			UnitAddAbility(u.u, btyp.abiId)
 			fx = null
