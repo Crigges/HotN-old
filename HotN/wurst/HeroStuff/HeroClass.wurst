@@ -72,7 +72,7 @@ package HeroClass
 			htyp = getHeroType(name)
 			hb = new Bar(this)
 			isHero = true
-			cdum = CreateUnit(p, htyp.dummyId, recycleGraveyard.x, recycleGraveyard.y, 0)
+			cdum = CreateUnit(Player(0), htyp.dummyId, recycleGraveyard.x, recycleGraveyard.y, 0)
 			cdum.setUserData(this castTo int)
 			addOrderDetection(cdum)
 			heroOfPlayer.put(p, this)
