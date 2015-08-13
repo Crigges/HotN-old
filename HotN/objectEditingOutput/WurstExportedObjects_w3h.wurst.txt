@@ -3,15 +3,14 @@ import ObjEditingNatives
 
 //modifiedTable: 
 
-@compiletime function create_w3h_B000()
-	let u = createObjectDefinition("w3h", 'B000', 'BNsl')
-	u.setString("ftip", "k?se")
-	u.setString("fnam", "blubber")
-
-
-@compiletime function create_w3h_B001()
-	let u = createObjectDefinition("w3h", 'B001', 'BNso')
-	u.setString("ftip", "KREBS")
+@compiletime function create_w3h_sthe()
+	let u = createObjectDefinition("w3h", 'sthe', 'BPSE')
+	u.setInt("wurs", 42)
+	u.setString("fart", "Alphaicon.blp")
+	u.setString("ftat", "")
+	u.setString("fta0", "")
 	u.setString("fube", "")
+	u.setString("ftip", "Casting")
+	u.setString("fnsf", "")
 
 

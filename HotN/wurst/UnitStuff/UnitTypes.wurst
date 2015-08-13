@@ -53,11 +53,12 @@ public tuple armorSoundTypeStat(ArmorSoundType content, StatType info)
 public class UnitType
 	static constant int basicId = 'Hpal'
 	static constant int basicMovespeed = 350
+	static constant real turnRate = 1
 	static constant StringList basicSpells = new StringList()
 	static constant real castPoint = 0
 	static constant real castBackPoint = 0
 	static constant real animationSmoothingFactor = 0.2
-	static constant int moveInterpolation = 3
+	static constant int moveInterpolation = 0
 	static constant real attackCooldown = 1
 	static constant string attackType = "normal"
 	static constant int basicAttack = -1
@@ -284,6 +285,7 @@ public class UnitType
 				def.setAnimationWalkSpeed(walkSpeed.content)
 			if runSpeed.info == StatType.SET
 				def.setAnimationRunSpeed(runSpeed.content) 
+			def.setTurnRate(turnRate)
 			def.setAnimationCastPoint(castPoint)
 			def.setAnimationCastBackswing(castBackPoint)
 			def.setAnimationBlendTimeseconds(animationSmoothingFactor)

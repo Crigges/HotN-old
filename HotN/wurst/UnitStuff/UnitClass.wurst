@@ -444,7 +444,6 @@ package UnitClass
 			timer t = GetExpiredTimer()
 			t.getData() castTo Unit.makeVunerable()
 			t.release()
-			t = null
 			
 		function addShield(real amount, real duration) returns Shield
 			Shield s = new Shield(this, amount, duration, shieldList)
@@ -455,7 +454,7 @@ package UnitClass
 			attack += amount
 			int bonus = 256
 			int statHelper = roundReal(amount)
-			addAbility('Aihn')
+			addAbility('invi')
 			print("added " + amount.toString())
 			print(permAttackTome[1].getName())
 			if statHelper >= 0
@@ -476,7 +475,7 @@ package UnitClass
 						statHelper -= bonus
 					bonus = bonus div 2
 				UnitAddItem(u, permAttackNegTome)
-			u.removeAbility('Aihn')
+//			u.removeAbility('invi')
 		
 		function bonusAttack(real amount) returns Bonus
 			bonusAttack += amount
