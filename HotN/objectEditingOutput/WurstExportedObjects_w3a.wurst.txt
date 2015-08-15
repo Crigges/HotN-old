@@ -3,13 +3,6 @@ import ObjEditingNatives
 
 //modifiedTable: 
 
-@compiletime function create_w3a_A000()
-	let u = createObjectDefinition("w3a", 'A000', 'AHtb')
-	u.setLvlDataInt("alev", 0, 0, 1)
-	u.setLvlDataInt("aher", 0, 0, 0)
-	u.setLvlDataUnreal("aran", 1, 0, 99999.0)
-
-
 @compiletime function create_w3a_(D)a()
 	let u = createObjectDefinition("w3a", '(D)a', 'AIl1')
 	u.setLvlDataInt("wurs", 0, 0, 42)

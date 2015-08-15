@@ -20,7 +20,7 @@ package ControlPoint
 	constant decoLightGreenId = 'B00K'
 	constant decoLightRedId = 'B00A'
 	constant teamEverlivingLightning = FINGER_OF_DEATH
-	constant teamWargrinLightning = LIGHTNING_ATTACK
+	constant teamWargrinLightning = "LEGR"
 	constant real decoCrystalOusideScale = 0.4
 	constant real decoCrystalInsideScale = 0.8
 	constant int morphAbi = 'ctpm'
@@ -130,7 +130,7 @@ package ControlPoint
 				else 
 					tempLightning = teamWargrinLightning
 				data.l1 = createLightning(tempLightning, u.getMiddle(), pos3)
-				data.fx = new Fx(u.getMiddle(), 0..asAngleDegrees(), "CaptureEffect_Lightning_Center.mdl")
+				data.fx = new Fx(u.getMiddle(), 0..asAngleDegrees(), "Abilities\\Weapons\\WitchDoctorMissile\\WitchDoctorMissile.mdl")
 				data.fx.setScale(2)
 				data.fx.getDummy().setTimeScale(2)
 				if data.wantCapture
