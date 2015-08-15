@@ -224,4 +224,18 @@ C;X11;K0.01
 C;X12;K0
 C;X13;K2
 C;X14;K1
+C;Y17;X1;KLEGR
+C;X2;KLightning Effect Green
+C;X3;KReplaceableTextures\Weather
+C;X4;KLightningGreen.blp
+C;X5;K100
+C;X6;K50
+C;X7;K255
+C;X8;K255
+C;X9;K255
+C;X10;K255
+C;X11;K0.05
+C;X12;K0.5
+C;X13;K2
+C;X14;K0
 E

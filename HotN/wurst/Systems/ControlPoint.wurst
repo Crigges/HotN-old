@@ -19,6 +19,8 @@ package ControlPoint
 	constant decoCystalRedId = 'B00L'
 	constant decoLightGreenId = 'B00K'
 	constant decoLightRedId = 'B00A'
+	constant teamEverlivingLightning = FINGER_OF_DEATH
+	constant teamWargrinLightning = "LEGR"
 	constant real decoCrystalOusideScale = 0.4
 	constant real decoCrystalInsideScale = 0.8
 	constant int morphAbi = 'ctpm'
@@ -122,9 +124,14 @@ package ControlPoint
 			inRange.addUnit(u.u)
 			let data = captureData.get(u)
 			if u.team != owner
-				data.l1 = createLightning(FORKED_LIGHTNING, u.getMiddle(), pos3)
-				data.fx = new Fx(u.getMiddle(), 0..asAngleDegrees(), "Abilities\\Spells\\Orc\\Bloodlust\\BloodlustTarget.mdl")
-				data.fx.setScale(3)
+				string tempLightning
+				if owner == Team.Everliving
+					tempLightning = teamEverlivingLightning
+				else 
+					tempLightning = teamWargrinLightning
+				data.l1 = createLightning(tempLightning, u.getMiddle(), pos3)
+				data.fx = new Fx(u.getMiddle(), 0..asAngleDegrees(), "Abilities\\Weapons\\WitchDoctorMissile\\WitchDoctorMissile.mdl")
+				data.fx.setScale(2)
 				data.fx.getDummy().setTimeScale(2)
 				if data.wantCapture
 					startCapture(u castTo Hero)
@@ -222,7 +229,12 @@ package ControlPoint
 			h.playCaptureAnimation()
 			var data = captureData.get(h)
 			if data.l2 == null
-				data.l2 = createLightning(FINGER_OF_DEATH, h.getMiddle(), data.fx.getPos3d())
+				string tempLightning
+				if owner != Team.Everliving
+					tempLightning = teamEverlivingLightning
+				else 
+					tempLightning = teamWargrinLightning
+				data.l2 = createLightning(tempLightning, h.getMiddle(), data.fx.getPos3d())
 			
 		private function stopCapture(Hero h)
 			h.enableAutoAttack(true)
@@ -241,7 +253,9 @@ package ControlPoint
 			print("ownerchange")
 			real z = getTerrainZ(pos2)
 			for unit u from inRange
-				leave(u.getUserData() castTo Unit)
+				Unit ug = u.getUserData() castTo Unit
+				leave(ug)
+				captureData.get(ug).wantCapture = false
 			if owner == Team.Everliving
 				owner = Team.Wargrin
 			else
@@ -259,13 +273,13 @@ package ControlPoint
 			glowMarkers = new LinkedList<destructable>()
 			if owner == Team.Everliving
 				newCrystalId = decoCystalRedId
-				lightningId = FINGER_OF_DEATH
+				lightningId = teamEverlivingLightning
 				newDecoId = decoLightRedId
 				effectPath = "Abilities\\Spells\\Human\\MarkOfChaos\\MarkOfChaosDone.mdl"
 				mainEffectPath = "CaptureEffect_Coil_Red.mdl"
 			else
 				newCrystalId = decoCystalGreenId
-				lightningId = DRAIN_LIFE
+				lightningId = teamWargrinLightning
 				newDecoId = decoLightGreenId
 				effectPath = "CaptureEffect_Green.mdl"
 				mainEffectPath = "Abilities\\Spells\\Undead\\DeathCoil\\DeathCoilSpecialArt.mdl"
