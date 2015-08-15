@@ -28,6 +28,7 @@ public class HeroType extends UnitType
 	static constant dummyAbis = "Clic"
 
 	int dummyId
+	int morphId
 	BuildingAndHeroDefinition dummyDef
 	stringStat properName = stringStat("", StatType.REQUIRED)
 	intStat captureAnimationIndex = intStat(0, StatType.REQUIRED)
@@ -78,6 +79,7 @@ public class HeroType extends UnitType
 	
 	construct()
 		super(genHeroId())
+		morphId = genId()
 		dummyId = genHeroId()
 		dummyDef = new BuildingAndHeroDefinition(dummyId, 'Hpal')
 		
@@ -127,6 +129,12 @@ public class HeroType extends UnitType
 			dummyDef.setManaRegeneration(0)
 			dummyDef.def.setBoolean("uhhb", true) //hide icon
 			dummyDef.def.setBoolean("uhhd", true)
+			//Morph Ability
+			let u = createObjectDefinition("w3a", morphId, 'Sca6')
+			u.setLvlDataString("areq", 0, 0, "")
+			u.setLvlDataString("Cha1", 1, 0, id.asFourchar())
+			u.setLvlDataString("ansf", 0, 0, "")
+			u.setLvlDataString("anam", 0, 0, "Morphability for " + name.content)
 		else
 			heros.put(StringHash(name.content), this)
 		super.finalize()

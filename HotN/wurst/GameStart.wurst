@@ -69,7 +69,7 @@ package GameStart
 	int callLimit = 1
 	HashList<Unit> tList = new HashList<Unit>()
 	LinkedList<Unit> lList = new LinkedList<Unit>()
-	
+	Hero testh
 	Window shopWindow = new Window()
 	Window scoreWindow = new Window()
 	Window guideWindow = new Window()
@@ -106,7 +106,8 @@ package GameStart
 		nullTimer(() -> new ControlPoint(vec2(5190,9660), Team.Everliving))
 		doAfter(5, () -> begin
 			for int i = 1 to 2
-				Hero h = new Hero("testhero", vec2(3000, 9660), Player(0))
+				testh = new Hero("testhero", vec2(3000, 9660), Player(0))
+				new Unit("testunit", vec2(3000, 9660), Player(0))
 			new Hero("testhero", vec2(5900, 9660), Player(6))
 		end)
 //		for int k = 1 to 10
@@ -1125,8 +1126,7 @@ package GameStart
 		
 	function onEsc()
 		print("onEsc")
-		WindowManager.closeTopWindow(Player(0))
-		WindowManager.openWindow(shopWindow, Player(0))
+		testh.addArmor(1)
 		
 	function stopAnimation()
 		SetUnitTimeScalePercent(last.u, 0)

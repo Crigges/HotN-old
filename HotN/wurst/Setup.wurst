@@ -45,8 +45,8 @@ package Setup
 	public constant int intRaw		 			= '(H)0' - '0'
 	public constant int lifeRegRaw		 		= '(I)0' - '0'
 	public constant int manaRegRaw		 		= '(J)0' - '0'
-	public constant int permAttackItemRaw 		= '(K)0' - '0'
-	public constant int permAttackRaw 			= '(L)0' - '0'
+	public constant int permAttackItemRaw 		= 'BMI0' - '0'
+	public constant int permAttackRaw 			= 'BMO0' - '0'
 
 	public int array attackPerm
 	

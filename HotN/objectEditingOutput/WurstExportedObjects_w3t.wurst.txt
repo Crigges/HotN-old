@@ -3,10 +3,10 @@ import ObjEditingNatives
 
 //modifiedTable: 
 
-@compiletime function create_w3t_(K)a()
-	let u = createObjectDefinition("w3t", '(K)a', 'tint')
+@compiletime function create_w3t_BMIa()
+	let u = createObjectDefinition("w3t", 'BMIa', 'tint')
 	u.setInt("wurs", 42)
-	u.setString("iabi", "(L)a")
+	u.setString("iabi", "BMOa")
 	u.setString("ifil", "none.mdl")
 	u.setInt("ihtp", 100)
 	u.setString("iico", "ReplaceableTextures\\CommandButtons\\BTNArcaniteMelee.blp")
@@ -14,10 +14,10 @@ import ObjEditingNatives
 	u.setInt("iicd", 1)
 
 
-@compiletime function create_w3t_(K)b()
-	let u = createObjectDefinition("w3t", '(K)b', 'tint')
+@compiletime function create_w3t_BMIb()
+	let u = createObjectDefinition("w3t", 'BMIb', 'tint')
 	u.setInt("wurs", 42)
-	u.setString("iabi", "(L)b")
+	u.setString("iabi", "BMOb")
 	u.setString("ifil", "none.mdl")
 	u.setInt("ihtp", 100)
 	u.setString("iico", "ReplaceableTextures\\CommandButtons\\BTNArcaniteMelee.blp")
@@ -25,10 +25,10 @@ import ObjEditingNatives
 	u.setInt("iicd", 1)
 
 
-@compiletime function create_w3t_(K)c()
-	let u = createObjectDefinition("w3t", '(K)c', 'tint')
+@compiletime function create_w3t_BMIc()
+	let u = createObjectDefinition("w3t", 'BMIc', 'tint')
 	u.setInt("wurs", 42)
-	u.setString("iabi", "(L)c")
+	u.setString("iabi", "BMOc")
 	u.setString("ifil", "none.mdl")
 	u.setInt("ihtp", 100)
 	u.setString("iico", "ReplaceableTextures\\CommandButtons\\BTNArcaniteMelee.blp")
@@ -36,10 +36,10 @@ import ObjEditingNatives
 	u.setInt("iicd", 1)
 
 
-@compiletime function create_w3t_(K)d()
-	let u = createObjectDefinition("w3t", '(K)d', 'tint')
+@compiletime function create_w3t_BMId()
+	let u = createObjectDefinition("w3t", 'BMId', 'tint')
 	u.setInt("wurs", 42)
-	u.setString("iabi", "(L)d")
+	u.setString("iabi", "BMOd")
 	u.setString("ifil", "none.mdl")
 	u.setInt("ihtp", 100)
 	u.setString("iico", "ReplaceableTextures\\CommandButtons\\BTNArcaniteMelee.blp")
@@ -47,10 +47,10 @@ import ObjEditingNatives
 	u.setInt("iicd", 1)
 
 
-@compiletime function create_w3t_(K)e()
-	let u = createObjectDefinition("w3t", '(K)e', 'tint')
+@compiletime function create_w3t_BMIe()
+	let u = createObjectDefinition("w3t", 'BMIe', 'tint')
 	u.setInt("wurs", 42)
-	u.setString("iabi", "(L)e")
+	u.setString("iabi", "BMOe")
 	u.setString("ifil", "none.mdl")
 	u.setInt("ihtp", 100)
 	u.setString("iico", "ReplaceableTextures\\CommandButtons\\BTNArcaniteMelee.blp")
@@ -58,10 +58,10 @@ import ObjEditingNatives
 	u.setInt("iicd", 1)
 
 
-@compiletime function create_w3t_(K)f()
-	let u = createObjectDefinition("w3t", '(K)f', 'tint')
+@compiletime function create_w3t_BMIf()
+	let u = createObjectDefinition("w3t", 'BMIf', 'tint')
 	u.setInt("wurs", 42)
-	u.setString("iabi", "(L)f")
+	u.setString("iabi", "BMOf")
 	u.setString("ifil", "none.mdl")
 	u.setInt("ihtp", 100)
 	u.setString("iico", "ReplaceableTextures\\CommandButtons\\BTNArcaniteMelee.blp")
@@ -69,10 +69,10 @@ import ObjEditingNatives
 	u.setInt("iicd", 1)
 
 
-@compiletime function create_w3t_(K)g()
-	let u = createObjectDefinition("w3t", '(K)g', 'tint')
+@compiletime function create_w3t_BMIg()
+	let u = createObjectDefinition("w3t", 'BMIg', 'tint')
 	u.setInt("wurs", 42)
-	u.setString("iabi", "(L)g")
+	u.setString("iabi", "BMOg")
 	u.setString("ifil", "none.mdl")
 	u.setInt("ihtp", 100)
 	u.setString("iico", "ReplaceableTextures\\CommandButtons\\BTNArcaniteMelee.blp")
@@ -80,10 +80,10 @@ import ObjEditingNatives
 	u.setInt("iicd", 1)
 
 
-@compiletime function create_w3t_(K)h()
-	let u = createObjectDefinition("w3t", '(K)h', 'tint')
+@compiletime function create_w3t_BMIh()
+	let u = createObjectDefinition("w3t", 'BMIh', 'tint')
 	u.setInt("wurs", 42)
-	u.setString("iabi", "(L)h")
+	u.setString("iabi", "BMOh")
 	u.setString("ifil", "none.mdl")
 	u.setInt("ihtp", 100)
 	u.setString("iico", "ReplaceableTextures\\CommandButtons\\BTNArcaniteMelee.blp")
@@ -91,10 +91,10 @@ import ObjEditingNatives
 	u.setInt("iicd", 1)
 
 
-@compiletime function create_w3t_(K)i()
-	let u = createObjectDefinition("w3t", '(K)i', 'tint')
+@compiletime function create_w3t_BMIi()
+	let u = createObjectDefinition("w3t", 'BMIi', 'tint')
 	u.setInt("wurs", 42)
-	u.setString("iabi", "(L)i")
+	u.setString("iabi", "BMOi")
 	u.setString("ifil", "none.mdl")
 	u.setInt("ihtp", 100)
 	u.setString("iico", "ReplaceableTextures\\CommandButtons\\BTNArcaniteMelee.blp")
@@ -102,10 +102,10 @@ import ObjEditingNatives
 	u.setInt("iicd", 1)
 
 
-@compiletime function create_w3t_(K)j()
-	let u = createObjectDefinition("w3t", '(K)j', 'tint')
+@compiletime function create_w3t_BMIj()
+	let u = createObjectDefinition("w3t", 'BMIj', 'tint')
 	u.setInt("wurs", 42)
-	u.setString("iabi", "(L)j")
+	u.setString("iabi", "BMOj")
 	u.setString("ifil", "none.mdl")
 	u.setInt("ihtp", 100)
 	u.setString("iico", "ReplaceableTextures\\CommandButtons\\BTNArcaniteMelee.blp")
@@ -113,10 +113,10 @@ import ObjEditingNatives
 	u.setInt("iicd", 1)
 
 
-@compiletime function create_w3t_(K)k()
-	let u = createObjectDefinition("w3t", '(K)k', 'tint')
+@compiletime function create_w3t_BMIk()
+	let u = createObjectDefinition("w3t", 'BMIk', 'tint')
 	u.setInt("wurs", 42)
-	u.setString("iabi", "(L)k")
+	u.setString("iabi", "BMOk")
 	u.setString("ifil", "none.mdl")
 	u.setInt("ihtp", 100)
 	u.setString("iico", "ReplaceableTextures\\CommandButtons\\BTNArcaniteMelee.blp")
@@ -124,10 +124,10 @@ import ObjEditingNatives
 	u.setInt("iicd", 1)
 
 
-@compiletime function create_w3t_(K)l()
-	let u = createObjectDefinition("w3t", '(K)l', 'tint')
+@compiletime function create_w3t_BMIl()
+	let u = createObjectDefinition("w3t", 'BMIl', 'tint')
 	u.setInt("wurs", 42)
-	u.setString("iabi", "(L)l")
+	u.setString("iabi", "BMOl")
 	u.setString("ifil", "none.mdl")
 	u.setInt("ihtp", 100)
 	u.setString("iico", "ReplaceableTextures\\CommandButtons\\BTNArcaniteMelee.blp")
@@ -135,10 +135,10 @@ import ObjEditingNatives
 	u.setInt("iicd", 1)
 
 
-@compiletime function create_w3t_(K)m()
-	let u = createObjectDefinition("w3t", '(K)m', 'tint')
+@compiletime function create_w3t_BMIm()
+	let u = createObjectDefinition("w3t", 'BMIm', 'tint')
 	u.setInt("wurs", 42)
-	u.setString("iabi", "(L)m")
+	u.setString("iabi", "BMOm")
 	u.setString("ifil", "none.mdl")
 	u.setInt("ihtp", 100)
 	u.setString("iico", "ReplaceableTextures\\CommandButtons\\BTNArcaniteMelee.blp")
@@ -146,10 +146,10 @@ import ObjEditingNatives
 	u.setInt("iicd", 1)
 
 
-@compiletime function create_w3t_(K)n()
-	let u = createObjectDefinition("w3t", '(K)n', 'tint')
+@compiletime function create_w3t_BMIn()
+	let u = createObjectDefinition("w3t", 'BMIn', 'tint')
 	u.setInt("wurs", 42)
-	u.setString("iabi", "(L)n")
+	u.setString("iabi", "BMOn")
 	u.setString("ifil", "none.mdl")
 	u.setInt("ihtp", 100)
 	u.setString("iico", "ReplaceableTextures\\CommandButtons\\BTNArcaniteMelee.blp")
@@ -157,10 +157,10 @@ import ObjEditingNatives
 	u.setInt("iicd", 1)
 
 
-@compiletime function create_w3t_(K)-()
-	let u = createObjectDefinition("w3t", '(K)-', 'tint')
+@compiletime function create_w3t_BMIC()
+	let u = createObjectDefinition("w3t", 'BMIC', 'tint')
 	u.setInt("wurs", 42)
-	u.setString("iabi", "(L)-")
+	u.setString("iabi", "BMOC")
 	u.setString("ifil", "none.mdl")
 	u.setInt("ihtp", 100)
 	u.setString("iico", "ReplaceableTextures\\CommandButtons\\BTNArcaniteMelee.blp")

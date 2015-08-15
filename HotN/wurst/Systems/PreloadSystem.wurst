@@ -86,6 +86,7 @@ init
 			unit u = CreateUnit(DUMMY_PLAYER, id, 0, 0, 0)
 			if u.getName() == "" or u.getName() == null
 				ret = -2
+				printError("Could not load the unit " + idInteger2IdString(id))
 			else
 				doAfter(1., () -> u.remove())
 				ret = unitLoadTime
@@ -134,9 +135,9 @@ init
 	end)
 	onPreload("CreateDummyItems", (int i) -> begin
 		real ret = -1
-		for int k = 'a' to 'a' + 8
+		for int k = 'a' to 'a' + maxBonSize - 1
 			permAttackTome[k - 'a'] = CreateItem(permAttackItemRaw + k, recycleGraveyard.x, recycleGraveyard.y)
-		permAttackNegTome = CreateItem(permAttackItemRaw + '-', recycleGraveyard.x, recycleGraveyard.y)
+		permAttackNegTome = CreateItem(permAttackItemRaw + 'C', recycleGraveyard.x, recycleGraveyard.y)
 		return ret
 	end)
 	

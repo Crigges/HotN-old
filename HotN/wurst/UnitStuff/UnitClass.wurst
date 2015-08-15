@@ -452,30 +452,27 @@ package UnitClass
 		
 		function addAttack(real amount)
 			attack += amount
-			int bonus = 256
+			int bonus = 8192
 			int statHelper = roundReal(amount)
 			addAbility('invi')
-			print("added " + amount.toString())
-			print(permAttackTome[1].getName())
 			if statHelper >= 0
-				for int i = 8 downto 0
+				for int i = maxBonSize - 1 downto 0
 					if statHelper >= bonus
-						permAttackTome[i].setPos(u.getPos())
 						UnitAddItem(u, permAttackTome[i])
 						permAttackTome[i].setPos(recycleGraveyard)
 						statHelper -= bonus
 					bonus = bonus div 2
 			else
-				bonus = -256
-				for int i = 8 downto 0
+				statHelper = 16384 - (-1 * statHelper)
+				for int i = maxBonSize - 1 downto 0
 					if statHelper >= bonus
 						UnitAddItem(u, permAttackTome[i])
 						permAttackTome[i].setPos(recycleGraveyard)
-					else
 						statHelper -= bonus
 					bonus = bonus div 2
 				UnitAddItem(u, permAttackNegTome)
-//			u.removeAbility('invi')
+				permAttackNegTome.setPos(recycleGraveyard)
+			u.removeAbility('invi')
 		
 		function bonusAttack(real amount) returns Bonus
 			bonusAttack += amount
@@ -1156,9 +1153,7 @@ package UnitClass
 				if source.hitchance > 100
 					ev -= (source.hitchance - 100)
 				if rand > ev
-
 					real amount = source.getAttack(true) + GetRandomReal(-source.getAttack(true) / 10, source.getAttack(true) / 10)
-					print(amount.toString())
 					boolean crit = false
 					rand = GetRandomReal(0., 100.)
 					if rand <= source.critchance

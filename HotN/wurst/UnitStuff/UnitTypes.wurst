@@ -296,7 +296,7 @@ public class UnitType
 				compileError("Missing information: Is unit ranged?")
 				if ranged.content
 					if missleTargetZ.info == StatType.RANGED or missleStart.info == StatType.RANGED
-						compileError("Missing information: Missle taget or start?")
+						compileError("Missing information: Missle target or start?")
 					def.setProjectileImpactZ(missleTargetZ.content)
 					def.setProjectileLaunchX(missleStart.content.x)
 					def.setProjectileLaunchY(missleStart.content.y)
@@ -368,6 +368,7 @@ public class UnitType
 			def.setSightRadiusNight(sightRange)
 			def.setHitPointsRegenerationRate(0)
 			def.setManaRegeneration(0)
+			def.setDefenseBase(0)
 			def.def.setBoolean("uhhb", true) //hide icon
 			def.def.setBoolean("uhhd", true) //hide death notification
 		else

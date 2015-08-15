@@ -41,7 +41,6 @@ package HeroClass
 		real bonusIntPer
 		int armorBuffer = 0
 		int attackBuffer = 0
-		int morphAbi
 		boolean onAdd = false
 		//Order Spell and Capture handling
 		boolean canAttack = true
@@ -75,6 +74,7 @@ package HeroClass
 			isHero = true
 			cdum = CreateUnit(p, htyp.dummyId, recycleGraveyard.x, recycleGraveyard.y, 0)
 			cdum.setUserData(this castTo int)
+			doAfter(0.1, () -> addArmor(htyp.getArmor() * 1.))
 			addOrderDetection(cdum)
 			heroOfPlayer.put(p, this)
 		
@@ -101,22 +101,25 @@ package HeroClass
 				updateState(0, lifeRaw)
 				updateState(0, manaRaw)
 				// add Armor
-				bonusArmor(amount - armorBuffer)
-				u.addAbility(morphAbi)
+				Bonus b = bonusArmor(amount - armorBuffer)
+				u.addAbility(htyp.morphId)
 				armorBuffer += roundReal(amount)
 				//bring back the old unit
 				doAfter(0.025, () -> begin
 					onAdd = false
+					super.addAttack(I2R(attackBuffer))
 					updateArmor()
 					updateLife()
 					updateMana()
+					destroy b
 				end)
 			else
 				printError("Armor was added while morphing")
 			
 					
 		override function addAttack(real amount)
-			attackBuffer += roundReal(5)
+			attackBuffer += roundReal(amount)
+			print("attackbuffer is " + attackBuffer.toString())
 			super.addAttack(amount)
 			
 		function getAgi(boolean withBonus) returns real
