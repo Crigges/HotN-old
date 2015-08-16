@@ -79,6 +79,7 @@ public class UnitType
 
 	protected HeroDefinition def
 	int id
+	boolean isHero = false
 	intStat moveSpeed = intStat(basicMovespeed, StatType.FORBIDDEN)
 	StringList abis = new StringList()
 	realStat walkSpeed = realStat(0, StatType.OPTIONAL)
@@ -368,7 +369,10 @@ public class UnitType
 			def.setSightRadiusNight(sightRange)
 			def.setHitPointsRegenerationRate(0)
 			def.setManaRegeneration(0)
-			def.setDefenseBase(0)
+			if not isHero				
+				def.setDefenseBase(armor.content)
+			else
+				def.setDefenseBase(0)
 			def.def.setBoolean("uhhb", true) //hide icon
 			def.def.setBoolean("uhhd", true) //hide death notification
 		else

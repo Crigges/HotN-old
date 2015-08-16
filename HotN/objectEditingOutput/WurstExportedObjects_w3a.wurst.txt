@@ -3,53 +3,6 @@ import ObjEditingNatives
 
 //modifiedTable: 
 
-<<<<<<< HEAD
-@compiletime function create_w3a_A000()
-	let u = createObjectDefinition("w3a", 'A000', 'AHtb')
-	u.setLvlDataInt("alev", 0, 0, 1)
-	u.setLvlDataInt("aher", 0, 0, 0)
-	u.setLvlDataUnreal("aran", 1, 0, 99999.0)
-
-
-@compiletime function create_w3a_S000()
-	let u = createObjectDefinition("w3a", 'S000', 'Sca6')
-	u.setLvlDataString("areq", 0, 0, "")
-	u.setLvlDataString("Cha1", 1, 0, "Ocb2")
-	u.setLvlDataString("ansf", 0, 0, "")
-	u.setLvlDataString("anam", 0, 0, "Morphability")
-
-
-@compiletime function create_w3a_A001()
-	let u = createObjectDefinition("w3a", 'A001', 'ANcl')
-	u.setLvlDataInt("alev", 0, 0, 1)
-	u.setLvlDataUnreal("aran", 1, 0, 0.0)
-	u.setLvlDataInt("aher", 0, 0, 0)
-	u.setLvlDataInt("Ncl5", 1, 5, 0)
-	u.setLvlDataString("Ncl6", 1, 6, "")
-	u.setLvlDataUnreal("Ncl1", 1, 1, 0.0)
-	u.setLvlDataUnreal("Ncl4", 1, 4, 0.0)
-	u.setLvlDataString("aani", 0, 0, "")
-	u.setLvlDataString("aeat", 0, 0, "")
-	u.setLvlDataString("acat", 0, 0, "")
-	u.setLvlDataString("atat", 0, 0, "")
-	u.setLvlDataString("anam", 0, 0, "Dead Dummy")
-
-
-@compiletime function create_w3a_A002()
-	let u = createObjectDefinition("w3a", 'A002', 'Apiv')
-	u.setLvlDataString("anam", 0, 0, "No AutoAttack")
-	u.setLvlDataInt("Gho1", 1, 1, 0)
-	u.setLvlDataUnreal("adur", 1, 0, -1.0)
-	u.setLvlDataUnreal("ahdu", 1, 0, -1.0)
-
-
-@compiletime function create_w3a_A003()
-	let u = createObjectDefinition("w3a", 'A003', 'AIaa')
-	u.setLvlDataInt("Iaa1", 1, 1, 16384)
-
-
-=======
->>>>>>> 8d69b33b6c03dde5b432159763f885c32b37527c
 @compiletime function create_w3a_(D)a()
 	let u = createObjectDefinition("w3a", '(D)a', 'AIl1')
 	u.setLvlDataInt("wurs", 0, 0, 42)
@@ -1963,7 +1916,7 @@ import ObjEditingNatives
 	u.setLvlDataString("Ncl6", 1, 6, "smart")
 	u.setLvlDataInt("Ncl2", 1, 2, 3)
 	u.setLvlDataInt("aher", 0, 0, 0)
-	u.setLvlDataString("atar", 0, 0, "self,decoration,invulnerable")
+	u.setLvlDataString("atar", 0, 0, "invulnerable,vulnerable")
 
 
 @compiletime function create_w3a_rami()

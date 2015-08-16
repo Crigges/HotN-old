@@ -180,7 +180,7 @@ import ObjEditingNatives
 	u.setInt("usin", 1200)
 	u.setUnreal("uhpr", 0.0)
 	u.setUnreal("umpr", 0.0)
-	u.setInt("udef", 0)
+	u.setInt("udef", 5)
 	u.setInt("uhhb", 1)
 	u.setInt("uhhd", 1)
 

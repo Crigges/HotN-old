@@ -138,6 +138,7 @@ init
 		for int k = 'a' to 'a' + maxBonSize - 1
 			permAttackTome[k - 'a'] = CreateItem(permAttackItemRaw + k, recycleGraveyard.x, recycleGraveyard.y)
 		permAttackNegTome = CreateItem(permAttackItemRaw + 'C', recycleGraveyard.x, recycleGraveyard.y)
+		
 		return ret
 	end)
 	

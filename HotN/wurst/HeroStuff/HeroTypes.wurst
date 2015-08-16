@@ -82,6 +82,7 @@ public class HeroType extends UnitType
 		morphId = genId()
 		dummyId = genHeroId()
 		dummyDef = new BuildingAndHeroDefinition(dummyId, 'Hpal')
+		isHero = true
 		
 	override function finalize()
 		if compiletime
