@@ -30,14 +30,6 @@ package Helper
 			nvel2 += pv2
 			return nvel2
 				
-	public function int.pow(int n) returns int
-		if n == 0
-			return 1
-		int result = this
-		for int i = 1 to n - 1
-			result = result * this
-		return result
-				
 	public function int.asFourchar() returns string
 		string charMap = ".................................!.#$%&'()*+,-./0123456789:;<=>.@ABCDEFGHIJKLMNOPQRSTUVWXYZ[.]^_`abcdefghijklmnopqrstuvwxyz{|}~................................................................................................................................."
 		string result = ""
