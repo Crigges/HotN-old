@@ -30,7 +30,7 @@ package Helper
 			nvel2 += pv2
 			return nvel2
 				
-	public function int.pow(int n) returns int
+	public function int.power(int n) returns int
 		if n == 0
 			return 1
 		int result = this
