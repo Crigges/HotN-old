@@ -1,0 +1,31 @@
+package WargrinUnitTypes
+
+import UnitTypes
+
+class SampleMeleeUnit
+	use UnitInit
+	
+	override static function settings(UnitType t)
+		t.setArmor(5)
+		t.setAttack(10)
+		t.setArmorSoundType(ArmorSoundType.Flesh)
+		t.setAttackBackSwingPoint(0.2)
+		t.setAttackDamagePoint(0.2)
+		t.setAttackRange(100)
+		t.setAttackRangeBuffer(150)
+		t.setBounty(50)
+		t.setCollisionSize(0)
+		t.setHeight(0)
+		t.setIsRanged(false)
+		t.setLife(1000)
+		t.setMana(0)
+		t.setMass(1000)
+		t.setModel("units\\human\\Footman\\Footman")
+		t.setName("testunit")
+		t.setRadius(50)
+		t.setRunspeed(200)
+		t.setSelectionRadius(50)
+		t.setIcon("")
+		t.setWeaptonSound(WeaponSound.MetalMediumSlice)
+
+

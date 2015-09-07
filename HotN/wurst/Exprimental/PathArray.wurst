@@ -1,0 +1,474 @@
+package PathArray
+
+import Setup
+import PreloadSystem
+import Terrain
+
+boolean array pathArr64
+boolean array pathArr63
+boolean array pathArr62
+boolean array pathArr61
+boolean array pathArr60
+boolean array pathArr59
+boolean array pathArr58
+boolean array pathArr57
+boolean array pathArr56
+boolean array pathArr55
+boolean array pathArr54
+boolean array pathArr53
+boolean array pathArr52
+boolean array pathArr51
+boolean array pathArr50
+boolean array pathArr49
+boolean array pathArr48
+boolean array pathArr47
+boolean array pathArr46
+boolean array pathArr45
+boolean array pathArr44
+boolean array pathArr43
+boolean array pathArr42
+boolean array pathArr41
+boolean array pathArr40
+boolean array pathArr39
+boolean array pathArr38
+boolean array pathArr37
+boolean array pathArr36
+boolean array pathArr35
+boolean array pathArr34
+boolean array pathArr33
+boolean array pathArr32
+boolean array pathArr31
+boolean array pathArr30
+boolean array pathArr29
+boolean array pathArr28
+boolean array pathArr27
+boolean array pathArr26
+boolean array pathArr25
+boolean array pathArr24
+boolean array pathArr23
+boolean array pathArr22
+boolean array pathArr21
+boolean array pathArr20
+boolean array pathArr19
+boolean array pathArr18
+boolean array pathArr17
+boolean array pathArr16
+boolean array pathArr15
+boolean array pathArr14
+boolean array pathArr13
+boolean array pathArr12
+boolean array pathArr11
+boolean array pathArr10
+boolean array pathArr9
+boolean array pathArr8
+boolean array pathArr7
+boolean array pathArr6
+boolean array pathArr5
+boolean array pathArr4
+boolean array pathArr3
+boolean array pathArr2
+boolean array pathArr1
+
+init
+	onPreload("PathArray", (int y) -> begin
+		for int x = 1 to 768
+			setPathingAt(vec2(x * 64., y * 64.), isTerrainWalkable(32. + x, 32. + y))
+		return 0
+	end)
+
+public function setPathingAt(vec2 pos, boolean walkable)
+	int x = R2I(pos.x)
+	x = x div 64
+	int y = R2I(pos.x)
+	y = y div 64
+	setpathArr(x * 800 + y, walkable)
+	
+public function getPathingAt(vec2 pos) returns boolean
+	int x = R2I(pos.x)
+	int y = R2I(pos.x)
+	return getpathArr(x * 800 + y)
+ 
+function getpathArr(int index) returns boolean
+	if index < 256000
+		if index < 128000
+			if index < 64000
+				if index < 32000
+					if index < 16000
+						if index < 8000
+							return pathArr1[index - 0]
+						else
+							return pathArr2[index - 8000]
+					else
+						if index < 24000
+							return pathArr3[index - 16000]
+						else
+							return pathArr4[index - 24000]
+				else
+					if index < 48000
+						if index < 40000
+							return pathArr5[index - 32000]
+						else
+							return pathArr6[index - 40000]
+					else
+						if index < 56000
+							return pathArr7[index - 48000]
+						else
+							return pathArr8[index - 56000]
+			else
+				if index < 96000
+					if index < 80000
+						if index < 72000
+							return pathArr9[index - 64000]
+						else
+							return pathArr10[index - 72000]
+					else
+						if index < 88000
+							return pathArr11[index - 80000]
+						else
+							return pathArr12[index - 88000]
+				else
+					if index < 112000
+						if index < 104000
+							return pathArr13[index - 96000]
+						else
+							return pathArr14[index - 104000]
+					else
+						if index < 120000
+							return pathArr15[index - 112000]
+						else
+							return pathArr16[index - 120000]
+		else
+			if index < 192000
+				if index < 160000
+					if index < 144000
+						if index < 136000
+							return pathArr17[index - 128000]
+						else
+							return pathArr18[index - 136000]
+					else
+						if index < 152000
+							return pathArr19[index - 144000]
+						else
+							return pathArr20[index - 152000]
+				else
+					if index < 176000
+						if index < 168000
+							return pathArr21[index - 160000]
+						else
+							return pathArr22[index - 168000]
+					else
+						if index < 184000
+							return pathArr23[index - 176000]
+						else
+							return pathArr24[index - 184000]
+			else
+				if index < 224000
+					if index < 208000
+						if index < 200000
+							return pathArr25[index - 192000]
+						else
+							return pathArr26[index - 200000]
+					else
+						if index < 216000
+							return pathArr27[index - 208000]
+						else
+							return pathArr28[index - 216000]
+				else
+					if index < 240000
+						if index < 232000
+							return pathArr29[index - 224000]
+						else
+							return pathArr30[index - 232000]
+					else
+						if index < 248000
+							return pathArr31[index - 240000]
+						else
+							return pathArr32[index - 248000]
+	else
+		if index < 384000
+			if index < 320000
+				if index < 288000
+					if index < 272000
+						if index < 264000
+							return pathArr33[index - 256000]
+						else
+							return pathArr34[index - 264000]
+					else
+						if index < 280000
+							return pathArr35[index - 272000]
+						else
+							return pathArr36[index - 280000]
+				else
+					if index < 304000
+						if index < 296000
+							return pathArr37[index - 288000]
+						else
+							return pathArr38[index - 296000]
+					else
+						if index < 312000
+							return pathArr39[index - 304000]
+						else
+							return pathArr40[index - 312000]
+			else
+				if index < 352000
+					if index < 336000
+						if index < 328000
+							return pathArr41[index - 320000]
+						else
+							return pathArr42[index - 328000]
+					else
+						if index < 344000
+							return pathArr43[index - 336000]
+						else
+							return pathArr44[index - 344000]
+				else
+					if index < 368000
+						if index < 360000
+							return pathArr45[index - 352000]
+						else
+							return pathArr46[index - 360000]
+					else
+						if index < 376000
+							return pathArr47[index - 368000]
+						else
+							return pathArr48[index - 376000]
+		else
+			if index < 448000
+				if index < 416000
+					if index < 400000
+						if index < 392000
+							return pathArr49[index - 384000]
+						else
+							return pathArr50[index - 392000]
+					else
+						if index < 408000
+							return pathArr51[index - 400000]
+						else
+							return pathArr52[index - 408000]
+				else
+					if index < 432000
+						if index < 424000
+							return pathArr53[index - 416000]
+						else
+							return pathArr54[index - 424000]
+					else
+						if index < 440000
+							return pathArr55[index - 432000]
+						else
+							return pathArr56[index - 440000]
+			else
+				if index < 480000
+					if index < 464000
+						if index < 456000
+							return pathArr57[index - 448000]
+						else
+							return pathArr58[index - 456000]
+					else
+						if index < 472000
+							return pathArr59[index - 464000]
+						else
+							return pathArr60[index - 472000]
+				else
+					if index < 496000
+						if index < 488000
+							return pathArr61[index - 480000]
+						else
+							return pathArr62[index - 488000]
+					else
+						if index < 504000
+							return pathArr63[index - 496000]
+						else
+							return pathArr64[index - 504000]
+ 
+function setpathArr(int index, boolean value)
+	if index < 256000
+		if index < 128000
+			if index < 64000
+				if index < 32000
+					if index < 16000
+						if index < 8000
+							pathArr1[index - 0] = value
+						else
+							pathArr2[index - 8000] = value
+					else
+						if index < 24000
+							pathArr3[index - 16000] = value
+						else
+							pathArr4[index - 24000] = value
+				else
+					if index < 48000
+						if index < 40000
+							pathArr5[index - 32000] = value
+						else
+							pathArr6[index - 40000] = value
+					else
+						if index < 56000
+							pathArr7[index - 48000] = value
+						else
+							pathArr8[index - 56000] = value
+			else
+				if index < 96000
+					if index < 80000
+						if index < 72000
+							pathArr9[index - 64000] = value
+						else
+							pathArr10[index - 72000] = value
+					else
+						if index < 88000
+							pathArr11[index - 80000] = value
+						else
+							pathArr12[index - 88000] = value
+				else
+					if index < 112000
+						if index < 104000
+							pathArr13[index - 96000] = value
+						else
+							pathArr14[index - 104000] = value
+					else
+						if index < 120000
+							pathArr15[index - 112000] = value
+						else
+							pathArr16[index - 120000] = value
+		else
+			if index < 192000
+				if index < 160000
+					if index < 144000
+						if index < 136000
+							pathArr17[index - 128000] = value
+						else
+							pathArr18[index - 136000] = value
+					else
+						if index < 152000
+							pathArr19[index - 144000] = value
+						else
+							pathArr20[index - 152000] = value
+				else
+					if index < 176000
+						if index < 168000
+							pathArr21[index - 160000] = value
+						else
+							pathArr22[index - 168000] = value
+					else
+						if index < 184000
+							pathArr23[index - 176000] = value
+						else
+							pathArr24[index - 184000] = value
+			else
+				if index < 224000
+					if index < 208000
+						if index < 200000
+							pathArr25[index - 192000] = value
+						else
+							pathArr26[index - 200000] = value
+					else
+						if index < 216000
+							pathArr27[index - 208000] = value
+						else
+							pathArr28[index - 216000] = value
+				else
+					if index < 240000
+						if index < 232000
+							pathArr29[index - 224000] = value
+						else
+							pathArr30[index - 232000] = value
+					else
+						if index < 248000
+							pathArr31[index - 240000] = value
+						else
+							pathArr32[index - 248000] = value
+	else
+		if index < 384000
+			if index < 320000
+				if index < 288000
+					if index < 272000
+						if index < 264000
+							pathArr33[index - 256000] = value
+						else
+							pathArr34[index - 264000] = value
+					else
+						if index < 280000
+							pathArr35[index - 272000] = value
+						else
+							pathArr36[index - 280000] = value
+				else
+					if index < 304000
+						if index < 296000
+							pathArr37[index - 288000] = value
+						else
+							pathArr38[index - 296000] = value
+					else
+						if index < 312000
+							pathArr39[index - 304000] = value
+						else
+							pathArr40[index - 312000] = value
+			else
+				if index < 352000
+					if index < 336000
+						if index < 328000
+							pathArr41[index - 320000] = value
+						else
+							pathArr42[index - 328000] = value
+					else
+						if index < 344000
+							pathArr43[index - 336000] = value
+						else
+							pathArr44[index - 344000] = value
+				else
+					if index < 368000
+						if index < 360000
+							pathArr45[index - 352000] = value
+						else
+							pathArr46[index - 360000] = value
+					else
+						if index < 376000
+							pathArr47[index - 368000] = value
+						else
+							pathArr48[index - 376000] = value
+		else
+			if index < 448000
+				if index < 416000
+					if index < 400000
+						if index < 392000
+							pathArr49[index - 384000] = value
+						else
+							pathArr50[index - 392000] = value
+					else
+						if index < 408000
+							pathArr51[index - 400000] = value
+						else
+							pathArr52[index - 408000] = value
+				else
+					if index < 432000
+						if index < 424000
+							pathArr53[index - 416000] = value
+						else
+							pathArr54[index - 424000] = value
+					else
+						if index < 440000
+							pathArr55[index - 432000] = value
+						else
+							pathArr56[index - 440000] = value
+			else
+				if index < 480000
+					if index < 464000
+						if index < 456000
+							pathArr57[index - 448000] = value
+						else
+							pathArr58[index - 456000] = value
+					else
+						if index < 472000
+							pathArr59[index - 464000] = value
+						else
+							pathArr60[index - 472000] = value
+				else
+					if index < 496000
+						if index < 488000
+							pathArr61[index - 480000] = value
+						else
+							pathArr62[index - 488000] = value
+					else
+						if index < 504000
+							pathArr63[index - 496000] = value
+						else
+							pathArr64[index - 504000] = value
+
