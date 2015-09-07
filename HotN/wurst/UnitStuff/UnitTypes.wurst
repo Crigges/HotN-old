@@ -62,7 +62,7 @@ public class UnitType
 	static constant real attackCooldown = 1
 	static constant string attackType = "normal"
 	static constant int basicAttack = -1
-	static constant int diceSides = 11
+	static constant int diceSides = 1
 	static constant int diceCount = 1
 	static constant boolean homingAttack = true
 	static constant int foodCost = 0
