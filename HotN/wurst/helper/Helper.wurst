@@ -11,24 +11,44 @@ package Helper
 	
 	public function getPathingNormal(vec2 pos) returns vec2
 		int numberOfTests = 60
-		real radius = 128
+		real radius = 64
 		vec2 addedVecs = vec2(0, 0)
 		for int i = 1 to numberOfTests
-			vec2 direction = vec2(0,0).polarOffset((i*2*bj_PI/numberOfTests).asAngleRadians(), radius)
-			vec2 testPoint = pos + direction
-			if isTerrainWalkable(testPoint.x, testPoint.y)
-				addedVecs += direction
+			vec2 test = pos.polarOffset((i*2*bj_PI/numberOfTests).asAngleRadians(), radius)
+			if IsTerrainPathable(test.x, test.y, PATHING_TYPE_WALKABILITY)
+				addedVecs += test
 		return addedVecs.setLength(1.) * (-1.)
 		
-	public function getBounceVec(vec2 vel2, vec2 nor2) returns vec2
-			vec3 vel3 = vel2.toVec3()
-			vec3 nor3 = nor2.toVec3()
-			vec3 pv3 = vel3.project(nor3)
-			vec2 pv2 = pv3.toVec2()
-			pv2 *= (-2.)
-			vec2 nvel2 = vel2
-			nvel2 += pv2
-			return nvel2
+	public function getBounceVec(vec2 vel, vec2 nor) returns vec2
+		vec2 u = (vel.dot(nor)) * nor
+		return (vel - u) - u
+		
+	public function getLastPathablePoint(vec2 pos1, vec2 pos2, int depth) returns vec2
+		if depth <= 1
+			return pos1
+		else
+			vec2 h = pos1 - pos2
+			vec2 toTest = pos2 + vec2(h.x / 2, h.y / 2)
+			if IsTerrainPathable(toTest.x, toTest.y, PATHING_TYPE_WALKABILITY)
+				return getLastPathablePoint(toTest, pos2, depth - 1)
+			else
+				return getLastPathablePoint(pos1, toTest, depth - 1)
+				
+	public function getLastPathablePoint(vec2 pos1, vec2 pos2) returns vec2
+		vec2 p1 = pos1
+		vec2 p2 = pos2
+		for int i = 1 to 8
+			vec2 h = p1 - p2
+			vec2 toTest = p2 + vec2(h.x / 2, h.y / 2)
+			if IsTerrainPathable(toTest.x, toTest.y, PATHING_TYPE_WALKABILITY)
+				p1 = toTest
+			else
+				p2 = toTest
+		return p1
+			
+	/**	Same as dot product */
+	public function vec2.op_mult(vec2 v) returns real
+		return this.x * v.x + this.y + v.y
 				
 	public function int.asFourchar() returns string
 		string charMap = ".................................!.#$%&'()*+,-./0123456789:;<=>.@ABCDEFGHIJKLMNOPQRSTUVWXYZ[.]^_`abcdefghijklmnopqrstuvwxyz{|}~................................................................................................................................."

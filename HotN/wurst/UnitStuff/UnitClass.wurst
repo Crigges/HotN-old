@@ -32,7 +32,7 @@ package UnitClass
 		use CreationEvent
 		//constants
 		static constant real bounceFactor = 1.
-		static constant real knockbackFactor = 6000
+		static constant real knockbackFactor = 200000
 		static constant real basicAttackspeed = 0.5 
 		UnitType typ
 		Team team
@@ -91,7 +91,6 @@ package UnitClass
 		real radius = 0
 		real height = 0
 		Unit lastKnocker = null
-		Unit lastCollision = null
 		vec2 wallLoc
 		boolean hasKnockback = false
 		boolean isHero = false
@@ -170,7 +169,6 @@ package UnitClass
 		override static function classname() returns string
 			return "Unit"	
 
-			
 		function addAbility(int abi)
 			u.addAbility(abi)
 			
@@ -181,82 +179,55 @@ package UnitClass
 			UnitAddItem(u, i)		
 	
 		function knockback()
-			if knockSpeed.lengthSquared() <= 0.25		
+			if knockSpeed.lengthSquared() <= 0.01		
 				knocklist.remove(this)
 				hasKnockback = false
 				knockSpeed = vec2(0,0)			
 			else
 				vec2 pos = u.getPos()
-				if isTerrainWalkable(pos.x, pos.y) == true or IsUnitInRangeXY(u, wallLoc.x, wallLoc.y, 30) == true
-					group g = CreateGroup()
-					filterCheckUnit = u
-					g.enumUnitsInRange(pos, radius, Condition(function notUnit))			
-					if  FirstOfGroup(g) == null		
-						pos += knockSpeed
-						u.setPos(pos)
-						knockSpeed -= knockSpeed * (mass / knockbackFactor)
-					else					
-						Unit u2 = FirstOfGroup(g).getUserData() castTo Unit
-						if not u2 == lastCollision
-							collision(u2)
-							pos += knockSpeed
-							u.setPos(pos)
-							knockSpeed -= knockSpeed * (mass / knockbackFactor)
-							vec2 pos2 = u2.u.getPos()
-							pos2 += knockSpeed
-							u2.u.setPos(pos2)
-							u2.knockSpeed -= u2.knockSpeed * (mass / knockbackFactor)
-						else		
-							pos += knockSpeed
-							u.setPos(pos)
-							knockSpeed -= knockSpeed * (mass / knockbackFactor)				
-					DestroyGroup(g)
-					g = null				
-				else
-						
-					wallLoc = pos
-					real speed = knockSpeed.length()
-					damageAbs(lastKnocker, u.getState(UNIT_STATE_MAX_LIFE) * (speed/200))
-					vec2 nvel = getBounceVec(knockSpeed, getPathingNormal(pos))
-					pos += nvel
-					u.setPos(pos)
-					knockSpeed = nvel - (nvel * (mass/knockbackFactor))
-					lastCollision = null
-
-
-		function collision(Unit otherUnit)
-			lastCollision = otherUnit
-			otherUnit.lastCollision = this
-			if not IsUnitAlly(otherUnit.u, owner)
-				otherUnit.lastKnocker = lastKnocker
-			// abspeichern der Position und der Geschwindigkeit
-			var pos1 = u.getPos()		
-			var pos2 = otherUnit.u.getPos()
-			// Differenzvektor wird gespeichert sowie die Distanz gespeichert
-			let delta = (pos2 - pos1)
-			let deltaLen = delta.length()
-			vec2 deltaNorm
-			// falls die Differenz 0 ist wird um error zu vermeiden senkrechter erstellt
-			if deltaLen == 0
-				deltaNorm = vec2(0,1)
-			else
-				// orthogonale wird erzeugt
-				deltaNorm = delta * (1/deltaLen)
-			// Skalarprodukt zwischen geschwindigkeit und orthogonale
-			real speed1central = knockSpeed.dot(deltaNorm)
-			real speed2central = otherUnit.knockSpeed.dot(deltaNorm)
-			// geprüft, ob sich objekte wirklich treffen
-			let futurePos1 = pos1 + knockSpeed*0.01
-			let futurePos2 = pos2 + otherUnit.knockSpeed*0.05
-			let futureDelta = (futurePos2 - futurePos1)
-			if futureDelta.length() < deltaLen
-				// Skalarprodukt wird mit orthogonale multipliziert
-				let vel1central = deltaNorm*speed1central
-				let vel2central = deltaNorm*speed2central
-				// geschwindigkeit hinzuaddiert
-				knockSpeed += (vel2central - vel1central) * bounceFactor
-				otherUnit.knockSpeed += (vel1central - vel2central) * bounceFactor
+				group g = CreateGroup()
+				filterCheckUnit = u
+				g.enumUnitsInRange(pos, radius * 2, Condition(function notUnit))			
+				if  FirstOfGroup(g) != null							
+					for unit u in g
+						Unit u2 = u.getUserData() castTo Unit
+						collision(u2)
 				
+				pos += knockSpeed
+				u.setXY(pos)
+				knockSpeed -= knockSpeed * (mass / knockbackFactor)
+				DestroyGroup(g)
+				g = null	
+							
+				
+
+
+		function collision(Unit other)
+			if(u.getPos().distToVec(other.u.getPos()) < (this.radius + other.radius))
+				vec2 delta = u.getPos() - other.u.getPos()
+				real distance = delta.length()
+				vec2 mtd = delta * (((this.radius + other.radius) - distance) / distance)
+					
+				real im1 = (mass / 1000)
+				real im2 = (other.mass / 1000)
+		
+	
+				
+				u.setXY(u.getPos() + (mtd * (im1 / (im1 + im2))))
+				other.u.setXY(other.u.getPos() - (mtd * (im2 / (im1 + im2))))
+		
+		
+				vec2 v = knockSpeed - other.knockSpeed
+				
+				real vn = v.norm().dot(mtd.norm())
+				if vn > 0.
+					return
+				real i = (-(1.0 + 2) * vn) / (im1 + im2)
+				vec2 impulse = mtd.norm() * i
+				knockSpeed += (impulse * im1)
+				other.knockSpeed -= (impulse * im2)
+
+					
 		function kill(Unit source)
 			if not isDead
 				isDead = true
@@ -299,7 +270,6 @@ package UnitClass
 			if not hasKnockback
 				hasKnockback = true
 				knocklist.add(this)
-			lastCollision = null
 			
 		function resetKnock()
 			wallLoc = vec2(0,0)
@@ -307,7 +277,6 @@ package UnitClass
 			if hasKnockback
 				hasKnockback = false
 				knocklist.remove(this)
-			lastCollision = null
 			
 		function setKnock(real x, real y)
 			wallLoc = vec2(0,0)
@@ -315,7 +284,6 @@ package UnitClass
 			if not hasKnockback
 				hasKnockback = true
 				knocklist.add(this)
-			lastCollision = null
 			
 		function getMiddle() returns vec3
 			return vec3(u.getX(),u.getY(), height / 2)	

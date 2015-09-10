@@ -20,11 +20,11 @@ class SampleMeleeUnit
 		t.setLife(1000)
 		t.setMana(0)
 		t.setMass(1000)
-		t.setModel("units\\human\\Footman\\Footman")
+		t.setModel("units\\orc\\Grunt\\Grunt")
 		t.setName("testunit")
 		t.setRadius(50)
 		t.setRunspeed(200)
-		t.setSelectionRadius(50)
+		t.setSelectionRadius(1)
 		t.setIcon("")
 		t.setWeaptonSound(WeaponSound.MetalMediumSlice)
 

@@ -3,30 +3,6 @@ import ObjEditingNatives
 
 //modifiedTable: 
 
-@compiletime function create_w3u_e000()
-	let u = createObjectDefinition("w3u", 'e000', 'ewsp')
-	u.setString("umvt", "float")
-	u.setInt("umvs", 0)
-	u.setString("uabi", "")
-	u.setInt("usid", 100)
-	u.setInt("usin", 100)
-	u.setString("unam", "WaterDummyTest")
-
-
-@compiletime function create_w3u_h000()
-	let u = createObjectDefinition("w3u", 'h000', 'hpea')
-	u.setString("umdl", "Doodads\\Cinematic\\RessurectionStoneSE\\RessurectionStoneSE.mdl")
-	u.setReal("usca", 1.22)
-	u.setString("umvt", "")
-	u.setString("uabi", "Avul,Aloc")
-	u.setString("uani", "stand,alternate")
-	u.setInt("uaen", 0)
-	u.setString("utyp", "")
-	u.setString("unam", "Rune_Stone-Effect")
-	u.setReal("umxr", 0.0)
-	u.setReal("umxp", 0.0)
-
-
 @compiletime function create_w3u_xdum()
 	let u = createObjectDefinition("w3u", 'xdum', 'ewsp')
 	u.setInt("wurs", 42)
@@ -158,8 +134,8 @@ import ObjEditingNatives
 	u.setUnreal("ucbs", 0.0)
 	u.setReal("uble", 0.2)
 	u.setInt("uori", 0)
-	u.setReal("ussc", 50.0)
-	u.setString("umdl", "units\\human\\Footman\\Footman")
+	u.setReal("ussc", 1.0)
+	u.setString("umdl", "units\\orc\\Grunt\\Grunt")
 	u.setString("uico", "")
 	u.setUnreal("ua1c", 1.0)
 	u.setUnreal("ubs1", 0.2)

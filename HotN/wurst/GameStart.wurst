@@ -50,7 +50,6 @@ package GameStart
 	import ToolTip
 	import CrigBar
 
-	
 	trigger testt = CreateTrigger()..addAction(function setCallLimit)
 	Bonus lastBon = null
 	vec2 tvec = vec2(0, 0)
@@ -68,7 +67,7 @@ package GameStart
 	destructable testd //= CreateDestructable('Icon', menuStart.x + 20., menuStart.y + 10., 0, 1, 1)
 	int callLimit = 1
 	HashList<Unit> tList = new HashList<Unit>()
-	LinkedList<Unit> lList = new LinkedList<Unit>()
+	LinkedList<Unit> uList = new LinkedList<Unit>()
 	Hero testh
 	Window shopWindow = new Window()
 	Window scoreWindow = new Window()
@@ -104,11 +103,19 @@ package GameStart
 		EnablePreSelect(false, false)
 
 		nullTimer(() -> new ControlPoint(vec2(5190,9660), Team.Everliving))
+//		doAfter(5, () -> begin
+//			for int i = 1 to 2
+//				testh = new Hero("testhero", vec2(3000, 9660), Player(0))
+//			new Hero("testhero", vec2(5900, 9660), Player(6))
+//		end)
+		
 		doAfter(5, () -> begin
-			for int i = 1 to 2
-				testh = new Hero("testhero", vec2(3000, 9660), Player(0))
-				new Unit("testunit", vec2(3000, 9660), Player(0))
-			new Hero("testhero", vec2(5900, 9660), Player(6))
+			for int i = 1 to 40
+				uList.add(new Unit("testunit", vec2(2000, 2000), Player(0))..addKnock(0, 20))				
+		end)
+		doPeriodically(0.03, (CallbackPeriodic cb) -> begin
+			for Unit u in uList
+				u.addKnock(u.u.getPos().polarOffset(u.u.getPos().angleTo(vec2(-2000, 0)), 0.2) - u.u.getPos())
 		end)
 //		for int k = 1 to 10
 //			doAfter(2, () -> begin
@@ -129,7 +136,7 @@ package GameStart
 		//---------------------------------------------//
 		//-------------Preload Stuff-------------------//
 		//---------------------------------------------//
-		Preload.startPreload()
+		//Preload.startPreload()
 		
 		
 		//---------------Attack Bons-------------------//
@@ -165,8 +172,8 @@ package GameStart
 			initOrder[3] = "Items"
 			initOrder[4] = "Destructables"
 			initOrder[5] = "Buffs"
-			initOrder[6] = "Trackables"
-			initOrder[7] = "CreateDummyItems"
+			initOrder[9] = "Trackables"
+			initOrder[6] = "CreateDummyItems"
 			//initOrder[7] = "Menu"
 		
 		static function startPreload()
