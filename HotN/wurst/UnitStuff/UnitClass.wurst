@@ -179,7 +179,7 @@ package UnitClass
 			UnitAddItem(u, i)		
 	
 		function knockback()
-			if knockSpeed.lengthSquared() <= 0.01		
+			if knockSpeed.length() <= 0.1		
 				knocklist.remove(this)
 				hasKnockback = false
 				knockSpeed = vec2(0,0)			
@@ -187,7 +187,6 @@ package UnitClass
 				vec2 pos = u.getPos()
 				group g = CreateGroup()
 				filterCheckUnit = u
-				vec2 oldKnockSpeed = knockSpeed
 				g.enumUnitsInRange(pos, radius * 2, Condition(function notUnit))			
 				if  FirstOfGroup(g) != null							
 					for unit u in g

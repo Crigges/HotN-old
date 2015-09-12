@@ -21,7 +21,7 @@ package Helper
 			vec2 testPoint = pos + direction
 			if IsTerrainPathable(testPoint.x, testPoint.y, PATHING_TYPE_WALKABILITY)
 				addedVecs += direction
-		if addedVecs.length() == 0
+		if addedVecs.length() == 0.0
 			print(pos.toString())
 		return addedVecs.setLength(1.) * (-1.)
 		
@@ -47,14 +47,21 @@ package Helper
 		vec2 test = vel.setLength(radius)
 		if IsTerrainPathable(pos.x + test.x, pos.y + test.y, PATHING_TYPE_WALKABILITY)
 			return vec2(pos.x + test.x, pos.y + test.y)
-		if IsTerrainPathable(pos.x + test.x * rot45 - test.y * rot45, pos.y + test.x * rot45 + test.y * rot45, PATHING_TYPE_WALKABILITY)
-			return vec2(pos.x + test.x * rot45 - test.y * rot45, pos.y + test.x * rot45 + test.y * rot45)
-		if IsTerrainPathable(pos.x + test.x * nrot45 - test.y * nrot45, pos.y + test.x * nrot45 + test.y * nrot45, PATHING_TYPE_WALKABILITY)
-			return vec2(pos.x + test.x * nrot45 - test.y * nrot45, pos.y + test.x * nrot45 + test.y * nrot45)
+		if IsTerrainPathable(pos.x - test.x, pos.y - test.y, PATHING_TYPE_WALKABILITY)
+			return vec2(pos.x - test.x, pos.y - test.y)
 		if IsTerrainPathable(pos.x - test.y, pos.y + test.x, PATHING_TYPE_WALKABILITY)
 			return vec2(pos.x - test.y, pos.y + test.x)
 		if IsTerrainPathable(pos.x + test.y, pos.y + test.x, PATHING_TYPE_WALKABILITY)
 			return vec2(pos.x + test.y, pos.y + test.x)
+		test *= rot45
+		if IsTerrainPathable(pos.x + (test.x - test.y), pos.y + (test.x + test.y), PATHING_TYPE_WALKABILITY)
+			return vec2(pos.x + (test.x - test.y), pos.y + (test.x + test.y))
+		if IsTerrainPathable(pos.x - (test.x - test.y), pos.y - (test.x + test.y), PATHING_TYPE_WALKABILITY)
+			return vec2(pos.x - (test.x - test.y), pos.y - (test.x + test.y))
+		if IsTerrainPathable(pos.x - (test.x + test.y), pos.y + (test.x - test.y), PATHING_TYPE_WALKABILITY)
+			return vec2(pos.x - (test.x + test.y), pos.y + (test.x - test.y))
+		if IsTerrainPathable(pos.x + (test.x + test.y), pos.y - (test.x - test.y), PATHING_TYPE_WALKABILITY)
+			return vec2(pos.x + (test.x + test.y), pos.y - (test.x - test.y))
 		return vec2(0,0)
 			
 			
