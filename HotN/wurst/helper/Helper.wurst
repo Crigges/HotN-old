@@ -5,46 +5,58 @@ package Helper
 	
 	public int array pow2
 	
+	constant rot45 = 0.707106
+	constant nrot45 = -0.707106
+	
 	init
 		for int i = 0 to 31
 			pow2[i] = R2I(Pow(2, I2R(i)))
 	
 	public function getPathingNormal(vec2 pos) returns vec2
-		int numberOfTests = 60
+		int numberOfTests = 15
 		real radius = 64
 		vec2 addedVecs = vec2(0, 0)
 		for int i = 1 to numberOfTests
-			vec2 test = pos.polarOffset((i*2*bj_PI/numberOfTests).asAngleRadians(), radius)
-			if IsTerrainPathable(test.x, test.y, PATHING_TYPE_WALKABILITY)
-				addedVecs += test
+			vec2 direction = vec2(0,0).polarOffset((i*2*bj_PI/numberOfTests).asAngleRadians(), radius)
+			vec2 testPoint = pos + direction
+			if IsTerrainPathable(testPoint.x, testPoint.y, PATHING_TYPE_WALKABILITY)
+				addedVecs += direction
+		if addedVecs.length() == 0
+			print(pos.toString())
 		return addedVecs.setLength(1.) * (-1.)
 		
 	public function getBounceVec(vec2 vel, vec2 nor) returns vec2
-		vec2 u = (vel.dot(nor)) * nor
-		return (vel - u) - u
+		if vel.dot(nor) < 0
+			vec2 u = (vel.dot(nor)) * nor
+			return (vel - u) - u
+		return vel
 		
-	public function getLastPathablePoint(vec2 pos1, vec2 pos2, int depth) returns vec2
-		if depth <= 1
-			return pos1
-		else
-			vec2 h = pos1 - pos2
-			vec2 toTest = pos2 + vec2(h.x / 2, h.y / 2)
-			if IsTerrainPathable(toTest.x, toTest.y, PATHING_TYPE_WALKABILITY)
-				return getLastPathablePoint(toTest, pos2, depth - 1)
-			else
-				return getLastPathablePoint(pos1, toTest, depth - 1)
-				
 	public function getLastPathablePoint(vec2 pos1, vec2 pos2) returns vec2
 		vec2 p1 = pos1
 		vec2 p2 = pos2
 		for int i = 1 to 8
 			vec2 h = p1 - p2
 			vec2 toTest = p2 + vec2(h.x / 2, h.y / 2)
-			if IsTerrainPathable(toTest.x, toTest.y, PATHING_TYPE_WALKABILITY)
+			if not IsTerrainPathable(toTest.x, toTest.y, PATHING_TYPE_WALKABILITY)
 				p1 = toTest
 			else
 				p2 = toTest
 		return p1
+		
+	public function checkForPathing(vec2 pos, vec2 vel, real radius) returns vec2
+		vec2 test = vel.setLength(radius)
+		if IsTerrainPathable(pos.x + test.x, pos.y + test.y, PATHING_TYPE_WALKABILITY)
+			return vec2(pos.x + test.x, pos.y + test.y)
+		if IsTerrainPathable(pos.x + test.x * rot45 - test.y * rot45, pos.y + test.x * rot45 + test.y * rot45, PATHING_TYPE_WALKABILITY)
+			return vec2(pos.x + test.x * rot45 - test.y * rot45, pos.y + test.x * rot45 + test.y * rot45)
+		if IsTerrainPathable(pos.x + test.x * nrot45 - test.y * nrot45, pos.y + test.x * nrot45 + test.y * nrot45, PATHING_TYPE_WALKABILITY)
+			return vec2(pos.x + test.x * nrot45 - test.y * nrot45, pos.y + test.x * nrot45 + test.y * nrot45)
+		if IsTerrainPathable(pos.x - test.y, pos.y + test.x, PATHING_TYPE_WALKABILITY)
+			return vec2(pos.x - test.y, pos.y + test.x)
+		if IsTerrainPathable(pos.x + test.y, pos.y + test.x, PATHING_TYPE_WALKABILITY)
+			return vec2(pos.x + test.y, pos.y + test.x)
+		return vec2(0,0)
+			
 			
 	/**	Same as dot product */
 	public function vec2.op_mult(vec2 v) returns real

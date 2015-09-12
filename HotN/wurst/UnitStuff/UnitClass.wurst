@@ -187,14 +187,18 @@ package UnitClass
 				vec2 pos = u.getPos()
 				group g = CreateGroup()
 				filterCheckUnit = u
+				vec2 oldKnockSpeed = knockSpeed
 				g.enumUnitsInRange(pos, radius * 2, Condition(function notUnit))			
 				if  FirstOfGroup(g) != null							
 					for unit u in g
 						Unit u2 = u.getUserData() castTo Unit
 						collision(u2)
-				
-				pos += knockSpeed
-				u.setXY(pos)
+				vec2 check = checkForPathing(pos + knockSpeed, knockSpeed, radius)
+				if check != vec2(0,0)
+					vec2 nor = getPathingNormal(check)
+					u.setXY(getLastPathablePoint(pos, check) - pos.angleTo(check).toVec(1) * radius)
+					knockSpeed = getBounceVec(knockSpeed, nor)
+				u.setXY(u.getPos() + knockSpeed)
 				knockSpeed -= knockSpeed * (mass / knockbackFactor)
 				DestroyGroup(g)
 				g = null	

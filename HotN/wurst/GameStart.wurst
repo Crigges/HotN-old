@@ -110,8 +110,8 @@ package GameStart
 //		end)
 		
 		doAfter(5, () -> begin
-			for int i = 1 to 40
-				uList.add(new Unit("testunit", vec2(2000, 2000), Player(0))..addKnock(0, 20))				
+			for int i = 1 to 20
+				uList.add(new Unit("testunit", vec2(2000, 2000), Player(0)))				
 		end)
 		doPeriodically(0.03, (CallbackPeriodic cb) -> begin
 			for Unit u in uList
