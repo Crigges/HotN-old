@@ -110,10 +110,10 @@ package GameStart
 //		end)
 		
 		doAfter(5, () -> begin
-			for int i = 1 to 20
+			for int i = 1 to 1
 				uList.add(new Unit("testunit", vec2(2000, 2000), Player(0)))				
 		end)
-		doPeriodically(0.03, (CallbackPeriodic cb) -> begin
+		doPeriodically(0.5, (CallbackPeriodic cb) -> begin
 			for Unit u in uList
 				u.addKnock(u.u.getPos().polarOffset(u.u.getPos().angleTo(vec2(-2000, 0)), 0.2) - u.u.getPos())
 		end)

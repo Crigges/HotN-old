@@ -187,7 +187,8 @@ package UnitClass
 				vec2 pos = u.getPos()
 				group g = CreateGroup()
 				filterCheckUnit = u
-				g.enumUnitsInRange(pos, radius * 2, Condition(function notUnit))			
+				knockSpeed += u.getFacingAngle().toVec(1) * (1)
+				g.enumUnitsInRange(pos + knockSpeed, radius * 2, Condition(function notUnit))			
 				if  FirstOfGroup(g) != null							
 					for unit u in g
 						Unit u2 = u.getUserData() castTo Unit
@@ -206,8 +207,9 @@ package UnitClass
 
 
 		function collision(Unit other)
-			if(u.getPos().distToVec(other.u.getPos()) < (this.radius + other.radius))
-				vec2 delta = u.getPos() - other.u.getPos()
+			vec2 pos = u.getPos() + knockSpeed
+			if(pos.distToVec(other.u.getPos()) < (this.radius + other.radius))
+				vec2 delta = pos - other.u.getPos()
 				real distance = delta.length()
 				vec2 mtd = delta * (((this.radius + other.radius) - distance) / distance)
 					

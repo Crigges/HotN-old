@@ -52,7 +52,7 @@ public tuple armorSoundTypeStat(ArmorSoundType content, StatType info)
 */
 public class UnitType
 	static constant int basicId = 'Hpal'
-	static constant int basicMovespeed = 350
+	static constant int basicMovespeed = 1
 	static constant real turnRate = 1
 	static constant StringList basicSpells = new StringList()
 	static constant real castPoint = 0
