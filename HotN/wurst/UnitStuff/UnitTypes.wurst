@@ -1,9 +1,9 @@
 package UnitTypes
 
 import public UnitObjEditing
-import ObjectIdGenerator
-import ObjEditingNatives
 import StandardImports
+import CustomObjectIdGenerator
+import ObjEditingNatives
 import PreloadSystem
 import StringList
 import ObjectIds
@@ -343,7 +343,7 @@ public class UnitType
 			if weaponSound.info == StatType.SET
 				def.setAttack1WeaponSound(weaponSound.content)
 			if ranged.content
-				def.setAttack1WeaponType("missile")
+				def.setAttack1WeaponType(WeaponType.Missile)
 				def.setAttack1ProjectileHomingEnabled(true)
 			if armor.info == StatType.REQUIRED
 				compileError("Missing information: Basic armor?")

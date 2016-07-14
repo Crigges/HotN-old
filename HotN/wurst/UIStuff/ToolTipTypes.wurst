@@ -2,7 +2,7 @@ package ToolTipTypes
 import HashMap
 import StandardImports
 import ObjEditingNatives
-import ObjectIdGenerator
+import CustomObjectIdGenerator
 import PreloadSystem
 
 HashMap<int, int> tipMap = new HashMap<int, int>()

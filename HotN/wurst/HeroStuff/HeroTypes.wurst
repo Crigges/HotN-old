@@ -3,7 +3,7 @@ package HeroTypes
 import StandardImports
 import ObjEditingNatives
 import public UnitTypes
-import ObjectIdGenerator
+import CustomObjectIdGenerator
 import HashMap
 
 HashMap<int, HeroType> heros = new HashMap<int, HeroType>()

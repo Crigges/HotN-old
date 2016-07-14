@@ -1,13 +1,8 @@
 package Spell
 
-	import UnitClass
-	import HeroClass
-
 	import StandardImports
-	import ObjectIdGenerator
+	import CustomObjectIdGenerator
 	import ChannelAbilityPreset
-	import OrderHandling
-	import StringList
 	import ArrayList
 
 	public constant int qSpellId 				= 852490 // ancestralspirit
@@ -153,10 +148,10 @@ package Spell
 		ArrayList<StatTable> statTables = new ArrayList<StatTable>()
 		
 		construct()
-			spell = new ChannelAbilityPreset(genId(), 11)
+			spell = new ChannelAbilityPreset(genId(), 11, true)
 			spell.removeChannelProperties(true, true)
 			spell.setHeroAbility(false)
-			learn = new ChannelAbilityPreset(genId(), 10)
+			learn = new ChannelAbilityPreset(genId(), 10, true)
 			learn.removeChannelProperties(true, true)
 			learn.setHeroAbility(false)
 			

@@ -6,7 +6,7 @@ import ChannelAbilityPreset
 import ClosureEvents
 
 @compiletime function createSpell()
-	var def = new ChannelAbilityPreset('rami', 10)
+	var def = new ChannelAbilityPreset('rami', 10, true)
 	def.setLevels(10)
 	def.removeChannelProperties(true)
 	def.setHotkeyNormal("Q")
